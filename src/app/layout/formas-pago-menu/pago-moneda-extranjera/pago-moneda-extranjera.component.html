@@ -1,0 +1,88 @@
+<div class="modal-header card-header"  appModalFocus>
+  <h4 class="modal-title  card-element-title">Pago en Moneda Extranjera PC</h4>
+  <button type="button" (click)="cancelPay()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="needs-validation" autocomplete="off" role="presentation" #formMonedaExtranjera="ngForm">
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3"  *ngIf="this.codigoDivisa" >
+        <p>
+         Tasa de conversión <strong> {{totalToPaidMonedaExtranjera.tasa | currency: 0 :"$" }} MXN </strong> = $1 {{tipoDivisa}}<br>
+           Monto máximo a recibir <strong> {{montoMaximoMovimientoDolaresTransaccion | currency: 0 :"$" }} </strong> {{tipoDivisa}}<br>
+          Monto máximo de cambio <strong> {{montoMaximoCambioDolaresTransaccion| currency: 0 :"$" }} </strong> {{tipoDivisa}}<br>
+         
+            Monto a pagar <strong> {{totalToPaidMonedaExtranjera.total | currency:0 :"$" }} </strong> {{tipoDivisa}}<br>
+          Monto recibido <strong> {{ recibido | currency: 0 :"$" }} </strong> {{tipoDivisa}}<br> 
+        
+        </p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="mextranjera-cantidad">Tipo Moneda</label>
+        <select class="custom-select" name="selectM"  [(ngModel)]="selectMon" (ngModelChange)="seleccionDivisa($event)"
+                required appControlStatusDirectiveDirective appAutofocus>
+          <option *ngFor="let moneda of monedas let i = index" [ngValue]="moneda">{{moneda.descripcion}}</option>
+        </select>
+        <a *ngIf="!this.codigoDivisa" class="text-danger">
+          <small>El tipo de moneda es requerido</small>
+        </a>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="mextranjera-cantidad">Cantidad a pagar</label>
+        <div class="input-group">
+          <input type="text"
+                 [(ngModel)]="totalToPaidMonedaExtranjera.total" name="mextranjera-cantidad" class="form-control"
+                 id="mextranjera-cantidad"   step="0.01"
+                 placeholder="0.00" disabled appCashOnly >
+        </div>
+      </div>
+    </div>
+
+    <!-- OCG Monto recibido -->
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="mextranjera-cantidad">Monto Recibido</label>
+        <div class="input-group">
+          <input type="text"
+                 [(ngModel)]="recibido" name="mextranjera-recibido" class="form-control"
+                 id="mextranjera-recibido"  (keyup.enter)="addPay()" 
+                 placeholder="0.00" required appCashOnly appControlStatusDirectiveDirective>
+
+        </div>
+        <a *ngIf="!recibido" class="text-danger" [hidden]="recibido">
+          <small>La cantidad recibida es requerida.</small>
+        </a>
+        <a *ngIf="mensajeValidacion" class="text-danger" [hidden]="!recibido">
+          <small>{{mensajeValidacion}}</small>
+        </a>
+      </div>
+    </div>
+
+
+  </form>
+  <!--
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)">
+
+-->
+
+    <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance"
+                                [codigoFormaPago]="tipoPago"
+                                (datosPromociones)="getPromocionesPosibles($event)"
+                                [codigoValeSeleccionado]="selectedVale"
+                                [formasDePagosDisponibles]="monedas">
+
+  </app-descuentos-informacion>
+</div>
+    <div class="modal-footer card-footer">
+      <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button (click)="addPay()" [disabled]="!validatePay()"
+              class="btn btn-primary">Aceptar
+      </button>
+    </div>
+

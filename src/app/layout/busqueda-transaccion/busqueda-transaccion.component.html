@@ -1,0 +1,54 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title pull-left">B&uacute;squeda de Transacci&oacute;n</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" #transaccionesForm="ngForm" (keyup.enter)="transaccionesForm.valid ? buscarTransaccion() : '';">
+  <div class="row mb-3">
+    <div class="col-md-4">
+    <input type="text" class="form-control" name="Folio" required [(ngModel)]="Folio" placeholder="N&uacute;mero de Folio" aria-label="Folio"
+      pattern="[0-9a-zA-Z]{16,20}" #Fol="ngModel"   style="margin-left: 15px;" appControlStatusDirectiveDirective  appAutofocus autocomplete="off" >
+      <a *ngIf="!Fol.valid"  class="text-danger"  style="margin-left: 15px;">
+        <small> Ingrese folio de venta v&aacute;lido.</small>
+      </a>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-secondary" [disabled]="!Fol.valid"  (click)="buscarTransaccion()" type="button">Buscar</button>
+    </div>
+  </div>
+    <div *ngIf='transacciones.length' #directiveReference="focusRowReference" [appFocusTicketRow]="rowSelector" [arrowPaginate]="true" [addInputToFocus]="true">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="text-center">Fecha</th>
+        <th class="text-center">Folio</th>
+        <th class="text-center">Caja</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let transaccion of transacciones | paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber } ; let i = index" (click)="seleccionar(transaccion,i)"
+        [class.active]="i == rowSelector.currentSelection" style="cursor: pointer;">
+      <td class="text-center">{{transaccion.fecha}} </td>
+      <td class="text-center">{{transaccion.folioOperacion}}</td>
+      <td class="text-center">{{transaccion.codigoCaja}}</td>
+    </tr>
+      <tr>
+        <td colspan="3">
+          <pagination-controls name="page" (pageChange)="rowSelector.pageChange($event)" (pageChange)="p =$event" previousLabel="Anterior" nextLabel="Siguiente" style="margin-bottom: 0px;"
+            class="text-center"></pagination-controls>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <div class="">
+    <button class="btn  btn-primary" *ngIf='transacciones.length' [disabled]="!this.transaccion" type="submit"
+            (click)="confirmaTransaccion()">Aceptar
+    </button>
+  </div>
+</div>

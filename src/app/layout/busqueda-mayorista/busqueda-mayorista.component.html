@@ -1,0 +1,66 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title pull-left">Buscar Mayorista</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="cancelarVentaMayorista()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" #empleadoForm="ngForm" autocomplete="off">
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <input type="text" placeholder="N&uacute;mero Mayorista" class="sku_busqueda form-control"
+               [(ngModel)]="numeroMayorista"
+               name="numeroMayorista" (keyup.enter)="mayoristaOnEnter()"
+               appAutofocus appControlStatusDirectiveDirective appOnlyNumbers>
+      </div>
+      <div class="col-md-6">
+        <input type="text" placeholder="Nombre Mayorista" class="sku_busqueda form-control"
+               [(ngModel)]="nombreMayorista"
+               name="nombreMayorista" (keyup.enter)="mayoristaOnEnter()"
+               appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-secondary" [disabled]="!validateMayorista()" type="button" (click)="mayoristaOnEnter()">Buscar</button>
+      </div>
+    </div>
+    <div class="row" *ngIf="!numeroMayorista && !nombreMayorista">
+      <div class="col-md-5">
+        <a style="color:#FF0000;">
+          <small>Ingrese al menos un criterio de b&uacute;squeda.</small>
+        </a>
+      </div>
+    </div>
+    <div *ngIf='mayoristas.length' #directiveReference="focusRowReference" [appFocusTicketRow]="rowSelector" [arrowPaginate]="true" [addInputToFocus]="true">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th style="width: 200px !important;" class="text-center">N&uacute;mero Mayorista</th>
+          <th class="text-center">Nombre</th>
+          <th class="text-center">L&iacute;mite de Cr&eacute;dito - Disponible</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let mayorista of mayoristas | paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber } ; let i = index"
+            [class.active]="i == rowSelector.currentSelection" style="cursor: pointer;"
+            (click)="seleccionarRowMayorista(mayorista, i)">
+          <td> {{ mayorista.codigoMayorista }}</td>
+          <td> {{ mayorista.nombre }}</td>
+          <td> ${{ mayorista.limiteCredito | dosDecimales }} - ${{ mayorista.creditoDisponible | dosDecimales }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls *ngIf='mayoristas.length'
+                         name="page" (pageChange)="rowSelector.pageChange($event)"
+                         previousLabel="Anterior"
+                         nextLabel="Siguiente"
+                         style="margin-bottom: 0px;"
+                         class="text-center"></pagination-controls>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <!-- <button class="btn btn-danger col-2" type="submit" (click)="cancelarVentaMayorista()">Cancelar</button> -->
+  <button class="btn btn-primary col-2"  type="submit" *ngIf="mayoristaInfo"  [disabled]="!mayoristaInfo" (click)="aceptarMayorista()">
+    Aceptar
+  </button>
+</div>

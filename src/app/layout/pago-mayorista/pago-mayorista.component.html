@@ -1,0 +1,129 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title pull-left">Pago de mayorista</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="this.closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body form-group card-body">
+  <div [hidden]="showMayoristaEdoCta">
+    <form class="form-horizontal" [formGroup]="busquedaMayoristaForm" (keydown.enter)="buscarMayorista();">
+
+      <div class="form-row">
+        <div class="col-md-3 mb-3">
+          <input type="text" class="form-control"
+                 formControlName="codigoMayorista" placeholder="N&uacute;mero de Mayorista"
+                 appAutofocus appOnlyNumbers appControlStatusDirectiveDirective>
+        </div>
+        <div class="col-md-5 mb-3">
+          <input type="text" class="form-control" placeholder="Nombre de Mayorista"
+                 formControlName="nombre" appControlStatusDirectiveDirective>
+        </div>
+        <div class="col-md-2 mb-3 d-flex">
+          <button type="button" class="btn btn-secondary mt-auto" (click)="buscarMayorista()" [disabled]="busquedaMayoristaForm.invalid">Buscar
+          </button>
+        </div>
+      </div>
+      <a class="text-danger" [ngStyle]="{
+  'display': busquedaMayoristaForm.hasError('almenosuno') ? 'block':'none'
+  }">
+        <small>Ingrese al menos un criterio de b&uacute;squeda.</small>
+      </a>
+    </form>
+
+    <div *ngIf='mayoristas.length' #directiveReference="focusRowReference" [appFocusTicketRow]="rowSelector" [arrowPaginate]="true" [addInputToFocus]="true" [selectOnEnter]="true">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th style="width: 200px !important;" class="text-center">N&uacute;mero Mayorista</th>
+          <th class="text-center">Nombre</th>
+          <th class="text-center">L&iacute;mite de Cr&eacute;dito - Disponible</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let mayorista of mayoristas | paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber } ; let i = index"
+            [class.active]="i == rowSelector.currentSelection" style="cursor: pointer;"
+            (click)="seleccionarRowMayorista(mayorista, i); onRowEnterAction()">
+          <td> {{ mayorista.codigoMayorista }}</td>
+          <td> {{ mayorista.nombre }}</td>
+          <td> {{ mayorista.limiteCredito | currency:'$':'symbol':'1.2-2' }} - {{ mayorista.creditoDisponible | currency:'$':'symbol':'1.2-2' }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls *ngIf='mayoristas.length'
+                         name="page" (pageChange)="rowSelector.pageChange($event)"
+                         previousLabel="Anterior"
+                         nextLabel="Siguiente"
+                         style="margin-bottom: 0px;"
+                         class="text-center"></pagination-controls>
+
+  </div>
+  <form class="form-horizontal" *ngIf="mayoristaInfo && showMayoristaEdoCta" autocomplete="off">
+    <div class="row">
+      <div class="col-md-12 mb-3">
+        <label for="nombreMayorista" class="col-form-label bold">Nombre</label>
+        <input type="text" readonly class="form-control-plaintext" id="nombreMayorista" value="{{mayoristaInfo.nombre}}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-3 mb-3">
+        <label for="limiteCredito" class="col-form-label bold">L&iacute;mite de cr&eacute;dito</label>
+        <input type="text" readonly class="form-control-plaintext" id="limiteCredito" value="{{estadoCuenta.limiteCredito | currency:'$':'symbol':'1.2-2' }}">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="creditoDisponible" class="col-form-label bold">Cr&eacute;dito disponible</label>
+        <input type="text" readonly class="form-control-plaintext" id="creditoDisponible" value="{{estadoCuenta.creditoDisponible | currency:'$':'symbol':'1.2-2' }}">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="saldoActual" class="col-form-label bold">Saldo actual</label>
+        <input type="text" readonly class="form-control-plaintext" id="saldoActual" value="{{estadoCuenta.saldoActual | currency:'$':'symbol':'1.2-2' }}">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="pagoMinimo" class="col-form-label bold">Pago M&iacute;nimo</label>
+        <input type="text" readonly class="form-control-plaintext" id="pagoMinimo" value="{{estadoCuenta.pagoMinimo | currency:'$':'symbol':'1.2-2' }}">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="fechaLimite" class="col-form-label bold">Fecha l&iacute;mite de pago</label>
+        <input type="text" readonly class="form-control-plaintext" id="fechaLimite" value="{{estadoCuenta.fechaLimitePago}}">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="pagoVencido" class="col-form-label bold">Pago Vencido</label>
+        <input type="text" readonly class="form-control-plaintext" id="pagoVencido" value="{{estadoCuenta.pagoVencido | currency:'$':'symbol':'1.2-2' }}">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="pagoQuincenal" class="col-form-label bold">Pago Quincenal</label>
+        <input type="text" readonly class="form-control-plaintext" id="pagoQuincenal" value="{{estadoCuenta.pagoQuincenal | currency:'$':'symbol':'1.2-2' }}">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label for="comision" class="col-form-label bold">&nbsp;</label>
+        <input type="text" class="form-control" placeholder="Monto a pagar" id="montoPagar" [(ngModel)]="montoPagar" name="montoPagar" (keyup)="calculaComision()"
+               appAutofocus appCashOnly required appControlStatusDirectiveDirective (keydown.enter)="onAceptar();" autocomplete="off">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="porcentajeComision" class="col-form-label bold">Porcentaje comisi&oacute;n</label>
+        <input type="text" readonly class="form-control-plaintext" id="porcentajeComision" value="{{mayoristaInfo.porcentajeComision}}%">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="comision" class="col-form-label bold">Comisi&oacute;n</label>
+        <input type="text" readonly class="form-control-plaintext" id="comision" value="${{comisionCalculada | dosDecimales}}">
+      </div>
+    </div>
+  </form>
+
+</div>
+<div class="modal-footer card-footer">
+
+  <ng-container *ngIf="!showMayoristaEdoCta">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+  </ng-container>
+
+  <ng-container *ngIf="mayoristaInfo && showMayoristaEdoCta">
+    <button type="button" class="btn btn-secondary" (click)="regresarABusqueda()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="onAceptar()" [disabled]="!this.montoRecibir">Aceptar</button>
+  </ng-container>
+</div>

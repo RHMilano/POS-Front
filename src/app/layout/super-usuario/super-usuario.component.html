@@ -1,0 +1,35 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title">Autorizaci&oacute;n del gerente</h4>
+  <button *ngIf="showStatic" type="button" (click)="cancelSudo()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form autocomplete="off" #formsudo="ngForm" (keyup.enter)="formsudo.valid ? onSubmit() : '';">
+    <div class="form-group col-md-10 offset-1">
+      <label for="su-username" class="control-label mb-1">Usuario</label>
+      <input id="su-username" [(ngModel)]="superUser" name="su-username" type="text" class="form-control"
+             aria-required="true" #Usr="ngModel"
+             aria-invalid="false" required appAutofocus appOnlyNumbers appControlStatusDirectiveDirective>
+      <a *ngIf="!Usr.valid" class="text-danger">
+        <small>El usuario es requerido</small>
+      </a>
+    </div>
+    <div class="form-group col-md-10 offset-1 mb-3">
+      <label for="su-password" class="control-label mb-1">Contrase&ntilde;a</label>
+      <input id="su-password" [(ngModel)]="superPass" name="su-password" type="text" class="form-control"
+             aria-required="true" #pass="ngModel" #passwordInput
+             (keydown)="keyDownPass($event)" (keypress)="passOfucate($event)" (select)="passwordSelect($event)"
+             aria-invalid="false" required appControlStatusDirectiveDirective>
+      <a *ngIf="!pass.valid" class="text-danger">
+       <small> La contrase&ntilde;a es requerida</small>
+      </a>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+      <button (click)="cancelSudo()" type="button" class="btn btn-secondary" *ngIf="showStatic" data-dismiss="modal">Cancelar</button>
+      <button type="button" (click)="onSubmit()" class="btn btn-primary" [disabled]="!formsudo.form.valid">Aceptar</button>
+</div>
+
+

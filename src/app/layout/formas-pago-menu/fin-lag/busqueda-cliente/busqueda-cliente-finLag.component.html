@@ -1,0 +1,166 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title pull-left">{{tituloVentana}}</h4>
+</div>
+<div class="modal-body form-group card-body">
+  <form class="form-horizontal" [hidden]="valeInfo.estatusCliente || estatusCliente" autocomplete="off">
+    <div class="row">
+      <div class="col-md-2 mb-3" style="padding-right: 0px;">
+        <input type="text" placeholder="Nombre" class="form-control" [(ngModel)]="nombreClienteBusqueda" name="nombreClienteBusqueda"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇČŠŽ∂ð ]{2,48}" required
+                autocomplete="off" appAutofocus appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-2 mb-3" style="padding-right: 0px;">
+        <input type="text" placeholder="Apellido Paterno" class="form-control"  [(ngModel)]="apellidoPatClienteBusqueda" name="apellidoPatClienteBusqueda"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇČŠŽ∂ð ]{2,48}" required
+               autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-2 mb-3" style="padding-right: 0px;">
+        <input type="text" placeholder="Apellido Materno" class="form-control"  [(ngModel)]="apellidoMatClienteBusqueda" name="apellidoMatClienteBusqueda"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇČŠŽ∂ð ]{2,48}" required
+               autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-2 mb-3" style="padding-right: 0px;">
+        <input  style="padding-right: 0px;" type="text" name="fechaNacimientoBusqueda" [(ngModel)]="fechaNacimiento" placeholder="Fecha Nacimiento"
+               class="form-control" aria-label="Fecha Nacimiento"
+               #FechaN="ngModel" bsDatepicker readonly [bsConfig]="this.bsConfig" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-2 mb-3" style="padding-left: 30px;">
+        <button type="button"  class="btn btn-secondary" (click)="aceptarBusqueda()" [disabled]="!validarBusqueda()">Buscar</button>
+      </div>
+    </div>
+  <div class="row mb-3">
+  <a [hidden]="this.nombreClienteBusqueda  && this.apellidoPatClienteBusqueda && this.apellidoMatClienteBusqueda && this.fechaNacimiento" style="margin-left: 15px;" class="text-danger">
+    <small>Ingrese los criterios de b&uacute;squeda.</small>
+  </a>
+  </div>
+  </form>
+  <form class="form-horizontal" #clienteForm="ngForm" (keyup)="!clienteForm.valid ? setSelect(false) : setSelect(true) " *ngIf="valeInfo.estatusCliente || estatusCliente" autocomplete="off">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label>Nombre</label>
+        <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.nombre" name="nombre"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇČŠŽ∂ð ]{2,48}"
+               autocomplete="off" disabled>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Apellido Paterno</label>
+        <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.paterno" name="paterno"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇČŠŽ∂ð ]{2,48}"
+               autocomplete="off"  disabled>
+        <a [hidden]="valeInfo.paterno" style="margin-left: 15px;" class="text-danger">
+          <small>El Apellido Paterno es requerido.</small>
+        </a>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Apellido Materno</label>
+        <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.materno" name="materno"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇČŠŽ∂ð ]{2,48}"
+               autocomplete="off"   disabled>
+        <a [hidden]="valeInfo.materno" style="margin-left: 15px;" class="text-danger">
+          <small>El Apellido Materno es requerido.</small>
+        </a>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Fecha Nacimiento</label>
+        <input type="text" name="fechaNacimiento" [(ngModel)]="valeInfo.fechaNacimiento" placeholder=""
+               class="form-control" aria-label="Fecha Nacimiento" disabled
+               #FechaNac="ngModel" bsDatepicker readonly [bsConfig]="this.bsConfig" autocomplete="off" >
+        <a [hidden]="valeInfo.fechaNacimiento" class="text-danger">
+          <small>La Fecha de Nacimiento es requerida.</small>
+        </a>
+      </div>
+    </div>
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      <label>Calle</label>
+      <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.calle" name="calle"
+             pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇČŠŽ∂ð0-9 .]{2,48}"
+             autocomplete="nope"  appControlStatusDirectiveDirective appAutofocus oninvalid="setSelect()">
+      <a [hidden]="valeInfo.calle" style="margin-left: 15px;" class="text-danger">
+        <small>La Calle es requerida.</small>
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label>No. Exterior</label>
+      <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.numero" name="numExt"
+             pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,48}"
+             autocomplete="nope"  appControlStatusDirectiveDirective title="La Información Capturada es invalida.">
+      <a [hidden]="valeInfo.numero" style="margin-left: 15px;" class="text-danger">
+        <small>El Número Exterior es requerido.</small>
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label>Colonia</label>
+      <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.colonia" name="colonia"
+             pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 .]{2,48}"
+             autocomplete="nope"  appControlStatusDirectiveDirective title="La Información Capturada es invalida.">
+      <a [hidden]="valeInfo.colonia" style="margin-left: 15px;" class="text-danger">
+        <small>La Colonia es requerida.</small>
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label>Estado</label>
+      <select class="custom-select" name="selectM" [(ngModel)]="valeInfo.estado"
+              required appControlStatusDirectiveDirective>
+        <option [ngValue]="undefined" disabled selected>Selecionar Estado</option>
+        <option *ngFor="let edo of optionsEstados" value="{{edo}}">{{edo}}</option>
+      </select>
+      <a [hidden]="valeInfo.estado" style="margin-left: 15px;" class="text-danger">
+        <small>El Estado es requerido.</small>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      <label>Municipio</label>
+      <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.municipio" name="municipio"
+             pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 .]{2,48}"
+             autocomplete="nope"  appControlStatusDirectiveDirective title="La Información Capturada es invalida.">
+      <a [hidden]="valeInfo.municipio" style="margin-left: 15px;" class="text-danger">
+        <small>El municipio es requerido.</small>
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label>C.P.</label>
+      <input type="text" name="codigoPostal" placeholder="" class="form-control" [(ngModel)]="valeInfo.cP" maxlength="5"
+             autocomplete="nope"  appControlStatusDirectiveDirective appOnlyNumbers title="La Información Capturada es invalida.">
+      <a [hidden]="valeInfo.cP" style="margin-left: 15px;" class="text-danger">
+        <small>el C.P. es requerido.</small>
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label>INE</label>
+      <input type="text" placeholder="" class="form-control" [(ngModel)]="valeInfo.ine" name="ine"
+             appOnlyNumbers autocomplete="off"  appControlStatusDirectiveDirective title="La Información Capturada es Inválida."  maxlength="20">
+      <a [hidden]="valeInfo.ine" style="margin-left: 15px;" class="text-danger">
+        <small>El Número de INE es requerido.</small>
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+     <!-- <input type="text" placeholder="Sexo" class="form-control" [(ngModel)]="valeInfo.sexo" name="Sexo"
+             autocomplete="off" appAutofocus appControlStatusDirectiveDirective [disabled]="valeInfo.estatusCliente">-->
+      <div class="row">
+        <div class="col-md-12">
+          <label>Sexo</label>
+        </div>
+        <div class="col-md-5">
+            <input type="checkbox"  name="Masculino" [(ngModel)]="masculino" value="MASCULINO" (change)="femenino=false;" />
+            <label>M</label>
+          </div>
+          <div class="col-md-5">
+            <input type="checkbox" name="Femenino" [(ngModel)]="femenino"  value="FEMENINO" (change)="masculino=false;" />
+            <label>F</label>
+          </div>
+          </div>
+          <a [hidden]="femenino || masculino" style="margin-left: 15px;" class="text-danger">
+            <small>El Sexo es requerido.</small>
+          </a>
+    </div>
+  </div>
+  </form>
+</div>
+<div class="modal-footer card-footer" *ngIf="this.estatusCliente">
+  <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button (click)= "aceptarBusquedaTablaAmor()" class="btn btn-primary" [disabled]="!validaCliente() || !disabledSelect">Seleccionar Cliente
+  </button>
+</div>

@@ -1,0 +1,35 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus>
+    <ng-content *ngIf="articuloInstance; then devolucion else cancelacion"></ng-content>
+    <ng-template #devolucion>
+        <h4 class="modal-title pull-left">Raz&oacute;n de Devoluci&oacute;n</h4>
+    </ng-template>
+    <ng-template #cancelacion>
+        <h4 class="modal-title pull-left">Raz&oacute;n por la que se Cancela Transacci&oacute;n</h4>
+    </ng-template>
+</div>
+<div class="modal-body form-group card-body">
+    <form class="form-horizontal" #creacionForm="ngForm" (keyup.enter)="creacionForm.valid ? anularTransaccion() : '';">
+        <div class="row">
+            <div class="col-2"></div>
+            <!-- <label>Razones cancelaci&oacute;n</label> -->
+        </div>
+        <div class="row">
+            <div class="col-2"></div>
+            <select class="custom-select col-8" name="selectM" [(ngModel)]="SelectRazon" (change)="enviarRazon($event.target.value)" required appAutofocus appControlStatusDirectiveDirective="">
+        <option [ngValue]="undefined" disabled selected>Raz&oacute;n</option>
+        <option *ngFor="let razon of razones; let i = index" value="{{razon.codigoRazon}}">{{razon.descripcionRazon}}</option>
+      </select>
+        </div>
+        <div class="row">
+            <div class="col-2"></div>
+            <a *ngIf="!this.SelectRazon" class="text-danger">
+                <small>La raz&oacute;n de cancelaci&oacute;n es requerida.</small>
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer card-footer">
+    <button class="btn btn-primary" *ngIf="condigoSeleccionado" type="button" (click)="anularTransaccion()">Aceptar</button>
+</div>
+<!-- anularTransaccion() -->

@@ -1,0 +1,118 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+  <h4 class="modal-title pull-left">{{titulo}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()" >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <div class="form-row">
+
+    <div class="col-md-4 mb-3">
+      <input type="text" id="validationCustom01" name="fechaInicial" [(ngModel)]="FechaInicio"
+             placeholder="Fecha Inicial" class="form-control" aria-label="Fecha Fin" readonly
+             bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+      <div class="invalid-feedback">
+        <span *ngIf="!FechaInicio">La fecha inicial es requerida</span>
+      </div>
+
+    </div>
+    <div class="col-md-4 mb-3">
+      <input type="text" id="validationCustom02" name="fechaFinal"  [(ngModel)]="FechaFin"
+             placeholder="Fecha Fin" class="form-control" aria-label="Fecha Fin" readonly
+             bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+      <div class="invalid-feedback">
+        <span *ngIf="!FechaFin">La fecha final es requerida</span>
+      </div>
+
+    </div>
+    <div class="col-md-2">
+      <!--label style="margin-left: 15px; margin-right: 15px;"></label>-->
+      <button class="btn btn-secondary" [disabled]="!FechaInicio || !FechaFin" style="margin-left: 15px;margin-right: 10px;" (click)="this.generarReporte({ offset: 0 })" type="button">Generar reporte
+      </button>
+    </div>
+  </div>
+ <!-- <tabset *ngIf="this.relacionesCaja.length">
+    <tab   heading="Reporte Caja {{i}}" *ngFor="let relacion of relacionesCaja let i = index;" (click)="setRows(i)">-->
+      <ngx-datatable #myTable  class="material expandable" [headerHeight]="50"
+                     [footerHeight]="50"
+                     [rowHeight]="'auto'"
+                     [limit]="5"
+                     [count]="page.totalElements"
+                     [offset]="page.pageNumber"
+                     [limit]="page.size"
+                     (page)='generarReporte($event)'
+                     [columnMode]="'force'"
+                     [footerHeight]="12" [rows]="relacionesCaja" [rowHeight]="'auto'"
+                     *ngIf="this.relacionesCaja.length">
+
+        <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow >
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+            <div style="padding-left:35px;font-size: 12px;">
+              <table class='table table-striped text-center' style="width: 100%"  *ngFor="let grupo of row.gruposRelacionCaja">
+                <thead>
+                <tr>
+                  <th colspan="2" style="font-size: 14px;width: 250px;"><strong>{{grupo.encabezado}}</strong></th>
+                </tr>
+                </thead>
+                <tbody *ngFor="let seccion of grupo.seccionesRelacionCaja">
+                <tr>
+                  <td style="font-size: 14px;"><strong>{{ seccion.encabezado }} </strong></td>
+                  <td></td>
+                </tr>
+                <tr *ngFor="let detalle of seccion.desgloseRelacionCaja">
+                  <td class="text-left">{{detalle.descripcion}} </td>
+                  <td>$ {{detalle.totalConIVA  | dosDecimales | number : '.2'}}</td>
+                </tr>
+                <tr *ngIf="seccion.encabezado !== 'OTROS INGRESOS' && seccion.encabezado !== 'Otros Ingresos'">
+                  <td class="text-left"><strong>Total Sin Iva</strong></td>
+                  <td><strong>$ {{ seccion.totalSinIVA  | dosDecimales | number : '.2' }}</strong></td>
+                </tr>
+                <tr *ngIf="seccion.encabezado !== 'OTROS INGRESOS' && seccion.encabezado !== 'Otros Ingresos'">
+                  <td class="text-left"><strong>Iva</strong></td>
+                  <td><strong>$ {{ seccion.iVA  | dosDecimales | number : '.2'}}</strong></td>
+                </tr>
+                <tr *ngIf="seccion.encabezado !== 'OTROS INGRESOS' && seccion.encabezado !== 'Otros Ingresos'">
+                  <td class="text-left"><strong>Total Con Iva</strong></td>
+                  <td><strong>$ {{ seccion.totalConIVA  | dosDecimales | number : '.2'}}</strong></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-template>
+        </ngx-datatable-row-detail>
+        <ngx-datatable-column
+          [width]="50"
+          [resizeable]="false"
+          [sortable]="false"
+          [draggable]="false"
+          [canAutoResize]="false">
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+            <a
+              href="javascript:void(0)"
+              [class.datatable-icon-right]="!expanded"
+              [class.datatable-icon-down]="expanded"
+              title="Expandir/Ocultar"
+              (click)="toggleExpandRow(row)">
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="fecha" name="Fecha de Relación de Caja" [sortable]='false' >
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <strong style="font-size: 14px;">{{value}}</strong>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="idRelacionCaja" name="Impresión">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <button type="button" class="btn-sm btn-primary" (click)="reimprimir(value)">Imprimir Relación de Caja</button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+      <ngx-datatable-footer></ngx-datatable-footer>
+    <!--</tab>
+  </tabset>-->
+</div>
+<div class="modal-footer card-footer">
+  <div>
+    <button type="button" class="btn btn-primary" (click)="closeModal()" *ngIf="this.rows.length">Aceptar</button>
+  </div>
+</div>

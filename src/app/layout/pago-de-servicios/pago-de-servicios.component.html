@@ -1,0 +1,104 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus>
+  <h4 class="modal-title pull-left">Pago de Servicios</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<ng-container>
+  <div class="modal-body card-body" [hidden]="showFormaDinamica">
+    <form class="form-horizontal" #pagoServiciosForm="ngForm" (keyup.enter)="pagoServiciosForm.valid ? enviarServicio() : '';">
+      <div class="form-row">
+        <div class="col-md-8 mb-3">
+         <!-- <label>Línea de Captura</label>-->
+          <input type="text" class="form-control" name="Linea" required [(ngModel)]="Linea" placeholder="Línea de captura"
+                 aria-label="Línea de captura" #Lin="ngModel" autocomplete="off"
+                 appAutofocus appControlStatusDirectiveDirective required>
+          <a *ngIf="!this.Linea" class="text-danger">
+            <small>La línea de captura es requerida.</small>
+          </a>
+          <a *ngIf="!Lin.valid && this.Linea" class="text-danger">
+            <small>La línea de captura es incorrecta.</small>
+          </a>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-8 mb-3">
+         <!-- <label>Tipo de Servicio</label>-->
+          <select class="custom-select form-control" name="selectS" [(ngModel)]="SelectServicio" (ngModelChange)="cargarProducto($event)"
+                  #selectSer="ngModel" required appControlStatusDirectiveDirective>
+            <option [ngValue]="undefined" disabled selected>Tipo de Servicio</option>
+            <option *ngFor="let servicio of servicios; let i = index" [ngValue]="servicio">{{ servicio.Nombre }}</option>
+          </select>
+          <a *ngIf="!this.SelectServicio" class="text-danger">
+            <small>El tipo de servicio es requerido.</small>
+          </a>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-8 mb-3" *ngIf="createConvevio">
+          <label>Tipo de Convenio</label>
+          <select class="custom-select form-control" name="selectCon"
+                  [(ngModel)]="SelectConvenio" (ngModelChange)="cambiaConvenio($event)"
+                  #selectConv="ngModel" required appControlStatusDirectiveDirective>
+            <option [ngValue]="undefined" disabled selected>Tipo de Convenio</option>
+            <option *ngFor="let convenio of convenios; let i = index" [ngValue]="convenio">{{ convenio['articulo'].estilo }}</option>
+          </select>
+          <a *ngIf="!this.SelectConvenio" class="text-danger">
+            <small>El tipo de convenio es requerido.</small>
+          </a>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-8 mb-3">
+          <!--<label>Cantidad a pagar</label>-->
+          <input type="text" class="form-control" name="Cantidad" [(ngModel)]="Cantidad" placeholder="Cantidad a pagar"
+                 aria-label="Cantidad a pagar" #Cant="ngModel" step="0.01" autocomplete="off" required
+                 appCashOnly appControlStatusDirectiveDirective>
+          <a *ngIf="!this.Cantidad" class="text-danger" [hidden]="this.Cantidad">
+            <small>La cantidad a pagar es requerida.</small>
+          </a>
+          <a *ngIf="this.Cantidad == 0" class="text-danger" [hidden]="!this.Cantidad">
+            <small>Ingrese una cantidad mayor a 0.</small>
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer card-footer" [hidden]="showFormaDinamica">
+    <div>
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" type="button" [disabled]="!pagoServiciosForm.valid"
+              (click)="enviarServicio()">Siguiente
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="showFormaDinamica">
+    <div class="modal-body card-body">
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <label for="servicioInfo" class="col-form-label bold">Servicio</label>
+          <input type="text" readonly class="form-control-plaintext" id="servicioInfo" value="{{SelectServicio.Marca}}">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="lineaInfo" class="col-form-label bold">Línea Captura</label>
+          <input type="text" readonly class="form-control-plaintext" id="lineaInfo" value="{{Linea}}">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="importeInfo" class="col-form-label bold">Importe</label>
+          <input type="text" readonly class="form-control-plaintext" id="importeInfo" value="{{Cantidad | currency:'$':'symbol':'1.2-2' }}">
+        </div>
+      </div>
+      <div *ngIf="camposDinamicos">
+        <app-constructor-forma-dinamica [elementos]="camposDinamicos" [form]="formDinamica" [callback]="callbackKeyUp"></app-constructor-forma-dinamica>
+      </div>
+    </div>
+    <div class="modal-footer card-footer" *ngIf="!procesarFormaDinamica">
+      <button type="button" class="btn btn-danger" (click)="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" type="button" (click)="addPagoServicio()" [disabled]="!formDinamica.valid">Finalizar</button>
+    </div>
+    <div class="modal-footer card-footer" *ngIf="procesarFormaDinamica">
+      <button class="btn btn-primary" type="button" (click)="procesarFormaDin()" [disabled]="!formDinamica.valid || procesandoFormaDinamica">Procesar</button>
+    </div>
+  </ng-container>

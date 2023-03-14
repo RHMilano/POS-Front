@@ -1,0 +1,84 @@
+<div class="modal-header card-header" xmlns="http://www.w3.org/1999/html"  appModalFocus>
+  <h4 class="modal-title">Pago con Finlag</h4>
+  <button type="button" (click)="cancelPay()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<ng-container *ngIf="infoVale">
+<div class="modal-body card-body">
+  <form  autocomplete="off" role="presentation">
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label>No. de Distribuidora</label>
+        <input type="text" [(ngModel)]="idDistribuidor" name="idDistribuidor" class="form-control"
+               appOnlyNumbers appAutofocus>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-2">
+        <label>Monto del Vale  (solo si es vale de papel)</label>
+        <input type="text" [(ngModel)]="montoVale" name="montoVale" class="form-control"
+               placeholder="0.00" appCashOnly (keyup)="montoVal()">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-8 offset-2">
+        <div class="card-body text-left" *ngIf="montoVale > 0">
+          <div class="text-total bold">{{ this.montoVale | numeroAletras }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label>Folio</label>
+        <input type="text" [(ngModel)]="folio" name="folio" class="form-control"
+               required appControlStatusDirectiveDirective>
+        <a *ngIf="!folio" class="text-danger"  [hidden]="recibido">
+          <small>El folio es  requerido.</small>
+        </a>
+      </div>
+
+    </div>
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label>Cantidad a pagar</label>
+        <input type="text" [(ngModel)]="recibido" name="cantidad" class="form-control"
+               placeholder="0.00"
+               appCashOnly (keyup.enter)="validate()"
+               required appControlStatusDirectiveDirective>
+        <a *ngIf="!recibido" class="text-danger"  [hidden]="recibido">
+          <small>La cantidad a pagar es  requerida.</small>
+        </a>
+        <a *ngIf="recibido > totalToPay" class="text-danger">
+          <small> La cantidad no puede ser mayor al total.</small>
+        </a>
+        <a *ngIf="recibido < montoMinimo" class="text-danger" [hidden]="!recibido">
+          <small> El monto mínimo para realizar una venta con Finlag es de $200.00.</small>
+        </a>
+        <a
+          *ngIf="recibido == 0"  [hidden]="!recibido"
+          class="text-danger">
+          <small>Ingrese una cantidad mayor a 0.</small>
+        </a>
+        <a
+          *ngIf="this.montoVale && this.montoValeComp < this.recibido"  [hidden]="!recibido && recibido > montoMinimo "
+          class="text-danger">
+          <small>El monto a pagar no puede ser mayor al monto del vale.</small>
+        </a>
+      </div>
+
+    </div>
+  </form>
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)">
+
+  </app-descuentos-informacion>
+</div>
+</ng-container>
+<div class="modal-footer card-footer">
+  <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button [disabled]="recibido > totalToPay || !validateInfo()  || !this.toDisable"
+          (click)= "validate()" class="btn btn-primary">Validar
+  </button>
+</div>
+

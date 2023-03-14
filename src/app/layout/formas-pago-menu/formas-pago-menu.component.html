@@ -1,0 +1,26 @@
+<div class="" style="height:300px;">
+  <div class="row">
+
+    <ng-container *ngFor="let item of pagosToRender; let i = index;" >
+
+      <div style="cursor: pointer" class="col-sm-6 col-md-12 col-lg-6 col-lx-6 botonMenuPrincipal"
+           [ngClass]="{
+             botonMenuPrincipalIzquierda: i%2 == 0,
+             botonMenuPrincipalDerecha : i%2 == 1
+             }">
+        <div (click)="selectOption(item)"
+             class="btn_funcion mb-2 {{!item.enabled && item.visible? 'btn_disabled': 'btn_enabled'}} {{item.clase}}"
+             style="height:105px;">
+          <div class="bt-nombre text-uppercase text-right pr-2">{{ item.tecla }}</div>
+          <a *ngIf="item.imagen.indexOf('fa ') == -1">
+            <img src="{{item.imagen}}" alt="">
+          </a>
+          <i *ngIf="item.imagen.indexOf('fa ') != -1" class="{{item.imagen}}"></i>
+          <div class="bt-nombre text-uppercase mt-1">{{ item.name }}</div>
+        </div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>
+

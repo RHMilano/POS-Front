@@ -1,0 +1,24 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+  <h4 class="modal-title pull-left">Venta de Tarjeta de Regalo</h4>
+</div>
+<div class="modal-body form-group card-body">
+  <form class="form-horizontal" [formGroup]="tarjetaRegaloForm">
+    <div class="col-md-8 offset-2 mb-3">
+      <label for="validationCustom01">N&uacute;mero Tarjeta de Regalo</label>
+      <input type="text" class="form-control" id="validationCustom01"
+             placeholder="Tarjeta de Regalo" autocomplete="off"
+             [(ngModel)]="numeroTarjeta" (keyup.enter)="onAceptarTarjeta()"
+             name="numeroTarjeta" formControlName="numeroTarjetaRegalo"
+             #numeroTarjetaInput appAutofocus appOnlyNumbers
+             appControlStatusDirectiveDirective required>
+      <div class="invalid-feedback">
+        <span *ngIf="tarjetaRegaloForm.get('numeroTarjetaRegalo').hasError('required')">El n&uacute;mero de la tarjeta es requerido.</span>
+        <span *ngIf="tarjetaRegaloForm.get('numeroTarjetaRegalo').hasError('numeroTRValidator')">El n&uacute;mero de la tarjeta es incorrecto.</span>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <button type="button" class="btn btn-primary" (click)="onAceptarTarjeta()" [disabled]="!tarjetaRegaloForm.valid">Aceptar
+  </button>
+</div>

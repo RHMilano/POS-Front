@@ -1,0 +1,53 @@
+<div class="modal-header card-header" xmlns="http://www.w3.org/1999/html"  appModalFocus>
+  <h4 class="modal-title">Pago con Tarjeta de Regalo</h4>
+  <button type="button" (click)="cancelPay()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form  autocomplete="off" role="presentation">
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="folio-tarjeta">Folio de tarjeta regalo</label>
+        <input type="text" [(ngModel)]="tarjetaNumero" name="folio-tarjeta" class="form-control"
+               id="folio-tarjeta" placeholder="Folio de tarjeta" maxlength="6" required
+               pattern="[0-9]{6}" appOnlyNumbers appAutofocus appControlStatusDirectiveDirective>
+        <a *ngIf="!tarjetaNumero" class="text-danger">
+          <small>El folio de la tarjeta es  requerido.</small>
+        </a>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="tarjeta-regalo-cantidad">Cantidad a pagar</label>
+        <input type="text" [(ngModel)]="recibido" name="tarjeta-cantidad" class="form-control"
+               id="tarjeta-regalo-cantidad" placeholder="0.00" step="0.01"
+               appCashOnly (keyup.enter)="addPay()"
+               required appControlStatusDirectiveDirective>
+        <a *ngIf="!recibido" class="text-danger"  [hidden]="recibido">
+          <small>La cantidad a pagar es  requerida.</small>
+        </a>
+        <a *ngIf="recibido > totalToPay" class="text-danger">
+         <small> El monto no puede ser mayor al total.</small>
+        </a>
+        <a
+          *ngIf="recibido == 0"  [hidden]="!recibido"
+          class="text-danger">
+          <small>Ingrese una cantidad mayor a 0.</small>
+        </a>
+      </div>
+
+    </div>
+  </form>
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)">
+
+  </app-descuentos-informacion>
+</div>
+    <div class="modal-footer card-footer">
+      <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button [disabled]="recibido > totalToPay || !validatePay()  || !this.toDisable"
+              (click)= "addPay()" class="btn btn-primary">Aceptar
+      </button>
+    </div>
+

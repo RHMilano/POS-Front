@@ -1,0 +1,41 @@
+<div class="row" [ngClass]="{
+  row_fuerte: record%2 == 0,
+  row_claro : record%2 == 1,
+  activeRow : record == currentSelectionT
+}" *ngIf="showDenominaciones">
+  <div class="col-md-7 col-sm-7 p-2">
+    <div class="col-md-7 col-sm-7 p-2 nuevo_txt_tabla">{{ this.listaFormaPagos.nombre }}</div>
+  </div>
+  <div class="col-md-5 col-sm-5 p-2 text-right">
+    <div class="p-2">
+      <strong>${{ this.listaFormaPagos.cantidad | number : '.2' }}</strong>
+    </div>
+  </div>
+</div>
+<div class="row" [ngClass]="{
+  row_fuerte: index%2 == 0,
+  row_claro : index%2 == 1,
+  activeRow : index == currentSelection
+}" *ngIf="!showDenominaciones" #denominacionRow>
+    <div class="col-md-3 col-sm-3 p-2 no-gutters  text-left">
+      <div class=" nuevo_txt_tabla" >$ {{ this.pagos.valorDenominacion | number : '.2' }}</div>
+    </div>
+    <div class="col-md-4 col-sm-4 p-2 no-gutters row text-right">
+      <div class="col-3">
+      <!--  <a href="javascript:void(0);" class="btn btn-warning btn-block btn-table-02"  (click)="setRow(this.denominaciones.valorDenominacion);eliminarCantidad()"></a>-->
+      </div>
+      <div class="col-5">
+      <div class="p-2">
+        <input type="text" class="input-table form-control"  [(ngModel)]="this.denominaciones.cantidad" (change)="editarCantidad($event.target.value)" appOnlyNumbers #denominacionQty>
+      </div>
+      </div>
+      <div class="col-3">
+     <!--   <a href="javascript:void(0);" class="btn btn-primary btn-table" (click)="setRow(this.denominaciones.valorDenominacion);agregarCantidad()"></a>-->
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-3 p-2 text-right">
+      <div class="p-2">
+        <strong>$ {{ this.denominaciones.monto | number : '.2' }}</strong>
+      </div>
+    </div>
+</div>

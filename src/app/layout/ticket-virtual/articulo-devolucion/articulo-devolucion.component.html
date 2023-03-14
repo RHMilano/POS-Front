@@ -1,0 +1,34 @@
+<div class="row"
+     [ngClass]="{
+        row_fuerte: index%2 == 0,
+        row_claro : index%2 == 1,
+        activeRow : index == currentSelection && currentQty > 0,
+        disabledRow : ticketRow.lineaTicket.cantidadDevuelta > 0,
+        rowDiscount : ticketRow.discountAdded,
+        rowDiscountTx : ticketRow.discountTxAdded
+     }"
+
+     (click)="setClickedRow(index)" #articuloRow>
+
+  <div class="col-md-3  p-2">
+    <div class="nuevo_txt_tabla">{{ ticketRow.estilo }}</div>
+    <div class="sku-table">SKU {{ ticketRow.sku }}</div>
+  </div>
+  <div class="col-md-2  p-2 nuevo_txt_tabla text-right mb-auto mt-auto">${{ ticketRow.price | dosDecimales | number : '1.2-2' }}</div>
+
+  <div class="col-md-2  p-2 mt-auto mb-auto">
+
+    <div class="row no-gutters centro-cantidad" *ngIf="showCantidadControl">
+      <div class="col-5">
+        <a href="javascript:void(0);" class="btn btn-warning btn-block btn-table-02" (click)="removeOneProduct()" *ngIf="!disableDevolucion && currentQty > 0"></a>
+      </div>
+      <div class=" col-6">
+        <input type="text" class="input-table-devolucion  form-control"  [(ngModel)]="currentQty" (change)="updateQty($event.target.value)" appOnlyNumbers #articuloQtyDev>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-2  p-2 nuevo_txt_tabla text-right mb-auto mt-auto">{{ ticketRow.lineaTicket.cantidadDevuelta }}</div>
+  <div class="col-md-2  p-2 nuevo_txt_tabla text-right mb-auto mt-auto">${{ ticketRow.lineaTicket.getTotalFavor() | dosDecimales | number : '1.2-2'  }}</div>
+
+</div>

@@ -1,0 +1,44 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title  card-element-title">Financiamiento de Empleado</h4>
+  <button type="button" (click)="closeModal()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="needs-validation" (ngSubmit)="addPay()" autocomplete="off" role="presentation">
+    <div class="form-row">
+      <p class="col-md-8 offset-2"><b>Monto m&aacute;ximo a financiar {{montoCreditoFinanciamiento | currency: 0 : "$" }}</b></p>
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="financiamiento-cantidad">Cantidad a pagar</label>
+        <div class="input-group">
+          <input type="text" [(ngModel)]="recibido" name="financiamiento-cantidad" class="form-control"
+                 id="financiamiento-cantidad" required step="0.01"
+                 placeholder="0.00" appCashOnly appAutofocus appControlStatusDirectiveDirective="">
+        </div>
+        <a *ngIf="!recibido" class="text-danger"  [hidden]="recibido">
+          <small>La cantidad a pagar es  requerida.</small>
+        </a>
+        <a
+          *ngIf="recibido == 0"  [hidden]="!recibido"
+          class="text-danger">
+          <small>Ingrese una cantidad mayor a 0.</small>
+        </a>
+        <a *ngIf="recibido > this.totalToPay" [hidden]="recibido > this.montoCreditoFinanciamiento" class="text-danger">
+          <small>El monto a financiar no puede ser mayor al total.</small>
+        </a>
+        <a *ngIf="recibido > this.montoCreditoFinanciamiento" class="text-danger">
+          <small>Monto mayor al financiamiento autorizado.</small>
+        </a>
+      </div>
+    </div>
+  </form>
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)">
+
+  </app-descuentos-informacion>
+</div>
+    <div class="modal-footer card-footer">
+      <button (click)="closeModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button [disabled]="validatePay()" type="submit" (click)="addPay()" class="btn btn-primary">Aceptar
+      </button>
+    </div>

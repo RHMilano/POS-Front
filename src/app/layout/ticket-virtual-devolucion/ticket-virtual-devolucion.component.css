@@ -1,0 +1,33 @@
+.datos_tablaEmpleado{
+  overflow: hidden;
+  height: 100px;
+}
+
+.datos_EmpleadoSeleccionado{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px !important;
+  cursor: pointer;
+}
+
+
+.estiloBoton{
+  background-color: transparent !important;
+}
+
+.estiloBoton > img{
+  background-color: inherit;
+}
+
+
+.col-NombreEmpleadoSeleccionado {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.center-buttons-devolucion {
+  width: 210px;
+  margin-right: auto;
+  margin-left: auto;
+}

@@ -1,0 +1,64 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title">Pago de Tarjeta TCMM</h4>
+  <button type="button" (click)="cancelPay()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+
+  <form class="needs-validation" #tarjetaForm="ngForm" (keyup.enter)="tarjetaForm.valid && !isPagando? payTcmm() : '';">
+    <div class="form-group col-md-8 offset-2" style="margin-bottom: 50px;margin-top: 30px;" *ngIf="this.cargando" [hidden]="!this.cargando">
+      <div class="carga">
+        <div class="loading">
+          <span class="spinner"></span>
+          <div>procesando</div>
+        </div>
+      </div>
+    </div>
+    <h6 class="card-title text-center mb-3" *ngIf="this.cargando" [hidden]="!this.cargando">Deslizar tarjeta en la terminal</h6>
+    <div class="form-row">
+
+      <div class="col-md-8 offset-2 mb-3">
+        <!--<label for="tarjeta-numero">N&uacute;mero de tarjeta</label>-->
+        <div class="inputIcon">
+        <input type="text" [(ngModel)]="numeroTarjeta" name="tarjeta-numero" class="form-control" id="tarjeta-numero"
+               placeholder="N&uacute;mero de tarjeta" pattern="[0-9]{16}" required
+               cc-number cc-type="cardType" ng-required="true"  #Num="ngModel"  autocomplete="off"
+               appAutofocus appControlStatusDirectiveDirective appOnlyNumbers>
+          <a *ngIf="!this.numeroTarjeta" class="text-danger">
+            <small>El n&uacute;mero de tarjeta es requerido.</small>
+          </a>
+          <a *ngIf="!Num.valid && this.numeroTarjeta" class="text-danger">
+            <small>El n&uacute;mero de tarjeta es incorrecto.</small>
+          </a>
+      </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="tarjeta-cantidad">Cantidad a pagar</label>
+        <input type="text" [(ngModel)]="cantidadPagar" name="tarjeta-cantidad" class="form-control"
+               id="tarjeta-cantidad" placeholder="0.00" appCashOnly required  autocomplete="off"
+               #Cant="ngModel"  appControlStatusDirectiveDirective>
+        <a *ngIf="!this.cantidadPagar" class="text-danger">
+          <small>La cantidad a pagar es requerida</small>
+        </a>
+        <a *ngIf="!Cant.valid && this.cantidadPagar" class="text-danger">
+          <small>La cantidad ingresada es incorrecta</small>
+        </a>
+      </div>
+    </div>
+  </form>
+</div>
+  <div class="modal-footer card-footer">
+    <div class="">
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" type="button" (click)="obtenerTarjeta()" [hidden]="this.numeroTarjeta">Obtener Tarjeta</button>
+      <button class="btn  btn-primary" *ngIf="this.numeroTarjeta" [disabled]="!Num.valid || !Cant.valid || isPagando" type="button"
+              (click)="payTcmm()">Aceptar
+      </button>
+    </div>
+  </div>
+

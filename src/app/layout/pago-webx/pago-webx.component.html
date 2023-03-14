@@ -1,0 +1,55 @@
+<!-- appModalFocus -->
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" >
+  <h4 class="modal-title pull-left">Pago Web</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true" >&times;</span>
+  </button>
+</div>
+<ng-container>
+  <div class="modal-body card-body" >
+    <form class="form-horizontal" (keyup.enter)=consultaPagoWebx(pedido.value) >
+      <div class="form-row">
+        <div class="col-md-8 mb-3">
+         <!-- <label>Línea de Captura</label>-->
+          <input type="text" appAutofocus class="form-control nombre_producto" #pedido placeholder="Número de pedido"
+                 autocomplete="off" required  >
+                   <br>
+          <button type="button" class="btn btn-primary" (click)="consultaPagoWebx(pedido.value)" >Buscar</button>
+        </div>
+      </div>
+
+<div id="pedidoEncontrado" *ngIf="encontrado">
+  <div class="form-row" style="background-color: aliceblue;">
+    <h4>Información encontrada</h4>
+  </div>
+  <div class="form-row">
+      <label><strong>Orden:</strong>&nbsp;&nbsp;{{info.response.orderNuber}} </label>
+  </div>
+  <div class="form-row">
+    <label><strong>Cliente:</strong>&nbsp;&nbsp;{{info.response.customerName}} </label>
+  </div>
+  <div class="form-row">
+    <label><strong>Monto:</strong>&nbsp;&nbsp;{{info.response.amount | currency}} </label>
+  </div>
+  <div class="form-row">
+    <label><strong>Moneda:</strong>&nbsp;&nbsp;{{info.response.currency}} </label>
+  </div>
+  <div class="form-row">
+  <div class="offset-md-9">
+    <button type="button" class="btn btn-primary" (click)="agregarLineaTicketVenta()">Aceptar</button>
+  </div>
+  </div>
+  
+</div>
+
+<div id="pedidoEncontrado" *ngIf="!encontrado && buscar">
+  <div class="form-row" style="background-color: aliceblue;">
+    <h4>Sin Información</h4>
+  </div>
+  <div class="form-row">
+    <h5>No se encuentra el pedido, favor de verificar el número.</h5>
+  </div>
+</div>
+
+    </form>
+  </div>

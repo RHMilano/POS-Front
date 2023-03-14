@@ -1,0 +1,90 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title pull-left">B&uacute;squeda de Apartado</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" #creacionForm="ngForm" (keyup.enter)="creacionForm.valid ? buscarApartado() : '';">
+    <div class="row mb-3">
+      <div clas="col-md-3">
+        <input type="text" class="form-control" name="Folio" [(ngModel)]="Folio" placeholder="Número de Folio"
+               aria-label="Folio" style="margin-left: 15px; margin-right: 15px;" autocomplete="off"
+               pattern="[0-9a-zA-Z]{17}" maxlength="17" #Fol="ngModel" appAutofocus appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-3">
+        <input type="text" class="form-control" name="Nombre" [(ngModel)]="Nombre" placeholder="Nombre"
+               aria-label="Nombre" style="margin-left: 15px; margin-right: 15px;" autocomplete="off" pattern="[A-Za-z]{3,}"
+               #Fol="ngModel" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-3">
+        <input type="text" class="form-control" name="Telefono" [(ngModel)]="Telefono" placeholder="Tel&eacute;fono"
+               aria-label="Telefono" autocomplete="off"
+               pattern="[0-9]{10}" maxlength="17" #Fol="ngModel" appControlStatusDirectiveDirective="">
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-secondary" style="margin-left: 20px;margin-right: 10px;" type="button" (click)="buscarApartado()">Buscar
+        </button>
+      </div>
+    </div>
+    <a class="text-danger" *ngIf="!this.Folio && !this.Nombre && !this.Telefono">
+      <small>Ingrese al menos un criterio de b&uacute;squeda.</small>
+    </a>
+    <div *ngIf='apartados.length' #directiveReference="focusRowReference" [appFocusTicketRow]="rowSelector" [arrowPaginate]="true" [addInputToFocus]="true">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th class="text-center">Folio Apartado</th>
+          <th class="text-center">Nombre Cliente</th>
+          <th class="text-center">Tel&eacute;fono</th>
+          <th class="text-center">Total de Ventas</th>
+          <th class="text-center">Pagado</th>
+          <th class="text-center">Por Pagar</th>
+          <th class="text-center">Fecha de Vencimiento</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let apartado of apartados | paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber } ; let i = index"
+            (click)="seleccionar(apartado,apartado.folioApartado,i)"
+            [class.active]="i == rowSelector.currentSelection" style="cursor: pointer;">
+          <td class="text-center"> {{apartado.folioApartado}}</td>
+          <td class="text-center"> {{apartado.nombreCliente}}</td>
+          <td class="text-center"> {{apartado.telefonoCliente}}</td>
+          <td class="text-center"> {{apartado.importeApartadoNeto | number : '1.2-2' }}</td>
+          <td class="text-center"> {{apartado.importePagado | number : '1.2-2' }}</td>
+          <td class="text-center"> {{apartado.saldo | number : '1.2-2' }}</td>
+          <td class="text-center"> {{apartado.fechaVencimiento}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls *ngIf='apartados.length' name="page" (pageChange)="rowSelector.pageChange($event)" previousLabel="Anterior" nextLabel="Siguiente"
+                         style="margin-bottom: 0px;"
+                         class="text-center"></pagination-controls>
+    <div class="row mb-3">
+      <div class="col-md-4"></div>
+      <div class="col-md-3" *ngIf="this.tipoBusqueda === 3 && this.folioApartado">
+        <label>Monto a abonar</label>
+        <input type="text" class="form-control" name="Monto" autocomplete="off"
+               [(ngModel)]="Monto" placeholder="0.00" style="margin-right: 10px;"
+               aria-label="Monto" min="2" #Mon="ngModel" format="number" step="0.01"
+               appCashOnly appControlStatusDirectiveDirective>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <div class="">
+    <button class="btn  btn-primary" *ngIf='apartados.length' [disabled]="!this.apartado" type="submit"
+            (click)="cancelarApartado()">Aceptar
+    </button>
+  </div>
+</div>
+
+<ng-template #cancelTemplate>
+  <div class="modal-body text-center">
+    <p>¿Deseas cancelar el apartado {{folioApartado}} seleccionado?</p>
+    <button type="button" class="btn btn-danger btn-quest" (click)="closeModalCancel()" appAutofocus>No</button>
+    <button type="button" class="btn btn-primary btn-quest" (click)="confirmarCancelacion()">Si</button>
+  </div>
+</ng-template>

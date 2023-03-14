@@ -1,0 +1,76 @@
+<div class="standalone-page-wrapper image-background-1">
+  <div class="center-wrapper">
+    <div class="login-block">
+      <div class="login-header text-center">
+        <img src="./assets/images/logo-xs.png" alt="Logo">
+      </div>
+      <form class="form-horizontal" #formLogin="ngForm" (submit)="login()" autocomplete="off">
+        <div class="form-group">
+
+          <div class="col-md-12">
+            <input type="text" class="form-control" id="inputEmail3" placeholder="Usuario" required
+                   [(ngModel)]="NumberEmployee" name="NumberEmployee" pattern="^[0-9]+$" autocomplete="off" appAutofocus>
+          </div>
+        </div>
+        <div class="form-group">
+
+          <div class="col-md-12">
+            <input type="text" class="form-control" id="inputPassword3" #passwordInput
+                   placeholder="Contraseña" required (keydown)="keyDownPass($event)" (keypress)="passOfucate($event)" (select)="passwordSelect($event)"
+                   [(ngModel)]="Password" autocomplete="off" name="Password">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-12  text-center">
+            <button type="submit" class="btn btn-default btn-lg" [disabled]="!formLogin.valid">
+              Entrar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+   <!-- <div class="copyrights">Milano &copy; 2018. <br> Front Ver. {{version}} <br> Servicios {{versionSer}} <br> Seguridad {{versionSeg}}</div>-->
+    <div class="copyrights">Milano &copy; 2018. <br> {{versionSer}} <br> <h6 style="color: azure;"><small>Versión Milano {{_posversion}}</small></h6></div>
+  </div>
+</div>
+
+<ng-template #estatusTemplate>
+  <div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+    <h4 class="modal-title pull-left">Estatus actualización POS</h4>
+  </div>
+  <div class="modal-body card-body">
+    <form class="form-horizontal">
+      <div *ngIf="this.estatus" class="col-md-10 offset-1 mb-1">
+        <table class="table table-hover">
+          <tbody>
+          <tr>
+            <th scope="row">Identificador Versión</th>
+            <td>{{this.estatus.idVersion}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Estatus del Proceso</th>
+            <td>{{this.estatus.estatusProceso}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Descripción del Etatus del Proceso</th>
+            <td>{{this.estatus.descripcionEtatusProceso}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Fecha Inicio del Proceso de Actualización</th>
+            <td>{{this.estatus.fechaInicioProcesoActualizacion}} </td>
+          </tr>
+          <tr>
+            <th scope="row">Fecha Ultima Actualización</th>
+            <td>{{this.estatus.fechaUltimaActualizacion}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer card-footer">
+    <div class="">
+      <button class="btn btn-primary" type="submit" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,96 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+  <h4 class="modal-title pull-left">Lectura {{TipoCorte}}</h4>
+</div>
+<ng-container *ngIf="!showTiposPagos">
+  <div class="modal-body form-group card-body">
+    <div class="text-center">
+      <h3>Mensaje Lectura {{TipoCorte}}</h3>
+    </div>
+    <div class="card card-round">
+      <div>
+        <div class="row titulo_tabla">
+          <div class="col-md-3 col-sm-3 p-2 borde_titulo_tabla text-center">Denominacion</div>
+          <div class="col-md-4 col-sm-4 p-2 borde_titulo_tabla text-center">Cantidad</div>
+          <div class="col-md-3 col-sm-3 p-2 borde_titulo_tabla text-right">Monto</div>
+          <div class="col-md-1 col-sm-1"></div>
+        </div>
+
+        <div class="datos_tabla_modal"  #directiveReference="focusRowReference" [useTabToBrowseRow]="true"
+             [appFocusTicketRow]="rowSelector" [addInputToFocus]="true">
+          <app-tipo-pago *ngFor="let pago of pagos let i = index;" [instancia]="this" [listaPagos]="pago" (click)="seleccionar(pago, i)"
+                         [index]="i" [showDenominaciones]="showTiposPagos"  [currentSelection]="rowSelector.currentSelection"></app-tipo-pago>
+        </div>
+        <div class="mb-2"></div>
+      </div>
+    </div>
+    <div class="mb-2"></div>
+    <div class=" row mb-2 titulo_tabla">
+      <div class="col-md-8 col-sm-3 p-2 text-center" style="background: #B2EBF2">
+      </div>
+      <div class="col-md-4 col-sm-5 p-2 text-center" style="background: #B2EBF2">
+        <span class="d-inline mr-3 bold ">Declarado</span>
+        <span class="d-inline bold">${{this.totalRetiro  | dosDecimales | number : '.2'}}</span>
+      </div>
+    </div>
+    <div class="col-md-12 col-sm-5 p-2" *ngIf="totalRetiro && totalRetiro > 0">
+      <span class="pull-right text-total bold">{{totalRetiro | numeroAletras}}</span>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="showTiposPagos">
+  <div class="modal-body form-group card-body">
+    <div class="card card-round">
+      <div>
+        <div class="row titulo_tabla">
+          <div class="col-md-7 col-sm-7 p-2">Forma de Pago</div>
+          <div class="col-md-3 col-sm-3 p-2 borde_titulo_tabla text-center">Total</div>
+          <div class="col-md-1 col-sm-1"></div>
+        </div>
+
+        <div class="datos_tabla_modal_1" #directiveReference="focusRowReference"
+             [appFocusTicketRow]="rowSelectorT" [addInputToFocus]="true">
+          <app-tipo-pago *ngFor="let forma of tipoPagos let i = index;" [listaFormaPagos]="forma"  [record]="i"
+                         (click)="seleccionarTipo(forma, i)" [showDenominaciones]="showTiposPagos"
+                         [currentSelectionT]="rowSelectorT.currentSelection"></app-tipo-pago>
+        </div>
+      </div>
+    </div>
+    <div class="mb-2"></div>
+    <div class=" row mb-2 titulo_tabla">
+      <div class="col-md-4  p-2 text-center" style="background: #B2EBF2">
+        <span class="d-inline mr-3 bold">Total Fondo Fijo</span>
+        <span class="d-inline bold">${{this.totalFondoFijo  | dosDecimales | number : '.2'}}</span>
+      </div>
+      <div class="col-md-4  p-2 text-center" style="background: #B2EBF2">
+        <span class="d-inline mr-3 bold">Total Ingresos</span>
+        <span class="d-inline bold">${{this.totalIngresos  | dosDecimales | number : '.2'}}</span>
+      </div>
+      <div class="col-md-4  p-2 text-center" style="background: #B2EBF2">
+        <span class="d-inline mr-3 bold ">Total Retiros</span>
+        <span class="d-inline bold">${{this.totalRetirosParciales  | dosDecimales | number : '.2'}}</span>
+      </div>
+    </div>
+    <div class="mb-2"></div>
+    <div class=" row mb-2 titulo_tabla">
+      <div class="col-md-4 col-sm-3 p-2 text-center" style="background: #B2EBF2">
+        <span class="d-inline mr-3 bold">Registrado</span>
+        <span class="d-inline bold">${{this.total  | dosDecimales | number : '.2'}}</span>
+      </div>
+      <div class="col-md-4 p-2 text-center" style="background: #B2EBF2">
+        <span class="d-inline mr-3 bold ">Declarado</span>
+        <span class="d-inline bold">${{this.totalRetiro  | dosDecimales | number : '.2'}}</span>
+      </div>
+      <div class="col-md-4 p-2 text-center" style="background: #B2EBF2">
+        <span class="d-inline mr-3 bold ">Diferencia</span>
+        <span class="d-inline bold">${{this.totalRestante  | dosDecimales | number : '.2'}}</span>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<div class="modal-footer card-footer">
+  <div>
+    <button type="button" class="btn btn-primary" *ngIf="!showTiposPagos"   [hidden]="showTiposPagos" (click)="enviarDenominaciones()">Siguiente</button>
+    <button type="button" class="btn btn-primary" *ngIf="showTiposPagos" [hidden]="!showTiposPagos"
+            (click)="this.closeModal()">Aceptar</button>
+  </div>
+</div>

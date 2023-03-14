@@ -1,0 +1,73 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title card-element-title">Consulta de Saldo TMM</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal();">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" #consultaForm="ngForm" (keyup.enter)="consultaForm.valid ? consultarSaldo() : '';">
+  <div class="text-center" style="margin-bottom: 10px;" *ngIf="!this.cargando" [hidden]="this.cargando">
+    <img src="assets/images/tarjeta.png">
+  </div>
+    <div class="form-group col-md-8 offset-2" style="margin-bottom: 50px;margin-top: 30px;" *ngIf="this.cargando" [hidden]="!this.cargando">
+      <div class="carga">
+        <div class="loading">
+          <span class="spinner"></span>
+          <div>procesando</div>
+        </div>
+      </div>
+    </div>
+    <h6 class="card-title text-center mb-3" *ngIf="this.cargando" [hidden]="!this.cargando">Deslizar tarjeta en la terminal</h6>
+  <div class="col-md-8 offset-2 mb-3">
+    <input type="text" class="form-control" placeholder="Número Tarjeta Melody-Milano" [(ngModel)]="numeroTarjeta" name="numeroTarjeta"
+           #numero="ngModel" pattern="[0-9]{16}" appAutofocus required (change)="limpiarVariables();"
+           autocomplete="off" appControlStatusDirectiveDirective>
+    <a *ngIf="!this.numeroTarjeta" class="text-danger">
+      <small>El n&uacute;mero de tarjeta es requerido.</small>
+    </a>
+      <a *ngIf="!numero.valid && this.numeroTarjeta" class="text-danger">
+        <small>El n&uacute;mero de tarjeta es incorrecto.</small>
+      </a>
+  </div>
+    <div *ngIf="this.numeroTarjeta && this.showInfo" class="col-md-8 offset-2 mb-1">
+      <table class="table table-hover">
+        <tbody>
+        <tr>
+        <th scope="row">Saldo en línea</th>
+        <td>${{this.saldoActual | number : '1.2-2' }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Saldo al corte</th>
+          <td>${{this.saldo | number : '1.2-2' }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Fecha límite de pago</th>
+          <td>{{this.fechaLimitePago}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Pago mínimo</th>
+          <td>${{this.pagoMinimo | number : '1.2-2' }} </td>
+        </tr>
+        <tr>
+          <th scope="row">Saldo en puntos</th>
+          <td>{{this.puntosAcumuladosActual}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Equivalente en puntos</th>
+          <td>${{this.equivalencia | number : '1.2-2' }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Puntos acumulados</th>
+          <td>{{this.puntosAcumulados}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+  <button class="btn btn-primary" type="button" (click)="obtenerTarjeta()" [hidden]="this.numeroTarjeta">Obtener Tarjeta</button>
+  <button class="btn btn-primary" type="button" *ngIf="this.numeroTarjeta" (click)="consultarSaldo()" [disabled]="!numero.valid" [hidden]="this.numeroTarjeta && this.showInfo">Consultar Saldo</button>
+  <button class="btn btn-primary" type="button" *ngIf="this.numeroTarjeta && this.showInfo" (click)="closeModal()" >Aceptar</button>
+</div>

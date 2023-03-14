@@ -1,0 +1,22 @@
+<div class="row" [ngClass]="{
+  row_fuerte: index%2 == 0,
+  row_claro : index%2 == 1,
+  activeRow : index == currentSelection
+}">
+
+  <div class="col-md-7 col-sm-7 p-2">
+    <div class="col-md-7 col-sm-7 p-2 nuevo_txt_tabla">{{ this.pagos.nombre }}</div>
+  </div>
+  <div class="col-md-3 col-sm-3 p-2 text-right">
+    <div class="p-2">
+      <strong>${{ this.pagos.cantidad  | dosDecimales | number : '1.2-2' }}</strong>
+    </div>
+  </div>
+  <div class="col-md-1 col-sm-1 text-right">
+    <div class="p-2">
+      <a href="javascript:void(0);"></a>
+      <a *ngIf="botonEliminar" class="btn btn-danger btn-block btn-table-02 text-right" (click)="eliminarPago(pagos)">
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus>
+  <h4 class="modal-title pull-left">Descuento por {{tipoDescuento=='I2'? '%': '$'}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="_bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form #formDescuento="ngForm" [formGroup]="descuentoForm" (keyup.enter)="formDescuento.valid ? applyDescuento() : '';">
+    <div class="form-group">
+      <label for="descuento-monto" class="control-label mb-1">{{tipoDescuento=='I2'? 'Porcentaje': 'Importe'}} de descuento</label>
+      <input id="descuento-monto" [(ngModel)]="montoDescuento" type="text" class="form-control" name="montoDescuento"
+             formControlName="montoDescuento"
+             required appAutofocus appCashOnly appControlStatusDirectiveDirective>
+      <div class="invalid-feedback">
+        <span *ngIf="descuentoForm.get('montoDescuento').hasError('required')">El descuento es requerido</span>
+       <span *ngIf="descuentoForm.get('montoDescuento').hasError('descuentoMaximoExcedido')">El descuento excede el m&aacute;ximo permitido</span> 
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="descuento-codigo" class="control-label mb-1">Raz&oacute;n de descuento</label>
+      <select class="form-control" (ngModelChange)="selectRazon($event)" (ngModel)="descuentoCodigo"
+              formControlName="descuentoCodigo"
+              id="descuento-codigo" name="descuento-codigo" required appControlStatusDirectiveDirective>
+        <div *ngIf="tipoDescuento === 'I2'; then porcentajeOpts else importeOpts"></div>
+        <ng-template #porcentajeOpts>
+          <option *ngFor="let razon of catRazonesDecuentoPorcentaje" [ngValue]="razon">
+            {{razon.descripcionRazon}}
+          </option>
+        </ng-template>
+        <ng-template #importeOpts>
+          <option *ngFor="let razon of catRazonesDecuentoImporte" [ngValue]="razon">
+            {{razon.descripcionRazon}}
+          </option>
+        </ng-template>
+      </select>
+      <div class="invalid-feedback">
+        <span *ngIf="descuentoForm.get('descuentoCodigo').hasError('required')">La raz&oacute;n es requerida</span>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <button (click)="cancelDescuento()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button *ngIf="!formDescuento.valid" type="submit" (click)="applyDescuentoAutomatico()"  class="btn btn-primary">Solicitar autorización</button>
+  <button *ngIf="formDescuento.valid" type="submit" (click)="applyDescuento()"  class="btn btn-primary">Aceptar</button>
+
+</div>
+
+

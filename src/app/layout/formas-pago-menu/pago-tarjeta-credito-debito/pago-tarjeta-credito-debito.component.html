@@ -1,0 +1,104 @@
+<div class="modal-header card-header"  appModalFocus>
+  <h4 class="modal-title card-element-title">Pago con Tarjeta Visa/Mastercard</h4>
+</div>
+<ng-container *ngIf="!showMovimientoExtra">
+<div class="modal-body card-body" [hidden]="showMovimientoExtra">
+  <div class="text-center" *ngIf="!this.cargando" [hidden]="this.cargando">
+    <img src="assets/images/visa.png">
+    <img src="assets/images/mastercard.png">
+  </div>
+  <div class="form-group col-md-8 offset-2" style="margin-bottom: 50px;margin-top: 30px;" *ngIf="this.cargando" [hidden]="!this.cargando">
+    <div class="carga">
+      <div class="loading">
+        <span class="spinner"></span>
+        <div>procesando</div>
+      </div>
+    </div>
+  </div>
+  <h6 class="card-title text-center mb-3" *ngIf="this.cargando" [hidden]="!this.cargando">Introducir tarjeta en la terminal</h6>
+  <form class="needs-validation" (ngSubmit)="addPay()" autocomplete="off" role="presentation">
+    <div class="form-group col-md-8 offset-2" style="display:none;">
+      <label for="cc-number" class="control-label mb-1">N&uacute;mero de la tarjeta</label>
+      <div class="inputIcon">
+        <input id="cc-number" [(ngModel)]="tarjetaNumero" name="cc-number" type="text" class="form-control" maxlength="16"
+               required="" pattern="[0-9]{16}"  appOnlyNumbers>
+        <i class="fa fa-credit-card fa-lg"></i>
+        <span class="invalid-feedback">Ingresar los 16 digitos de la tarjeta</span>
+      </div>
+    </div>
+
+    <div class="form-group col-md-8 offset-2">
+      <label for="cc-payment" class="control-label mb-1">Cantidad a pagar</label>
+      <input  name="cc-payment" type="text" class="form-control" step="0.01"
+              [(ngModel)]="recibido"  placeholder="0.00" appCashOnly appAutofocus (keyup.enter)="addPay()"
+             required appControlStatusDirectiveDirective>
+      <a *ngIf="!recibido" class="text-danger"  [hidden]="recibido">
+        <small>La cantidad a pagar es  requerida.</small>
+      </a>
+      <a *ngIf="recibido == 0" class="text-danger"  [hidden]="!recibido">
+        <small>Ingrese una cantidad mayor a 0.</small>
+      </a>
+    </div>
+  </form>
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)">
+
+  </app-descuentos-informacion>
+</div>
+<div class="modal-footer card-footer" [hidden]="showMovimientoExtra">
+  <button (click)="cancelPay()" type="button"  [disabled]="!this.toDisable" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button type="button" class="btn btn-primary" [disabled]="recibido > totalToPay || !validatePay() || !this.toDisable"
+          (click)="addPay()">Aceptar</button>
+</div>
+</ng-container>
+
+<ng-container *ngIf="showMovimientoExtra">
+  <div class="modal-body  card-body" [hidden]="!this.toDisabled">
+    <div>
+      <label>{{mensajeTarjeta}}</label>
+    </div>
+  </div>
+  <div class="modal-footer card-footer" [hidden]="!this.toDisabled">
+    <button type="button" class="btn btn-secondary"  [disabled]="!this.toDisabled" (click)="cancelarMovimientoTarjeta()">Cancelar</button>
+    <button type="button" class="btn btn-danger" [disabled]="!this.toDisabled" (click)="declineMovimientoExtraTarjeta()">No</button>
+    <button type="button" class="btn btn-primary" [disabled]="!this.toDisabled" (click)="movimientoExtraTarjeta()">Si</button>
+  </div>
+  <div class="modal-body  card-body" *ngIf="!this.toDisabled">
+    <div class="form-group col-md-8 offset-2" style="margin-bottom: 50px;margin-top: 30px;" *ngIf="this.cargando" [hidden]="!this.cargando">
+      <div class="carga">
+        <div class="loading">
+          <span class="spinner"></span>
+          <div>procesando</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-md-8 offset-2" *ngIf="cashBack">
+      <label for="cc-payment" class="control-label mb-1">Cantidad a retirar</label>
+      <input id="cc-payment" name="cc-payment" type="text" class="form-control" (keyup.enter)="closeModalCash($event)"
+             [(ngModel)]="importeCashBack" placeholder="0.00" appCashOnly appAutofocus 
+             required appControlStatusDirectiveDirective>
+      <a *ngIf="!importeCashBack" class="text-danger"  [hidden]="importeCashBack">
+        <small>La cantidad a retirar es  requerida.</small>
+      </a>
+      <a *ngIf="importeCashBack == 0" class="text-danger"  [hidden]="!importeCashBack">
+        <small>Ingrese una cantidad mayor a 0.</small>
+      </a>
+    </div>
+    <div class="col-md-8 offset-2 mb-3"  *ngIf="cashBack">
+      <!-- <label>Confirmaci&oacute;n de cantidad a retirar</label>-->
+      <input type="text" class="form-control" name="Confirmacion" required [(ngModel)]="Confirmacion" placeholder="Confirmaci&oacute;n de cantidad a retirar"
+             aria-label="Confirmaci&oacute;n de cantidad a retirar"  autocomplete="off" #Conf="ngModel" appCashOnly appControlStatusDirectiveDirective>
+      <a *ngIf="!this.Confirmacion" class="text-danger" [hidden]="this.Confirmacion">
+        <small>La confirmación de cantidad a retirar es requerida.</small>
+      </a>
+      <a *ngIf="this.Confirmacion == 0" class="text-danger" [hidden]="!this.Confirm">
+        <small>Ingrese una cantidad mayor a 0.</small>
+      </a>
+    </div>
+  </div>
+  <div class="modal-footer card-footer" *ngIf="!this.toDisabled">
+    <button type="button" class="btn btn-primary" *ngIf="!tarjetaCredito"
+            [disabled]="importeCashBack == 0 || !importeCashBack || this.cargando"
+            (click)="closeModalCash()">Aceptar</button>
+  </div>
+  </ng-container>

@@ -1,0 +1,47 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" xmlns="http://www.w3.org/1999/html">
+  <h4 class="modal-title pull-left">CashBack Advanced</h4>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" #retiroForm="ngForm" (keyup.enter)="retiroForm.valid ? retirarEfectivo() : '';">
+    <div class="form-group col-md-8 offset-2" style="margin-bottom: 50px;margin-top: 30px;" *ngIf="this.cargando" [hidden]="!this.cargando">
+      <div class="carga">
+        <div class="loading">
+          <span class="spinner"></span>
+          <div>procesando</div>
+        </div>
+      </div>
+    </div>
+    <h6 class="card-title text-center mb-3" *ngIf="this.cargando" [hidden]="!this.cargando">Introducir tarjeta en la terminal</h6>
+    <div class="col-md-8 offset-2 mb-3">
+      <label>Cantidad a retirar</label>
+      <input type="text" class="form-control" name="Importe" required [(ngModel)]="Importe" placeholder="0.00"
+             aria-label="Cantidad a retirar"  autocomplete="off" #Imp="ngModel" appCashOnly appControlStatusDirectiveDirective appAutofocus>
+      <a *ngIf="!this.Importe" class="text-danger" [hidden]="this.Importe">
+        <small>Ingrese cantidad a retirar. </small>
+      </a>
+      <a *ngIf="this.Importe == 0" class="text-danger" [hidden]="!this.Importe">
+        <small>Ingrese una cantidad mayor a 0.</small>
+      </a>
+    </div>
+    <div class="col-md-8 offset-2 mb-3">
+      <!-- <label>Confirmaci&oacute;n de cantidad a retirar</label>-->
+      <input type="text" class="form-control" name="Confirmacion" required [(ngModel)]="Confirmacion" placeholder="Confirmaci&oacute;n de cantidad a retirar"
+             aria-label="Confirmaci&oacute;n de cantidad a retirar"  autocomplete="off" #Conf="ngModel" appCashOnly appControlStatusDirectiveDirective>
+      <a *ngIf="!this.Confirmacion" class="text-danger" [hidden]="this.Confirmacion">
+        <small>La confirmación de cantidad a retirar es requerida.</small>
+      </a>
+      <a *ngIf="this.Confirmacion == 0" class="text-danger" [hidden]="!this.Confirm">
+        <small>Ingrese una cantidad mayor a 0.</small>
+      </a>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <div class="">
+    <button type="button" class="btn btn-secondary" [disabled]="!this.toDisable"  (click)="closeModal()">Cancelar</button>
+    <button class="btn  btn-primary"  [disabled]="!this.Importe || this.Importe <= 0 || !this.toDisable" type="button"
+            (click)="retirarEfectivo()">Aceptar
+    </button>
+  </div>
+</div>
+

@@ -1,0 +1,35 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title">Captura de Luz</h4>
+</div>
+<div class="modal-body card-body">
+
+  <form class="needs-validation" #consumoForm="ngForm">
+
+      <div class="col-md-8 offset-2 mb-3">
+          <input type="text" [(ngModel)]="consumo" class="form-control" name="consumo" (keyup.enter)="enviarConsumo()"
+                 placeholder="Consumo {{tipoConsumo}} del día"  required #Consumo="ngModel" maxlength="10" autocomplete="off"
+                 appAutofocus appControlStatusDirectiveDirective appOnlyNumbers>
+          <a *ngIf="!this.consumo" class="text-danger">
+            <small>El consumo es requerido.</small>
+          </a>
+      </div>
+
+    <div class="col-md-8 offset-2 mb-3" *ngIf="capturaInicio">
+      <input type="text" [(ngModel)]="consumoInicio" class="form-control" name="consumoInicio" (keyup.enter)="enviarConsumo()"
+             placeholder="Consumo inicial del día"  required #Consumo="ngModel" maxlength="5" autocomplete="off"
+             appAutofocus appControlStatusDirectiveDirective appOnlyNumbers>
+      <a *ngIf="!this.consumoInicio" class="text-danger">
+        <small>El consumo es requerido.</small>
+      </a>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <div class="">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+    <button class="btn  btn-primary" [disabled]="!this.consumo || (this.capturaInicio && !this.consumoInicio)" type="button"
+            (click)="enviarConsumo()">Aceptar
+    </button>
+  </div>
+</div>
+

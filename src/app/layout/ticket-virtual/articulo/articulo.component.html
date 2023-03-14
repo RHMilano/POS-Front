@@ -1,0 +1,66 @@
+<div class="row"
+     [ngClass]="{
+        row_fuerte: index%2 == 0,
+        row_claro : index%2 == 1,
+        activeRow : index == currentSelection,
+        rowDiscount : ticketRow.discountAdded,
+        rowDiscountTx : ticketRow.discountTxAdded
+     }"
+
+     (click)="setClickedRow(index)" #articuloRow>
+
+  <div class="col-md-3  p-2">
+    <div class="nuevo_txt_tabla">{{ ticketRow.estilo }}</div>
+    <div class="sku-table">SKU {{ ticketRow.sku }}</div>
+  </div>
+  <div class="col-md-2  p-2 nuevo_txt_tabla text-right mb-auto mt-auto">${{ ticketRow.price | dosDecimales | number : '1.2-2'  }}</div>
+  <div class="col-md-2  p-2 nuevo_txt_tabla text-right mb-auto mt-auto">${{ ticketRow.tax | dosDecimales | number : '1.2-2'  }}</div>
+  <div class="col-md-3  p-2 mt-auto mb-auto">
+    <div class="row no-gutters centro-cantidad" *ngIf="showRemoveTarjetaRegalo">
+      <div class="col-12">
+        <a href="javascript:void(0);" class="btn btn-warning btn-block btn-table-02 centrar-boton"
+           (click)="removeOneProduct()">
+        </a>
+      </div>
+    </div>
+
+    <div class="row no-gutters centro-cantidad" *ngIf="ticketRow.priceChanged || ticketRow.discountAdded || ticketRow.discountTxAdded">
+      <div class="col-4">
+        <a href="javascript:void(0);" class="btn btn-warning btn-block btn-table-02 centrar-boton" (click)="removeLineaProduct()" *ngIf="!ticketRow.discountTxAdded"></a>
+      </div>
+      <div class=" col-4"><input type="text" class="input-table form-control" disabled="disabled" value="{{ticketRow.lineaTicket.cantidadVendida}}"></div>
+    </div>
+
+    <div class="row no-gutters centro-cantidad" *ngIf="showCantidadControl && !ticketRow.priceChanged && !ticketRow.discountAdded && !ticketRow.discountTxAdded">
+      <div class="col-3">
+        <a href="javascript:void(0);" class="btn btn-warning btn-block btn-table-02" (click)="removeOneProduct()" *ngIf="!disableDevolucion"></a>
+      </div>
+      <div class=" col-6">
+        <input type="text" class="input-table form-control" [(ngModel)]="currentQty" (change)="updateQty($event.target.value)" appOnlyNumbers #articuloQty>
+      </div>
+      <div class="col-3">
+        <a href="javascript:void(0);" class="btn btn-primary btn-table" (click)="addOneProduct()"></a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2  p-2 nuevo_txt_tabla text-right mb-auto mt-auto">${{ ticketRow.rowTotal | dosDecimales | number : '1.2-2' }}</div>
+  <div *ngIf="ticketRow.lineaTicket.descuentoDirectoLinea && !!ticketRow.lineaTicket.descuentoDirectoLinea.codigoRazonDescuento" class="col-md-5 offset-7 text-right">
+    Descuento{{ ticketRow.discountTxAdded? ' Tx': '' }}: {{ ticketRow.lineaTicket.descuentoDirectoLinea.descripcionRazonDescuento }}
+    (-${{ ticketRow.lineaTicket.descuentoDirectoLinea.importeDescuento | dosDecimales | number : '1.2-2' }})
+  </div>
+
+  <ng-container *ngIf="ticketRow.lineaTicket.descuentosPromocionalesAplicadosLinea">
+    <div *ngFor="let descuento of ticketRow.lineaTicket.descuentosPromocionalesAplicadosLinea" class="col-md-7 offset-5 text-right">
+      Descuento Promocional: {{ descuento.descripcionCodigoPromocionAplicado }}
+      (-${{ descuento.importeDescuento | dosDecimales | number : '1.2-2'  }})
+    </div>
+  </ng-container>
+
+  <div *ngIf="ticketRow.lineaTicket.cantidadDevuelta > 0" class="col-md-5 offset-7 text-right">
+    Cantidad Devuelta: {{ ticketRow.lineaTicket.cantidadDevuelta }}
+  </div>
+  <div *ngIf="ticketRow.priceChanged" class="col-md-5 offset-7 text-right">
+    Precio Anterior: {{ ticketRow.lineaTicket.articulo.precioConImpuestos | dosDecimales | number : '1.2-2'  }}
+  </div>
+
+</div>

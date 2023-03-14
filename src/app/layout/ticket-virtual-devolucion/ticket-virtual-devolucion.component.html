@@ -1,0 +1,180 @@
+<div class="card card-round" [hidden]="realizarPago">
+  <div class="card-header pt-4" [ngClass]="{
+  'encabezado-Vendedor-Milano': empleadoVendedorSeleccionado
+  }">
+    <div class="row">
+      <div class="col-md-4 col-sm-6">
+        <h4 class="text-milano">Devoluci&oacute;n</h4>
+        <span class="datos-VendedorSeleccionado"
+              *ngIf="empleadoVendedorSeleccionado">Vendedor: {{empleadoVendedorSeleccionado.name}} {{empleadoVendedorSeleccionado.paternal}}</span>
+      </div>
+      <div class="col-md-4 col-sm-6 col-NombreEmpleadoSeleccionado">
+
+        <div class="d-inline-block" *ngIf="selectedMayorista"
+             [tooltip]=" ($articuloAgregado | async) ? 'Para Cambiar Mayorista, primero cancele la Venta' : 'Cambiar Mayorista seleccionado'">
+          <span class="datos_EmpleadoSeleccionado">
+          {{selectedMayorista.codigoMayorista +' - ' + selectedMayorista.nombre + ' - $' + (selectedMayorista.creditoDisponible | dosDecimales | number : '1.2-2' ) }}
+          </span>
+        </div>
+
+
+        <div class="d-inline-block" *ngIf="selectedEmployee"
+             [tooltip]=" ($articuloAgregado | async) ? 'Para Cambiar Empleado, primero cancele la Venta' : 'Cambiar empleado seleccionado'">
+          <span class="datos_EmpleadoSeleccionado">
+          {{selectedEmployee.codigo + ' - ' + selectedEmployee.nombre + ' ' + selectedEmployee.apellidoPaterno + ' - $' + (selectedEmployee.montoCredito | dosDecimales | number : '1.2-2' ) }}
+          </span>
+        </div>
+
+
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <input type="text" placeholder="SKU/UPC" class="sku_busqueda form-control" autocomplete="off"
+               [(ngModel)]="sku" name="sku" #skuInput
+               (keydown.enter)="skuOnEnter($event)"
+               (keydown)="clearSeachField($event)"
+               [disabled]="isBuscandoSku"
+               *ngIf="ticketVirtual.showSkuField" appSkuInput appControlStatusDirectiveDirective appAutofocus required>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isModoDevolucion"> <!-- devoluciones -->
+    <div class="row titulo_tabla">
+      <div class="col-md-3  col-sm-3 p-2">producto</div>
+      <div class="col-md-2  col-sm-2 p-2 borde_titulo_tabla text-center">precio</div>
+      <div class="col-md-2  col-sm-3 p-2 borde_titulo_tabla text-center">cantidad</div>
+      <div class="col-md-2  col-sm-3 p-2 borde_titulo_tabla text-center">devuelto</div>
+      <div class="col-md-2  col-sm-2 p-2 borde_titulo_tabla text-center">total a favor</div>
+    </div>
+    <div class="datos_tabla" [appFocusTicketRow]="this" [useTabToBrowseRow]="true" [selectFirstOnFocus]="true" [addInputToFocus]="true"
+         #scrollMe [scrollTop]="scrollMe.scrollHeight">
+      <app-articulo-devolucion *ngFor="let articulo of ticketVirtual.ticketRowDevolucion; let i = index;"
+                               [ticketRow]="articulo" [index]="i" [currentSelection]="currentSelectionDevolucion"
+                               [currentQty]="articulo.getCurrentQty"
+                               [ticketVirtual]="this"
+                               (selectedItem)="getSelectedItemDevolucion($event)"
+                               (articuloInstance)="articulo.articuloComponentInstance = $event">
+      </app-articulo-devolucion>
+    </div>
+
+    <div class="offset-6 mt-1 col-md-6 text-right">
+      <button class="btn btn-success" #btnAceptarDev (click)="terminarDevolucion()" [disabled]="!devolucionAgregada()">Aceptar Devoluci&oacute;n</button>
+    </div>
+  </div>
+
+
+  <div *ngIf="!isModoDevolucion">
+    <div class="row titulo_tabla">
+      <div class="col-md-3  col-sm-3 p-2">producto</div>
+      <div class="col-md-2  col-sm-2 p-2 borde_titulo_tabla text-center">precio</div>
+      <div class="col-md-2  col-sm-2 p-2 borde_titulo_tabla text-center">iva</div>
+      <div class="col-md-3  col-sm-3 p-2 borde_titulo_tabla text-center">cantidad</div>
+      <div class="col-md-2  col-sm-2 p-2 borde_titulo_tabla text-center">total</div>
+    </div>
+    <div class="datos_tabla" [appFocusTicketRow]="this" [useTabToBrowseRow]="true" [selectFirstOnFocus]="true" [addInputToFocus]="true"
+         #scrollMe [scrollTop]="scrollMe.scrollHeight">
+      <app-articulo *ngFor="let articulo of ticketVirtual.ticketRow; let i = index;"
+                    [ticketRow]="articulo" [index]="i" [currentSelection]="currentSelection"
+                    [currentQty]="articulo.getCurrentQty"
+                    [ticketVirtual]="this"
+                    (selectedItem)="getSelectedItem($event)"
+                    (articuloInstance)="articulo.articuloComponentInstance = $event"
+      ></app-articulo>
+    </div>
+  </div>
+
+</div>
+<div class="container" [hidden]="realizarPago">
+  <div class="row mt-4">
+    <div class="col-md-4 mb-2">
+      <app-carrousel [promocionesAplicadas]="ticketVirtual.ticketDescuentos.getPromocionesAplicadasTotalizar()"></app-carrousel>
+    </div>
+    <div class="col-md-8 mb-3">
+      <div class="card card-round">
+        <div class="card-body">
+
+          <!--
+          <div class="card-group" *ngIf="isModoDevolucion">
+            <div class="offset-6 col-md-6 text-right">
+              <div class="text-total text-total-verde">Total a Favor</div>
+              <div class="mb-2 num-total text-total-verde"> ${{ ticketVirtual.totalTicket | number : '1.2-2' }}</div>
+            </div>
+          </div>
+          -->
+
+          <div class="card-group">
+            <div class="card-body">
+              <div class="mb-2 text-totalizar text-total-verde">
+                <span class="d-inline mr-3">Total a favor</span>
+                <span class="pull-right d-inline bold">${{ ticketVirtual.totalTicketFavor | dosDecimales | number : '1.2-2'  }}</span>
+              </div>
+              <div class="mb-2 text-totalizar"><span class="d-inline mr-3">Total de ventas</span> <span class="pull-right d-inline bold">${{ ticketVirtual.totalSale }}</span>
+              </div>
+              <div class="mb-2 text-totalizar"><span class="d-inline mr-5">Impuestos</span> <span
+                class="pull-right d-inline bold">${{ ticketVirtual.totalTax | number : '1.2-2' }}</span></div>
+              <div class="mb-2 text-totalizar" *ngIf="ticketVirtual.tipoItems === 'prenda'">
+                <span class="d-inline mr-1">Total de prendas</span><span class="pull-right d-inline bold">{{ ticketVirtual.totalItems }}</span>
+              </div>
+            </div>
+            <div class="card-body text-right">
+              <div class="text-total text-total-verde">Restante a favor</div>
+              <div class="mb-2 num-total text-total-verde"> ${{ ticketVirtual.totalTicketFavorDiferencia | dosDecimales | number : '1.2-2'  }}</div>
+              <div class="text-total text-total-rojo">Total</div>
+              <div class="mb-2 num-total text-total-rojo"> ${{ ticketVirtual.totalTicket | dosDecimales | number : '1.2-2'   }}</div>
+            </div>
+            <div class="card-body text-left" *ngIf="ticketVirtual.totalTicket > 0">
+              <div class="text-total bold">{{ ticketVirtual.totalTicket | numeroAletras }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="text-white bg-milano nota_rojo p-3" appColorConfigPos>
+          &nbsp;&nbsp;{{ticketVirtual.cabeceraVenta.folioOperacion}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-formas-de-pago [ticketVirtual]="this" *ngIf="realizarPago" (formasPagoInstance)="setFormasPagoInstance($event)"></app-formas-de-pago>
+
+<ng-template #suspenderTemplate>
+  <div class="modal-body text-center" appModalFocus>
+    <p>¿ Deseas Suspender la Transacción Seleccionada ?</p>
+    <button type="button" class="btn btn-danger btn-quest" (click)="declineCancelarTicket()" appAutofocus>No</button>
+    <button type="button" class="btn btn-primary btn-quest" (click)="suspenderTransaccion()">Si</button>
+  </div>
+</ng-template>
+
+
+<ng-template #devolucionDiferenciaTemplate>
+  <div class="modal-body text-center" appModalFocus>
+    <p>Se perdera la diferencia de ${{diferenciaDevolucion.toNumber() | dosDecimales | number : '1.2-2' }}</p>
+    <p>¿ Desea continuar ?</p>
+    <button type="button" class="btn btn-danger btn-quest" (click)="declinePerderDiferencia()" appAutofocus>No</button>
+    <button type="button" class="btn btn-primary btn-quest" (click)="aceptarPerderDiferencia()">Si</button>
+  </div>
+</ng-template>
+
+
+<ng-template #devolucionTemplate>
+  <div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus>
+    <h4 class="modal-title pull-left">Devoluciones</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cancelarDevolucion()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body card-body">
+    <form class="form-horizontal">
+      <div class="col-md-10 mb-3">
+        <label for="validationCustom01">Folio de Venta</label>
+        <input type="text" class="form-control" id="validationCustom01"
+               placeholder="Folio de Venta" autocomplete="off" maxlength="17"
+               [(ngModel)]="folioVentaDevolucion" (keyup.enter)="aceptarTicketDevolucion()"
+               name="folioVentaDevolucion" appAutofocus appControlStatusDirectiveDirective required>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer card-footer">
+    <button type="button" class="btn btn-danger" (click)="cancelarDevolucion()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="aceptarTicketDevolucion()">Aceptar</button>
+  </div>
+</ng-template>

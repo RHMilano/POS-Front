@@ -1,0 +1,71 @@
+<div class="bg-milano p-4" appColorConfigPos>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm p-1">
+        <div class="d-inline mr-2">
+
+          <!--<button class="btn bg-milano" placement="bottom" appColorConfigPos>
+            <img src="./assets/images/empleado.png" alt="">
+          </button>-->
+          <button id="logout" class="btn bg-milano" (click)="logout()" tooltip="Salir de POS" placement="bottom" title="Salir"
+                  appColorConfigPos>
+            <img src="./assets/images/logout.png" alt="" height="48px">
+          </button>
+        </div>
+        <div class="d-inline-block text-white align-middle">
+          <h6>{{ loggedInfo.numeroTienda }} - CAJA {{ loggedInfo.numeroCaja }} </h6>
+          <h6><small> {{ loggedInfo.nombre }} </small></h6>
+          <h6><small>{{ _posversion }}</small></h6>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="row justify-content-center">
+          <img src="./assets/images/milano_logo.png" alt="">
+        </div>
+      </div>
+      <div class="col-sm text-white align-middle">
+        <div class="row justify-content-end">
+          <div d-inline-block>
+            <h6>{{ loggedInfo.numeroTienda }}</h6>
+            <h4>{{ fechaHoy | date:'longDate' | uppercase }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- Ticket Virtual-->
+<section>
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-9">
+        <router-outlet></router-outlet>
+      </div>
+
+
+      <div class="col-md-3">
+        <div class="producto p-3" style="height:275px" appColorConfigPos [hidden]="showPagos">
+          <!-- <p>Que soy!!</p> -->
+          <div class="text-left text-white nombre_producto"> {{ itemEstilo || 'PRODUCTO' }}</div>
+          <div class="sku font-weight-bold">SKU {{ itemSku }}</div>
+          <div class="text-sm-left text-md-left text-lg-center text-xl-center bg-white my-3" style="height:130px"><img
+            src="{{itemImageUrl}}" alt="" style="height: 100%;"></div>
+          <div class="text-left text-white precio font-weight-bold">${{ itemPrice || 0 | dosDecimales  | number : '1.2-2' }}</div>
+        </div>
+        <app-carrousel *ngIf="showPagos"></app-carrousel>
+        <div *ngIf="!showPagos && btnsConfig.length" class="card text-center card-nobody text-white mb-3 mt-3">
+          <app-funciones [btnsConfig]="btnsConfig"></app-funciones>
+        </div>
+        <div *ngIf="showPagos" class="card text-center card-nobody text-white mb-3 mt-3">
+          <app-formas-pago-menu [currentTotalizarInfo]="currentTotalizar"
+                                [ticketVirtualInstance]="ticketVirtualInstance"
+          ></app-formas-pago-menu>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

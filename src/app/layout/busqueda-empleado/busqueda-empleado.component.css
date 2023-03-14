@@ -1,0 +1,9 @@
+.ngx-pagination ul{
+    padding: 5px;
+}
+table{
+    margin-bottom: 0px;
+}
+.modal.show .modal-dialog{
+    margin-top: 10px !important;
+}

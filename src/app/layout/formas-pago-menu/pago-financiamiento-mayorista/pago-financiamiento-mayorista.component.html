@@ -1,0 +1,369 @@
+<div class="modal-header card-header" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title  card-element-title">Financiamiento Mayorista</h4>
+  <button type="button" (click)="cancelPay()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <div class="needs-validation">
+    <p><b>Monto m&aacute;ximo a financiar {{montoCreditoFinanciamiento | currency: 0 : "$" }}</b></p>
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <div class="input-group">
+          <input type="text" [(ngModel)]="recibido" name="financiamiento-mayorista-cantidad"
+                 class="form-control" step="0.01" autocomplete="off"
+                 id="financiamiento-mayorista-cantidad" required
+                 placeholder="Cantidad a pagar" appCashOnly appAutofocus appControlStatusDirectiveDirective>
+        </div>
+        <a *ngIf="!recibido " class="text-danger" [hidden]="recibido">
+          <small>La cantidad es requerida</small>
+        </a>
+        <a *ngIf="recibido == 0 || recibido <= 0 " class="text-danger" [hidden]="!recibido">
+          <small>Ingrese una cantidad mayor a 0</small>
+        </a>
+        <a *ngIf="recibido > totalToPay" class="text-danger">
+          <small>El monto a financiar no puede ser mayor al total</small>
+        </a>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <div class="input-group">
+          <input type="text" [(ngModel)]="mayoristaVale" name="financiamiento-numero-vale"
+                 class="form-control" placeholder="N&uacute;mero de vale"
+                 id="financiamiento-numero-vale" autocomplete="off" maxlength="9"
+                 required appOnlyNumbers appControlStatusDirectiveDirective>
+        </div>
+      </div>
+    </div>
+    <h5>Datos del cliente final</h5>
+    <form class="form" #busquedaForm="ngForm" role="presentation" (keyup.enter)="busquedaForm.valid ? searchClienteFinal() : '';">
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="searchClienteFinalRequest.codigoClienteFinal"
+                   name="usuario-final-codigo-cliente" placeholder="N&uacute;mero cliente final"
+                   class="form-control" autocomplete="off"
+                   id="usuario-final-codigo-cliente" maxlength="9"
+                   appOnlyNumbers appControlStatusDirectiveDirective>
+          </div>
+        </div>
+      </div>
+        <div class="form-row">
+
+        <div class="col-md-6 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="searchClienteFinalRequest.ine" name="usuario-final-ine"
+                   class="form-control" autocomplete="off" placeholder="INE" maxlength="15"
+                   id="usuario-final-ine" appControlStatusDirectiveDirective>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="searchClienteFinalRequest.rfc" name="usuario-final-rfc"
+                   class="form-control" autocomplete="off" placeholder="RFC" maxlength="15"
+                   id="usuario-final-rfc" appControlStatusDirectiveDirective>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="searchClienteFinalRequest.nombres" name="usuario-final-nombre"
+                   class="form-control" autocomplete="off" placeholder="Nombre(s)" maxlength="20"
+                   id="usuario-final-nombre" appControlStatusDirectiveDirective>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="searchClienteFinalRequest.apellidos" name="usuario-final-apellidos"
+                   class="form-control" autocomplete="off" placeholder="Apellido(s)" maxlength="20"
+                   id="usuario-final-apellidos" appControlStatusDirectiveDirective>
+          </div>
+        </div>
+      </div>
+      <a *ngIf="!searchClienteFinalRequest " class="text-danger">
+        <small>Ingrese al menos un criterio de b&uacute;squeda.</small>
+      </a>
+    </form>
+    <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                                (datosPromociones)="getPromocionesPosibles($event)">
+
+    </app-descuentos-informacion>
+  </div>
+</div>
+<div class="modal-footer card-footer" style="border: 0px">
+  <button type="button" (click)="resetForm()" class="btn btn-info ml-5" >Limpiar los datos para hacer otra búsqueda</button>
+  <button type="button" (click)="openCrearClienteFinal()" class="btn btn-success">Crear nuevo</button>
+  <button type="button" (click)="searchClienteFinal()" class="btn btn-secondary" [disabled]="!activarBusqueda">Buscar</button>
+
+</div>
+
+<div *ngIf="clientesFinales != undefined && showBusquedaCliente"
+     #directiveReference="focusRowReference" [appFocusTicketRow]="rowSelector" [arrowPaginate]="true" [addInputToFocus]="true" [selectOnEnter]="true">
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th>Nombres</th>
+      <th>Apellidos</th>
+      <th>RFC</th>
+      <th>Codigo Cliente</th>
+      <th>Codigo Mayorista</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr (click)="selectClienteFinal(cliente, i); onRowEnterAction()" style="cursor: pointer;"
+        *ngFor="let cliente of clientesFinales | paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber  } ; let i = index"
+        [class.active]="i == rowSelector.currentSelection">
+      <!--
+      class="{{(selectedClienteFinal!= undefined && cliente.codigoClienteFinal == selectedClienteFinal.codigoClienteFinal) ? 'table-active':'' }}"
+      -->
+      <td>{{ cliente.nombres }}</td>
+      <td>{{ cliente.apellidos }}</td>
+      <td>{{ cliente.rfc }}</td>
+      <td>{{ cliente.codigoClienteFinal }}</td>
+      <td>{{ cliente.codigoMayorista }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls (pageChange)="rowSelector.pageChange($event)" *ngIf="clientesFinales != undefined && showBusquedaCliente"
+                     autoHide="true"
+                     previousLabel="Anterior"
+                     nextLabel="Siguiente"
+                     screenReaderPaginationLabel="Paginador"
+                     screenReaderPageLabel="pagina"
+                     screenReaderCurrentLabel="Estas en la pagina"></pagination-controls>
+<div class="modal-footer card-footer">
+  <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button [disabled]="validatePay()"
+          type="button" (click)="addPay()" class="btn btn-primary">Aceptar
+  </button>
+</div>
+
+<ng-template #templateCrearClienteFinal appModalFocus>
+
+  <div class="modal-header card-header">
+    <h5 class="modal-title">Agregar cliente final</h5>
+    <button type="button" (click)="cancelCrearCliente()" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body card-body" autocomplete="off" role="presentation">
+    <form class="form" #formCrearCliente="ngForm">
+      <div class="form-row">
+        <div class="col-md-4  mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.ine"
+                   name="usuario-final-crear-ine" placeholder="INE"
+                   maxlength="15"
+                   class="form-control"
+                   id="usuario-final-crear-ine" required appControlStatusDirectiveDirective appAutofocus>
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-ine'].hasError('required')">El INE es requerido</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4  mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.rfc" placeholder="RFC"
+                   name="usuario-final-crear-rfc"
+                   class="form-control"
+                   maxlength="15"
+                   id="usuario-final-crear-rfc" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-rfc'].hasError('required')">El RFC es requerido</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <input type="text" id="usuario-final-crear-fechaNacimiento" name="usuario-final-crear-fechaNacimiento"
+                 [(ngModel)]="clienteFinalCrear.fechaNacimientoField" placeholder="Fecha de Nacimiento"
+                 class="form-control" aria-label="Fecha Fin" readonly
+                 #FechaF="ngModel" bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+          <div class="invalid-feedback">
+            <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-fechaNacimiento'].hasError('required')">La Fecha de Nacimiento es requerida</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.nombre" placeholder="Nombre(s)"
+                   name="usuario-final-crear-nombre"
+                   class="form-control"
+                   maxlength="20"
+                   id="usuario-final-crear-nombre" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-nombre'].hasError('required')">El Nombre es requerido</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.apellidos" placeholder="Apellido(s)"
+                   name="usuario-final-crear-apellidos"
+                   class="form-control"
+                   maxlength="20"
+                   id="usuario-final-crear-apellidos" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-apellidos'].hasError('required')">Los Apellidos son requeridos</span>
+            </div>
+          </div>
+        </div>
+
+      <!--</div>
+      <div class="form-row">
+-->
+        <div class="col-md-2 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.telefono" placeholder="Tel&eacute;fono"
+                   name="usuario-final-crear-telefono"
+                   class="form-control"
+                   maxlength="12"
+                   id="usuario-final-crear-telefono" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-telefono'].hasError('required')">El Tel&eacute;fono es requerido</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 mb-3">
+        <!--  <label>Sexo</label>
+         <div class="form-inline">
+
+            <div class="form-check form-check-inline">
+              <input [(ngModel)]="clienteFinalCrear.sexo" class="form-check-input" value="M"
+                     name="usuario-final-crear-sexo" type="radio" id="radio120" checked="checked">
+              <label class="form-check-label" for="radio120">Masculino</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input [(ngModel)]="clienteFinalCrear.sexo" class="form-check-input" value="F"
+                     name="usuario-final-crear-sexo" type="radio" id="radio121">
+              <label class="form-check-label" for="radio121">Femenino</label>
+            </div>
+
+
+          </div>
+  -->        <select class="custom-select" name="usuario-final-crear-sexo" [(ngModel)]="clienteFinalCrear.sexo" id="usuario-final-crear-sexo"
+                  required appControlStatusDirectiveDirective>
+            <option [ngValue]="undefined" disabled selected>Sexo</option>
+            <option  value="M">Masculino</option>
+            <option  value="F">Femenino</option>
+          </select>
+          <div class="invalid-feedback">
+            <span *ngIf="formCrearCliente.controls['usuario-final-crear-sexo'] && formCrearCliente.controls['usuario-final-crear-sexo'].hasError('required')">El Sexo es requerido</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.colonia" placeholder="Colonia"
+                   name="usuario-final-crear-colonia"
+                   class="form-control"
+                   maxlength="30"
+                   id="usuario-final-crear-colonia" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-colonia'].hasError('required')">La Colonia es requerida</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.calle" placeholder="Calle"
+                   name="usuario-final-crear-calle"
+                   class="form-control"
+                   maxlength="30"
+                   id="usuario-final-crear-calle" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-calle'].hasError('required')">La Calle es requerida</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-2 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.numeroExterior" placeholder="# Exterior"
+                   name="usuario-final-crear-numeroExterior"
+                   class="form-control"
+                   maxlength="5"
+                   id="usuario-final-crear-numeroExterior" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-numeroExterior'].hasError('required')">El #Exterior es requerido</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.numeroInterior" placeholder="# Interior"
+                   name="usuario-final-crear-numeroIterior"
+                   class="form-control"
+                   maxlength="3"
+                   id="usuario-final-crear-numeroInterior" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-numeroIterior'].hasError('required')">El #Interior es requerido</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.cp" placeholder="C.P."
+                   name="usuario-final-crear-cp"
+                   class="form-control"
+                   maxlength="5"
+                   id="usuario-final-crear-cp" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-cp'].hasError('required')">El C.P. es requerido</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="clienteFinalCrear.ciudad" placeholder="Ciudad"
+                   name="usuario-final-crear-ciudad"
+                   class="form-control"
+                   maxlength="30"
+                   id="usuario-final-crear-ciudad" required appControlStatusDirectiveDirective>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['usuario-final-crear-ciudad'].hasError('required')">La Ciudad es requerida</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+
+            <select class="custom-select" name="selectM" [(ngModel)]="clienteFinalCrear.estado" id="usuario-final-crear-estado"
+                    required appControlStatusDirectiveDirective>
+              <option [ngValue]="undefined" disabled selected>Estado</option>
+              <option *ngFor="let edo of optionsEstados" value="{{edo}}">{{edo}}</option>
+            </select>
+            <div class="invalid-feedback">
+              <span *ngIf="formCrearCliente.controls['usuario-final-crear-ine'] && formCrearCliente.controls['selectM'].hasError('required')">El Estado es requerido</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer card-footer">
+    <button (click)="cancelCrearCliente()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <button (click)="crearClienteFinal()" type="submit" class="btn btn-primary" [disabled]="!formCrearCliente.valid">Crear</button>
+  </div>
+
+</ng-template>

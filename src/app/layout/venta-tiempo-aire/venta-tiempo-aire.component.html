@@ -1,0 +1,72 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus>
+  <h4 class="modal-title pull-left">Venta de Tiempo Aire</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" #tiempoAireForm="ngForm" (keyup.enter)="tiempoAireForm.valid ? validarFraude() : '';">
+    <div class="mb-3 text-center">
+
+      <alert [hidden]="Numero === Confirmacion" type="danger">
+        <strong>Importante:</strong> Los n&uacute;meros deben coincidir
+      </alert>
+
+    </div>
+    <div class="col-md-8 offset-2 mb-3">
+      <!--<label>Compa&ntilde;ia Telef&oacute;nica</label>-->
+      <select class="custom-select form-control"  required [(ngModel)]="SelectCompania" name="selectC" (change)="cargarMontos($event.target.value)"
+              appControlStatusDirectiveDirective appAutofocus>
+        <option [ngValue]="undefined" disabled selected>Compa&ntilde;ia Telef&oacute;nica</option>
+        <option *ngFor="let compania of companias; let i = index" value="{{compania.Codigo}}">{{compania.Nombre}}</option>
+      </select>
+      <a *ngIf="!this.SelectCompania" class="text-danger">
+        <small>La compa&ntilde;ia telef&oacute;nica es requerida.</small>
+      </a>
+    </div>
+    <div class="col-md-8 offset-2 mb-3">
+      <!--<label>Monto</label>-->
+      <select class="custom-select form-control" required name="selectM"  [(ngModel)]="SelectMonto"
+              (change)="enviarSku($event.target.value)" appControlStatusDirectiveDirective >
+        <option [ngValue]="undefined" disabled selected>Monto</option>
+        <option *ngFor="let monto of montos; let i = index" value="{{monto['articulo'].sku}}">{{monto['articulo'].precioConImpuestos | number:'.2'}}</option>
+      </select>
+      <a *ngIf="!this.SelectMonto" class="text-danger">
+        <small>El monto de recarga es requerido.</small>
+      </a>
+    </div>
+    <div class=" col-md-8 offset-2 mb-3">
+      <input type="text" class="form-control" name="Numero" required [(ngModel)]="Numero" placeholder="N&uacute;mero Telefónico"
+             aria-label="N&uacute;mero Telef&oacute;nico" pattern="[0-9]{10}"  #Num="ngModel" autocomplete="off"
+             appControlStatusDirectiveDirective appOnlyNumbers [hidden]="this.NumeroReal" maxlength="10" (change)="changeNumber($event)">
+      <input type="text" class="form-control" name="NumeroReal" required [(ngModel)]="NumeroReal" placeholder="N&uacute;mero Telefónico"
+             aria-label="N&uacute;mero Telef&oacute;nico"  autocomplete="off"
+             appControlStatusDirectiveDirective *ngIf="this.NumeroReal" [hidden]="!this.NumeroReal" (keydown)="changeNumberReal($event)" disabled>
+      <a *ngIf="!this.Numero" class="text-danger">
+        <small>El n&uacute;mero telef&oacute;nico es requerido. </small>
+      </a>
+      <a *ngIf="!Num.valid && this.Numero" class="text-danger">
+        <small>El n&uacute;mero capturado debe ser de  10 d&iacute;gitos.</small>
+      </a>
+    </div>
+    <div class="col-md-8 offset-2 mb-3">
+      <input type="text" class="form-control" name="Confirmacion" required [(ngModel)]="Confirmacion" placeholder="Confirmaci&oacute;n N&uacute;mero Telef&oacute;nico"
+             aria-label="Confirmaci&oacute;n N&uacute;mero Telef&oacute;nico" pattern="[0-9]{10}" #Confirm="ngModel" autocomplete="off" [disabled]="!this.NumeroReal"
+             appControlStatusDirectiveDirective appOnlyNumbers maxlength="10">
+      <a *ngIf="!this.Confirmacion" class="text-danger">
+        <small>El n&uacute;mero telef&oacute;nico es requerido. </small>
+      </a>
+      <a *ngIf="!Confirm.valid && this.Confirmacion" class="text-danger">
+        <small>El n&uacute;mero capturado debe ser de  10 d&iacute;gitos.</small>
+      </a>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <div class="">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+    <button class="btn btn-primary" [disabled]="Numero != Confirmacion || !this.articulo || !Confirm.valid || !this.toDisable"
+            type="button" (click)="validarFraude()">Aceptar</button>
+  </div>
+</div>
+

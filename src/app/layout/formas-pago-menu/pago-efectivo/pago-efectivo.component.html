@@ -1,0 +1,38 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title  card-element-title">Pago en Efectivo</h4>
+  <button type="button" (click)="closeModal()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="needs-validation" autocomplete="off" role="presentation">
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="efectivo-cantidad">Cantidad a pagar</label>
+
+        <div class="input-group">
+
+          <input type="text" [(ngModel)]="recibido" name="efectivo-cantidad" class="form-control"
+                 id="efectivo-cantidad" (keyup.enter)="addPay()" required step="0.01"
+                 placeholder="0.00" appCashOnly appAutofocus appControlStatusDirectiveDirective="">
+        </div>
+        <a *ngIf="!recibido" class="text-danger" [hidden]="recibido">
+          <small>La cantidad a pagar es  requerida.</small>
+        </a>
+        <a *ngIf="recibido == 0" class="text-danger" [hidden]="!recibido">
+          <small>Ingrese una cantidad mayor a 0</small>
+        </a>
+
+      </div>
+    </div>
+  </form>
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)">
+
+  </app-descuentos-informacion>
+</div>
+    <div class="modal-footer card-footer">
+      <button (click)="closeModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button (click)="addPay()" [disabled]="!validatePay() || !this.toDisable" class="btn btn-primary">Aceptar</button>
+    </div>
+

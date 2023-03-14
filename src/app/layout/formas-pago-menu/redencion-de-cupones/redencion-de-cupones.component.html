@@ -1,0 +1,31 @@
+<div class="modal-header card-header" xmlns="http://www.w3.org/1999/html"  appModalFocus>
+  <h4 class="modal-title">Pago con Cupón</h4>
+  <button type="button" (click)="cancelPay()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form  autocomplete="off" role="presentation">
+    <div class="form-row">
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="folio">Folio del cupón</label>
+        <input type="text" [(ngModel)]="folio" name="folio-nota" class="form-control"
+               id="folio"  maxlength="17" required (keyup.enter)="addPay()"
+                appAutofocus appControlStatusDirectiveDirective>
+        <a *ngIf="!folio" class="text-danger">
+          <small>El número de folio es requerido.</small>
+        </a>
+      </div>
+    </div>
+  </form>
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)">
+
+  </app-descuentos-informacion>
+</div>
+<div class="modal-footer card-footer">
+  <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button [disabled]="!folio || !this.toDisable" (click)= "addPay()" class="btn btn-primary">Aceptar
+  </button>
+</div>
+

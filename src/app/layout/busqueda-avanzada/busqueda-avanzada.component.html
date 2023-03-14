@@ -1,0 +1,134 @@
+<div class="modal-header card-header" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title">B&uacute;squeda Avanzada de Art&iacute;culos</h4>
+  <button type="button" (click)="closeModal()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="needs-validation" name="formaBusqueda" #formaBusqueda="ngForm">
+    <div class="row">
+      <div class="offset-1 col-md-5 mb-3">
+        <input type="text" class="form-control" name="sku" [(ngModel)]="sp.sku" id="sku" appAutofocus placeholder="SKU/UPC" autocomplete="nope"
+               appControlStatusDirectiveDirective (keyup.enter)="onSubmit()" #skuBusq>
+      </div>
+      <!--
+      <div class="col-md-5 mb-3">
+        <input type="text" class="form-control" name="upc" [(ngModel)]="sp.upc" id="upc" placeholder="UPC" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      -->
+    </div>
+    <div class="row">
+      <div class="offset-1 col-md-5 mb-3">
+        <input id="proveedor" name="proveedor" (ngModel)="sp.proveedor.descripcion" (keyup)="catChange($event.target.value, 'proveedor')"
+               placeholder="Proveedor"
+               [typeahead]="catalogos.proveedor"
+               typeaheadOptionField="descripcion"
+               [typeaheadScrollable]="true"
+               (typeaheadOnSelect)="onSelectOption($event,'proveedor')"
+               class="form-control" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-5 mb-3">
+        <input #typeahead=bs-typeahead id="estilo" name="estilo" [(ngModel)]="sp.estilo.descripcion"
+               placeholder="Estilo"
+               [typeahead]="dataSource"
+               typeaheadOptionField="descripcion"
+               [typeaheadScrollable]="true"
+               (typeaheadOnSelect)="onSelectOption($event,'estilo')"
+               class="form-control" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-1 col-md-5 mb-3">
+        <input id="departamento" name="departamento" (ngModel)="sp.departamento.descripcion" (keyup)="catChange($event.target.value, 'departamento')"
+               placeholder="Departamento"
+               [typeahead]="catalogos.departamento"
+               typeaheadOptionField="descripcion"
+               [typeaheadScrollable]="true"
+               (typeaheadOnSelect)="onSelectOption($event,'departamento')"
+               class="form-control" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-5 mb-3">
+        <input id="subdepartamento" name="subdepartamento" (ngModel)="sp.subdepartamento.descripcion" (keyup)="catChange($event.target.value, 'subdepartamento')"
+               placeholder="Subdepartamento"
+               [typeahead]="catalogos.subdepartamento"
+               typeaheadOptionField="descripcion"
+               [typeaheadScrollable]="true"
+               (typeaheadOnSelect)="onSelectOption($event,'subdepartamento')"
+               class="form-control" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-1 col-md-5 mb-3">
+        <input id="clase" name="clase" #proveedor="ngModel" (ngModel)="sp.clase.descripcion" (keyup)="catChange($event.target.value, 'clase')"
+               placeholder="Clase"
+               [typeahead]="catalogos.clase"
+               typeaheadOptionField="descripcion"
+               [typeaheadScrollable]="true"
+               (typeaheadOnSelect)="onSelectOption($event,'clase')"
+               class="form-control" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-5 mb-3">
+        <input id="subclase" name="subclase" #proveedor="ngModel" (ngModel)="sp.subclase.descripcion" (keyup)="catChange($event.target.value, 'subclase')"
+               placeholder="Subclase"
+               [typeahead]="catalogos.subclase"
+               typeaheadOptionField="descripcion"
+               [typeaheadScrollable]="true"
+               (typeaheadOnSelect)="onSelectOption($event,'subclase')"
+               class="form-control" autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+    </div>
+  </form>
+  <h4 class="d-flex justify-content-between align-items-center mb-3" *ngIf="currentData.numeroRegistros  > 0">
+    <span class="text-muted">Resultado de la b&uacute;squeda</span>
+    <span class="badge badge-secondary badge-pill">{{ currentData.numeroRegistros }}</span>
+  </h4>
+  <div *ngIf="currentData.numeroRegistros  > 0" class="scrollResults"
+       #directiveReference="focusRowReference"
+       [appFocusTicketRow]="rowSelector"
+       [addInputToFocus]="true">
+    <ul class="list-group mb-3">
+
+      <li *ngFor="let art of currentData.productos |
+          paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber, totalItems: currentData.numeroRegistros };
+          let i = index"
+          [class.activeCustom]="i == rowSelector.currentSelection" (click)="setSelectedItem(null, i)"
+          class="list-group-item d-flex justify-content-between lh-condensed">
+        <div class="col-md-12">
+          <h6 class="my-0"><b>SKU:</b>{{ art.articulo.sku }}</h6>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <span class="pull-right">{{ art.articulo.precioConImpuestos | currency:'$':'symbol':'1.2-2' }}</span>
+              <img style="height: 120px;width: 100%;" class="rounded float-right"
+                   src="{{art.articulo.rutaImagenLocal}}">
+            </div>
+            <div class="col-sm-6">
+              <small><strong>Departamento</strong> {{ art.articulo.depto }}<br>
+                <strong>Subdepartamento</strong> {{ art.articulo.subDepartamento }}<br>
+                <strong>Proveedor</strong> {{ art.articulo.descripcionProveedor }}<br>
+                <strong>Estilo</strong> {{ art.articulo.estilo }}<br>
+                <strong>Clase</strong> {{ art.articulo.clase }}<br>
+                <strong>Subclase</strong> {{ art.articulo.subClase }}
+              </small>
+            </div>
+          </div>
+        </div>
+
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="currentData.numeroRegistros  > 0">
+    <pagination-controls (pageChange)="getPage($event)"
+                         previousLabel=""
+                         nextLabel=""
+                         screenReaderPaginationLabel="Paginador"
+                         screenReaderPageLabel="pagina"
+                         screenReaderCurrentLabel="Estas en la pagina"></pagination-controls>
+
+  </div>
+</div>
+<div class="modal-footer card-footer">
+  <button class="btn btn-secondary" type="button" (click)="limpiar()">Limpiar</button>
+  <button class="btn btn-secondary" type="button" (click)="onSubmit()">Buscar</button>
+</div>
+

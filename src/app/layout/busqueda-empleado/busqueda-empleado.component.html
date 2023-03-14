@@ -1,0 +1,63 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title pull-left">B&uacute;squeda de Vendedor</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" #empleadoForm="ngForm" (keyup.enter)="empleadoForm.valid ? busqueda() : '';">
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <input type="text" class="form-control" name="Code" [(ngModel)]="Code" placeholder="N&uacute;mero Empleado"
+               aria-label="Código Empleado" pattern="[0-9]{3,10}" #Cod="ngModel"
+               autocomplete="off" appAutofocus appControlStatusDirectiveDirective appOnlyNumbers>
+      </div>
+      <div class="col-md-6">
+        <input type="text" class="form-control" name="Name" [(ngModel)]="Name" placeholder="Nombre Empleado" aria-label="Nombre Empleado"
+               autocomplete="off" appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-secondary" [disabled]="!this.Code && !this.Name" type="button" (click)="busqueda()">Buscar</button>
+      </div>
+    </div>
+  </form>
+  <div class="row" *ngIf="!this.Code && !this.Name">
+    <div class="col-md-5">
+      <a style="color:#FF0000;">
+        <small>Ingrese al menos un criterio de b&uacute;squeda.</small>
+      </a>
+    </div>
+  </div>
+  <div *ngIf='empleados.length' #directiveReference="focusRowReference"
+       [appFocusTicketRow]="rowSelector"
+       [arrowPaginate]="true"
+       [addInputToFocus]="true">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th style="width: 200px !important;" class="text-center">Código Empleado</th>
+        <th class="text-center">Nombre</th>
+        <th class="text-center">Sexo</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let empleado of empleados | paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber } ; let i = index"
+          [class.active]="i == rowSelector.currentSelection" style="cursor: pointer;"
+          (click)="seleccionar(empleado, i)">
+
+        <td> {{empleado.code}}</td>
+        <td> {{empleado.name}} {{empleado.paternal}} {{empleado.maternal}}</td>
+        <td> {{empleado.sex}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <pagination-controls *ngIf='empleados.length'
+                       name="page" (pageChange)="p =$event" previousLabel="Anterior" nextLabel="Siguiente" style="margin-bottom: 0px;"
+                       class="text-center"></pagination-controls>
+</div>
+
+<div class="modal-footer card-footer">
+  <button class="btn btn-primary" [disabled]="!this.seleccionado" type="button" (click)="finalizarbusqueda()" *ngIf='empleados.length'>Aceptar</button>
+</div>

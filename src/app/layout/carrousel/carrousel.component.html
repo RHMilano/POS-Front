@@ -1,0 +1,27 @@
+<div class="card card-round text-center bg-white mb-2">
+  <div class="card-body">
+    <carousel *ngIf="setPromoAplicadas.length === 0">
+      <slide>
+        <img src="./assets/images/image1.jpg" alt="First slide" class="carouselItem">
+      </slide>
+      <slide>
+        <img src="./assets/images/image2.jpg" alt="Second slide" class="carouselItem">
+      </slide>
+      <slide>
+        <img src="./assets/images/image3.jpg" alt="Third slide" class="carouselItem">
+      </slide>
+    </carousel>
+
+
+    <div class="producto p-1" style="height:220px"  *ngIf="setPromoAplicadas.length > 0">
+      <div class="text-left text-white promocionesAplicadasTitle">PROMOCIONES APLICADAS</div>
+      <br>
+      <div style="overflow-y: auto; height: 125px;">
+        <li class="sku font-weight-bold" *ngFor="let promocion of setPromoAplicadas">
+          {{promocion.descripcionCodigoPromocionAplicado}} - ${{ promocion.importeDescuento | dosDecimales}}
+        </li>
+      </div>
+    </div>
+
+  </div>
+</div>

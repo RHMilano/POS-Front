@@ -1,0 +1,182 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus>
+  <h4 class="modal-title pull-left">{{titulo}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body form-group card-body">
+  <form class="form-horizontal" [formGroup]="reportesForm">
+    <div class="form-row">
+
+      <div class="col-md-3 mb-3">
+
+        <!-- <label for="validationCustom01"></label>-->
+
+        <input type="text" name="fechaInicial" [(ngModel)]="FechaInicio" formControlName="fechaInicial"
+               placeholder="Fecha Inicial" class="form-control" aria-label="Fecha Fin"
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaInicial').hasError('required')">La fecha inicial es requerida.</span>
+        </div>
+
+      </div>
+      <div class="col-md-3 mb-3">
+        <input type="text"  name="fechaFinal"  [(ngModel)]="FechaFin" formControlName="fechaFinal"
+               placeholder="Fecha Fin" class="form-control" aria-label="Fecha Fin"
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaFinal').hasError('required')">La fecha final es requerida.</span>
+        </div>
+
+      </div>
+      <div class="col-md-3 mb-3">
+        <select class="custom-select" name="selectTipo"  [(ngModel)]="tipoApartado" formControlName="tipoApartado"
+                required appControlStatusDirectiveDirective appAutofocus (change)="filterReportes()">
+          <option [ngValue]="undefined" disabled selected>Estatus</option>
+          <option  value="V">Vigente</option>
+          <option  value="L">Liquidado</option>
+          <option  value="C">Cedido</option>
+        </select>
+        <div class="invalid-feedback" style="width: 200px;">
+          <span *ngIf="reportesForm.get('tipoApartado').hasError('required')">El tipo de reporte es requerido.</span>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-secondary" [disabled]="!FechaInicio || !FechaFin || !this.tipoApartado" style="margin-left: 15px;margin-right: 10px;" (click)="reporte()" type="button">Generar reporte
+        </button>
+      </div>
+    </div>
+  </form>
+  <ngx-datatable #myTable
+    class='material expandable'
+    [columnMode]="'force'"
+    [headerHeight]="50"
+    [footerHeight]="35"
+    [rowHeight]="'auto'"
+    [scrollbarH]="true"
+    [limit]="8"
+    [rows]='rows'
+    [summaryRow]="enableSummary"
+    [summaryPosition]="summaryPosition"
+    [summaryHeight]="'auto'"
+    *ngIf="this.rows.length">
+  <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow >
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+      <div style="padding-left:35px;font-size: 10px;">
+        <table class='table table-striped text-center' style="width: 100%">
+          <thead>
+            <tr>
+              <th style="font-size: 10px;width: 250px;"><strong>Descripción corta</strong></th>
+              <th style="font-size: 10px;width: 150px;"><strong>Cantidad</strong></th>
+              <th style="font-size: 10px;width: 150px;"><strong>Sku</strong></th>
+              <th style="font-size: 10px;width: 150px;"><strong>Total</strong></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let detalle of row.ReporteApartadosDetalleLineaResponse">
+            <tr>
+              <td>{{ detalle.descripcionCorta }}</td>
+              <td>{{ detalle.totalPiezas  | dosDecimales | number }}</td>
+              <td>{{ detalle.sku }}</td>
+              <td>$ {{ detalle.total | dosDecimales | number : '.2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+  </ngx-datatable-row-detail>
+  <ngx-datatable-column
+    [width]="50"
+    [resizeable]="false"
+    [sortable]="false"
+    [draggable]="false"
+    [canAutoResize]="false">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+      <a
+        href="javascript:void(0)"
+        [class.datatable-icon-right]="!expanded"
+        [class.datatable-icon-down]="expanded"
+        title="Expandir/Ocultar"
+        (click)="toggleExpandRow(row)">
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+  <!--<ngx-datatable-column prop="encabezado" name="" [sortable]='false'>
+    <ng-template ngx-datatable-cell-template let-value="value">
+      <strong style="font-size: 14px;">{{value}}</strong>
+    </ng-template>
+  </ngx-datatable-column>-->
+    <ngx-datatable-column prop="FolioApartado" name="Folio Apartado" [sortable]='false'  [width]="180">
+      <ng-template ngx-datatable-cell-template let-value="value">
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="NumTelefono" name="Núm de Tel" [sortable]='false' [width]="100">
+      <ng-template ngx-datatable-cell-template let-value="value">
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="ImporteApartado" name="Imp Apart" [sortable]='false'  [summaryFunc]="sumCell" [width]="100">
+      <ng-template ngx-datatable-cell-template let-value="value">
+         {{value | number:'1.2-2'}}
+      </ng-template>
+      <ng-template ngx-datatable-cell-template let-value="value">
+        <div class="cellNumber">
+          {{value | number:'1.2-2'}}
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="Monto" name="Monto" [sortable]='false'  [summaryFunc]="sumCell" [width]="100">
+      <ng-template ngx-datatable-cell-template let-value="value">
+          {{value | number:'1.2-2'}}
+      </ng-template>
+      <ng-template ngx-datatable-cell-template let-value="value">
+        <div class="cellNumber">
+          {{value | number:'1.2-2'}}
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="Saldo" name="Saldo" [sortable]='false'  [summaryFunc]="sumCell" [width]="100">
+      <ng-template ngx-datatable-cell-template let-value="value">
+         {{value | number:'1.2-2'}}
+      </ng-template>
+      <ng-template ngx-datatable-cell-template let-value="value">
+        <div class="cellNumber">
+          {{value | number:'1.2-2'}}
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="FechaApertura" name="Fecha Apertura" [sortable]='false' [width]="100">
+      <ng-template ngx-datatable-cell-template let-value="value">
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="FechaVencimiento" name="Fecha de Venc" [sortable]='false' [width]="100">
+      <ng-template ngx-datatable-cell-template let-value="value">
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="Fecha" name="Fecha Últ Mov" [sortable]='false' [width]="100">
+      <ng-template ngx-datatable-cell-template let-value="value">
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="Estatus" name="Estatus" [sortable]='false' [width]="120">
+      <ng-template ngx-datatable-cell-template let-value="value">
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>
+   <!-- <ngx-datatable-column *ngFor="let col of columns" [name]="col.name" [prop]="col.prop" [sortable]='false'>
+      <ng-template let-row="row" ngx-datatable-cell-template let-value="value">
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>-->
+  </ngx-datatable>
+  <ngx-datatable-footer></ngx-datatable-footer>
+</div>
+<div class="modal-footer card-footer">
+  <button type="button" class="btn btn-primary" [hidden]="!this.rows.length" (click)="closeModal()" >Aceptar
+  </button>
+</div>

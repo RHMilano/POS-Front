@@ -1,0 +1,81 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+  <h4 class="modal-title pull-left">Cash Out</h4>
+</div>
+<div class="modal-body card-body">
+    <tabset>
+      <tab *ngFor="let caja of rows; let i = index"   heading="Caja {{ caja.codigoCaja }}" (select)="selecTable(i,caja)">
+      </tab>
+    </tabset>
+  <ngx-datatable #myTable  class="material expandable" [headerHeight]="50" *ngIf="cajas.length"
+                 [footerHeight]="50"
+                 [rowHeight]="'auto'"
+                 [limit]="10"
+                 [columnMode]="'force'"
+                 [footerHeight]="12" [rows]="cajas"  [rowHeight]="'auto'" >
+
+    <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow >
+      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+        <div style="padding-left:35px;font-size: 12px;">
+          <table class='table table-striped text-center'>
+            <thead>
+            <th>Código Forma de Pago</th>
+            <th>Descripción</th>
+            <th>Fondo Fijo</th>
+            <th>Importe Teórico</th>
+            <th>Importe Físico</th>
+            <th>Total Retiros Parciales</th>
+            </thead>
+            <tbody>
+            <tr  *ngFor="let lecturaDet of row.detallesLecturaFormaPago" >
+              <td>{{ lecturaDet.informacionAsociadaFormaPago.codigoFormaPago }}</td>
+              <td>{{ lecturaDet.informacionAsociadaFormaPago.descripcionFormaPago }}</td>
+              <td>{{ lecturaDet.fondoFijoActual }}</td>
+              <td>{{ lecturaDet.importeTeorico }}</td>
+              <td *ngIf="lecturaDet.informacionAsociadaFormaPago.codigoFormaPago === 'CA' || (lecturaDet.informacionAsociadaFormaPago.codigoFormaPago === 'US' && lecturaDet.importeTeorico !== 0) ||
+              (lecturaDet.informacionAsociadaFormaPago.codigoFormaPago === 'UC' && lecturaDet.importeTeorico !== 0)" >
+                <input class="form-control" [(ngModel)]="lecturaDet.importeFisico" style="font-size: 12px;" appCashOnly  appControlStatusDirectiveDirective required>
+              </td>
+              <td *ngIf="(lecturaDet.informacionAsociadaFormaPago.codigoFormaPago === 'UC' && lecturaDet.importeTeorico === 0) ||
+                      (lecturaDet.informacionAsociadaFormaPago.codigoFormaPago === 'US' && lecturaDet.importeTeorico === 0)">
+                {{ lecturaDet.importeFisico }}
+              </td>
+              <td *ngIf="lecturaDet.informacionAsociadaFormaPago.codigoFormaPago !== 'US' && lecturaDet.informacionAsociadaFormaPago.codigoFormaPago !== 'CA'
+                      && lecturaDet.informacionAsociadaFormaPago.codigoFormaPago !== 'UC'">
+                {{ lecturaDet.importeFisico }}
+              </td>
+              <td>{{ lecturaDet.totalRetirosParciales }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </ngx-datatable-row-detail>
+    <ngx-datatable-column
+      [width]="50"
+      [resizeable]="false"
+      [sortable]="false"
+      [draggable]="false"
+      [canAutoResize]="false">
+      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+        <a
+          href="javascript:void(0)"
+          [class.datatable-icon-right]="!expanded"
+          [class.datatable-icon-down]="expanded"
+          title="Expandir/Ocultar"
+          (click)="toggleExpandRow(row)">
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="folioCorte" name="Folios Cortes Z" [sortable]='false' [flexGrow]=3>
+      <ng-template ngx-datatable-cell-template let-value="value">
+        <strong style="font-size: 14px;">{{value}}</strong>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <ngx-datatable-footer></ngx-datatable-footer>
+</div>
+<div class="modal-footer card-footer">
+  <div>
+    <button type="button" class="btn btn-primary" (click)="actualizarCashOut()">Actualizar Cash Out</button>
+  </div>
+</div>

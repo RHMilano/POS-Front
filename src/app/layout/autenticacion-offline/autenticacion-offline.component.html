@@ -1,0 +1,32 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title">Clave de autentificación</h4>
+</div>
+<div class="modal-body card-body">
+
+  <form class="needs-validation" #ClaveForm="ngForm">
+
+    <div class="col-md-8 offset-2 mb-3">
+      <label><strong>Fecha Operacion : </strong> {{fecha}}</label>
+    </div>
+    <div class="col-md-8 offset-2 mb-3">
+      <label><strong>Folio Operación : </strong> {{folio}}</label>
+    </div>
+    <div class="col-md-8 offset-2 mb-3">
+      <input type="text" [(ngModel)]="clave" class="form-control" (keyup.enter)="enviarCodigo()" name="clave"
+             placeholder="Código de autorización" required maxlength="17" autocomplete="off" #Codigo="ngModel"
+             appAutofocus appControlStatusDirectiveDirective>
+      <a *ngIf="!this.clave" class="text-danger">
+        <small>El código de autorización es requerido.</small>
+      </a>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <div class="">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+    <button class="btn  btn-primary" [disabled]="!this.clave" type="button"
+            (click)="enviarCodigo()">Aceptar
+    </button>
+  </div>
+</div>
+

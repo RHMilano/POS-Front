@@ -1,0 +1,24 @@
+<div [formGroup]="form">
+  <label [attr.for]="elemento.key">{{elemento.label}}</label>
+
+  <ng-container [ngSwitch]="elemento.controlType">
+
+    <input *ngSwitchCase="['textbox', 'dinero', 'texto'].includes(elemento.controlType) ? elemento.controlType : ''"
+           [formControlName]="elemento.key"
+           [id]="elemento.key"
+           [type]="elemento.type"
+           class="form-control"
+           appControlStatusDirectiveDirective [appAutofocus]="index === 0" autocomplete="off">
+
+    <select *ngSwitchCase="'dropdown'"
+            [id]="elemento.key"
+            [formControlName]="elemento.key"
+            class="custom-select form-control" appControlStatusDirectiveDirective>
+      <option *ngFor="let opt of elemento.options" [value]="opt.valor">{{opt.texto}}</option>
+    </select>
+
+  </ng-container>
+  <div class="invalid-feedback">
+    {{elemento.label}} es requerido
+  </div>
+</div>

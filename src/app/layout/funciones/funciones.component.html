@@ -1,0 +1,41 @@
+<div class="" style="height:300px;">
+  <div class="row" ng-hide="hideContainer">
+
+    <ng-container *ngFor="let item of funcionesToRender; let i = index;">
+
+
+      <div class="col-sm-6 col-md-12 col-lg-6 col-lx-6 botonMenuPrincipal"
+           [ngClass]="{
+             botonMenuPrincipalIzquierda: i%2 == 0,
+             botonMenuPrincipalDerecha : i%2 == 1
+             }">
+        <div (click)="selectOption(item)"
+             (mouseenter)="setTextToolTip(item)"
+             [tooltip]="item.tooltip? popTemplate:''" containerClass="containerClass"
+             class="btn_funcion mb-2 {{!item.habilitado && item.visible? 'btn_disabled': 'btn_enabled'}} {{item.clase}}"
+             style="height:105px">
+          <ng-container *ngIf="item.teclaAccesoRapido === ''; then sinTeclaAccesoRapido else conTeclaAccesoRapido "></ng-container>
+          <ng-template #conTeclaAccesoRapido>
+            <div class="bt-nombre text-uppercase text-right pr-2">{{item.teclaAccesoRapido}}</div>
+          </ng-template>
+          <ng-template #sinTeclaAccesoRapido>
+            <div class="bt-nombre text-uppercase text-right pr-2">&nbsp;</div>
+          </ng-template>
+          <a *ngIf="item.rutaImagen.indexOf('fa ') == -1">
+            <img src="{{item.rutaImagen}}" alt="">
+          </a>
+          <i *ngIf="item.rutaImagen.indexOf('fa ') != -1" class="{{item.rutaImagen}}"></i>
+          <div class="bt-nombre text-uppercase mt-1">{{item.textoDescripcion}}</div>
+        </div>
+      </div>
+
+
+    </ng-container>
+  </div>
+</div>
+
+
+<ng-template #popTemplate>
+  <div [innerHtml]="toolTipTmpl"></div>
+</ng-template>
+

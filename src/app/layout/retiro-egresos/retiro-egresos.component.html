@@ -1,0 +1,50 @@
+<div class="modal-header card-header">
+  <h4 class="modal-title">Egresos</h4>
+  <button type="button" (click)="cancelRetiro()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+    <form class="form-horizontal" #egresosForm="ngForm" (keyup.enter)="egresosForm.valid ? aceptarRetiro() : '';">
+    <div class="form-row">
+      <div class="col-md-8 offset-2">
+        <label for="cantidad-retirar">Cantidad a retirar</label>
+        <div class="input-group">
+          <input type="text" [(ngModel)]="cantidadRetirar" name="cantidad-retirar" class="form-control"
+                 id="cantidad-retirar" appControlStatusDirectiveDirective appCashOnly autocomplete="off"
+                 placeholder="0.00" required  appAutofocus>
+        </div>
+      </div>
+      <div class="col-md-8 offset-2 mb-3">
+      <a *ngIf="!this.cantidadRetirar" class="text-danger" [hidden]="this.cantidadRetirar">
+        <small>La cantidad a retirar es requerida.</small>
+      </a>
+        <a *ngIf="this.cantidadRetirar == 0" class="text-danger" [hidden]="!this.cantidadRetirar">
+          <small>Ingrese una cantidad mayor a 0.</small>
+        </a>
+      </div>
+      <div class="col-md-8 offset-2">
+        <label for="razon-retirar">Raz&oacute;n del retiro</label>
+        <div class="input-group">
+          <select class="form-control" #razonDescuentoField="ngModel" appControlStatusDirectiveDirective
+                  [(ngModel)]="motivoRetiro" id="razon-retirar" name="razon-retirar" required>
+            <option *ngFor="let razon of motivosRetiro" value="{{razon.codigoRazon}}">
+              {{razon.descripcionRazon}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-8 offset-2 mb-3">
+        <a *ngIf="!this.motivoRetiro" class="text-danger" >
+          <small>El motivo del retiro es requerido.</small>
+        </a>
+      </div>
+    </div>
+    <div class="modal-footer card-body">
+      <button (click)="cancelRetiro()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button type="button" (click)="aceptarRetiro()" class="btn btn-primary">Aceptar</button>
+    </div>
+  </form>
+
+</div>
+

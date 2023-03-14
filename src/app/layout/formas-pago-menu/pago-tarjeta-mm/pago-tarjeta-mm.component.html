@@ -1,0 +1,69 @@
+<div class="modal-header  card-header"  appModalFocus>
+  <h4 class="modal-title card-element-title">Pago con Tarjeta Melody Milano</h4>
+</div>
+<div class="modal-body card-body">
+  <div class="text-center" *ngIf="!this.cargando" [hidden]="this.cargando">
+    <img src="assets/images/tarjeta.png">
+  </div>
+  <div class="form-group col-md-8 offset-2" style="margin-bottom: 50px;margin-top: 30px;" *ngIf="this.cargando" [hidden]="!this.cargando">
+    <div class="carga">
+      <div class="loading">
+        <span class="spinner"></span>
+        <div>procesando</div>
+      </div>
+    </div>
+  </div>
+  <h6 class="card-title text-center mb-3" *ngIf="this.cargando" [hidden]="!this.cargando">Deslizar tarjeta en la terminal</h6>
+  <form class="needs-validation" autocomplete="off" role="presentation">
+    <div class="form-group col-md-8 offset-2">
+      <label for="cc-number" class="control-label mb-1">N&uacute;mero de la tarjeta</label>
+      <input id="cc-number"  [(ngModel)]="tarjetaNumero"  name="cc-number"
+             type="text" class="form-control cc-number identified visa" required maxlength="16"
+             pattern="[0-9]{16}" appOnlyNumbers  (keyup)="changeMjs()">
+      <span class="invalid-feedback">Ingresar los 16 digitos de la tarjeta</span>
+    </div>
+    <div class="col-md-8 offset-2 mb-3" *ngIf="planes.length">
+     <!-- <label>Plan de financiamiento</label>-->
+      <select class="custom-select" name="selectM"  [(ngModel)]="selectPlan"
+              required appControlStatusDirectiveDirective appAutofocus>
+        <option [ngValue]="undefined" disabled selected>Plan de financiamiento</option>
+        <option *ngFor="let plan of planes let i = index" value="{{plan.id}}">{{plan.descripcion}}</option>
+      </select>
+      <a *ngIf="!this.selectPlan" class="text-danger">
+        <small>El plan de financiamiento es requerido</small>
+      </a>
+    </div>
+    <div class="form-group col-md-8 offset-2" *ngIf="planes.length">
+      <label for="cc-payment" class="control-label mb-1">Cantidad a pagar</label>
+      <input id="cc-payment" name="cc-payment" type="text" class="form-control" step="0.01"
+             placeholder="0.00" [(ngModel)]="recibido" appCashOnly appAutofocus (keyup.enter)="addPay()"
+             required appControlStatusDirectiveDirective>
+      <a *ngIf="!recibido" class="text-danger"  [hidden]="recibido">
+        <small>La cantidad a pagar es  requerida.</small>
+      </a>
+      <a *ngIf="recibido == 0" class="text-danger"  [hidden]="!recibido">
+        <small>Ingrese una cantidad mayor a 0.</small>
+      </a>
+    </div>
+    <app-descuentos-informacion *ngIf="totalOriginal === totalToPay || this._pagosMaster.PagosMaster.totales.totalAbono" [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance" [codigoFormaPago]="tipoPago"
+                                (datosPromociones)="getPromocionesPosibles($event)"></app-descuentos-informacion>
+    <div class="col-md-8 offset-2" *ngIf="promocionesPosiblesVentaMM.length">
+      <table class="table table-hover">
+        <tbody>
+        <tr>
+          <th scope="row">Total con descuento</th>
+          <td><b>${{importeNuevo.toString() | dosDecimales | number : '1.2-2'  }}</b></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer card-footer">
+  <button (click)="cancelPay()" type="button" [disabled]="!this.toDisable" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button type="button" class="btn btn-primary" [disabled]="recibido > totalToPay || !validatePay() || !this.toDisable"
+          (click)="getPlanes()" [hidden]="planes.length">!!{{mensajeTarjeta}}</button>
+  <button type="button" class="btn btn-primary" [disabled]="recibido > totalToPay || !validatePay() || !this.toDisable"
+          (click)="addPay()" *ngIf="planes.length" >Aceptar</button>
+</div>

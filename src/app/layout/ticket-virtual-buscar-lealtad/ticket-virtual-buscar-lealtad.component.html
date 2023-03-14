@@ -1,0 +1,238 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+  <h4 class="modal-title pull-left">Programa de Lealtad</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="_bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <div *ngIf="!bolNuevoCliente" class="card mb-3 col-12" style="background-color: #f8f9fa;">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <div class="card-body">
+          <h5 class="card-title">Búsqueda del cliente</h5>
+          <form class="form-horizontal" [formGroup]="frmConsulta" (ngSubmit)="ConsultaForm()">
+            <div class="row mt-2">
+              <!-- Numero de cliente -->
+              <div class="input-group input-group-sm col-12 ">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">
+                    <img src="../../../assets/images/hashtag.png" class="img-fluid" alt="Responsive image" width="16px">
+                  </span>
+                </div>
+                <input type="text" class="form-control" formControlName="iCodigoCliente" placeholder="Número cliente">
+              </div>
+              <!-- Nombre del cliente -->
+              <div class="input-group input-group-sm col-12 mt-2 ">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">
+                    <img src="../../../assets/images/usuario.png" class="img-fluid" alt="Responsive image" width="16px">
+                  </span>
+                </div>
+                <input type="text" class="form-control" formControlName="sNombre" placeholder="Nombre">
+              </div>
+            </div>
+            <!-- Apellico paterno -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">
+                    <img src="../../../assets/images/usuario.png" class="img-fluid" alt="Responsive image" width="16px">
+                  </span>
+                </div>
+                <input type="text" class="form-control" formControlName="sPaterno" placeholder="Apellido Paterno">
+              </div>
+            </div>
+            <!-- Apellico paterno -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12 ">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">
+                    <img src="../../../assets/images/usuario.png" class="img-fluid" alt="Responsive image" width="16px">
+                  </span>
+                </div>
+                <input type="text" class="form-control" formControlName="sMaterno"  placeholder="Apellido Materno">
+              </div>
+            </div>
+            <!-- Telefono -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm"><img src="../../../assets/images/llamada.png"
+                      class="img-fluid" alt="Responsive image" width="16px"></span>
+                </div>
+                <input type="text" class="form-control" formControlName="sTelefono" aria-label="Small" aria-describedby="inputGroup-sizing-sm"
+                  placeholder="Teléfono">
+              </div>
+            </div>
+            <!-- Correo electronico -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm"><img src="../../../assets/images/correo.png"
+                      class="img-fluid" alt="Responsive image" width="16px"></span>
+                </div>
+                <input type="text" class="form-control" formControlName="sEmail" aria-label="Small" aria-describedby="inputGroup-sizing-sm"
+                  placeholder="Correo electrónico">
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-12 text-right">
+                <button type="button" class="btn btn-success btn-sm" (click)="registrarCliente()">Registrar nuevo
+                </button>
+                <button type="submit" class="btn btn-primary btn-sm">Buscar
+                </button>
+
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-8 mt-3">
+        <h5 class="card-title text-right">Cliente: {{numeroCliente}}</h5>
+        <div class="tableFixHead table-responsive">
+          <table class="table table-hover" style="font-size: 0.8rem;">
+            <thead>
+              <tr>
+                <th scope="col">#Cliente</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Teléfono</th>
+                <th scope="col">correo</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="this.consultaLealtadResponse">
+              <tr *ngFor="let t of this.consultaLealtadResponse.InfoClientesCRM">
+                <td>{{t.iiCodigoCliente}}</td>
+                <td>{{t.ssNombre}} {{t.ssPaterno}} {{t.ssMaterno}}</td>
+                <td>{{t.ssTelefono}}</td>
+                <td>{{t.ssEmail}}</td>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="bolNuevoCliente" class="card mb-3 col-12" style="background-color: #f8f9fa;">
+    <div class="row no-gutters">
+      <div class="col-md-6">
+        <div class="card-body">
+          <h5 class="card-title">Datos del cliente</h5>
+          <form autocomplete="off" [formGroup]="frm" class="form-horizontal" (ngSubmit)="SaveForm()">
+            <!-- Nombre -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12 ">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">
+                    <img src="../../../assets/images/usuario.png" class="img-fluid" alt="Responsive image" width="16px">
+                  </span>
+                </div>
+                <input type="text" class="form-control" formControlName="sNombre" placeholder="Nombre">
+              </div>
+              <small *ngIf="getEstatusNombre" class="error">Nombre requerido.</small>
+            </div>
+            <!-- Apellido Paterno -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">
+                    <img src="../../../assets/images/usuario.png" class="img-fluid" alt="Responsive image" width="16px">
+                  </span>
+                </div>
+                <input type="text" class="form-control" formControlName="sPaterno" placeholder="Apellido Paterno">
+              </div>
+              <small *ngIf="getEstatusPaterno" class="error">Apellido paterno requerido.</small>
+            </div>
+            <!-- Apellido Materno -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12 ">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">
+                    <img src="../../../assets/images/usuario.png" class="img-fluid" alt="Responsive image" width="16px">
+                  </span>
+                </div>
+                <input type="text" class="form-control" formControlName="sMaterno" placeholder="Apellido Materno">
+              </div>
+              <small *ngIf="getEstatusMaterno" class="error">Apellido materno requerido.</small>
+            </div>
+            <!-- Genero -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm"><img src="../../../assets/images/genero.png"
+                      class="img-fluid" alt="Responsive image" width="16px"></span>
+                </div>
+                <select class="custom-select" formControlName="sGenero">
+                  <option selected>Género</option>
+                  <option value="M">Hombre</option>
+                  <option value="F">Mujer</option>
+                </select>
+              </div>
+              <small *ngIf="getEstatusGenero" class="error">Seleccione un género.</small>
+            </div>
+            <!-- Telefono  -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm"><img src="../../../assets/images/llamada.png"
+                      class="img-fluid" alt="Responsive image" width="16px"></span>
+                </div>
+                <input type="text" class="form-control" formControlName="sTelefono" aria-label="Small"
+                  aria-describedby="inputGroup-sizing-sm" placeholder="Teléfono">
+              </div>
+              <small *ngIf="getEstatusTelefono" class="error">Teléfono requerido.</small>
+            </div>
+            <!-- Correo electronico -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm"><img src="../../../assets/images/correo.png"
+                      class="img-fluid" alt="Responsive image" width="16px"></span>
+                </div>
+                <input type="text" class="form-control" formControlName="sEmail" aria-label="Small"
+                  aria-describedby="inputGroup-sizing-sm" placeholder="Correo electrónico">
+              </div>
+              <small *ngIf="getEstatusCorreo" class="error">Correo requerido.</small>
+            </div>
+            <!-- Fecha de nacimiento -->
+            <div class="row mt-2">
+              <div class="input-group input-group-sm col-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm">
+                    <img src="../../../assets/images/cake.png" class="img-fluid" alt="Responsive image"
+                      width="16px"></span>
+                </div>
+                <input type="date" data-date-format="dd-mm-yyyy" class="form-control" formControlName="sFechaNacimiento"
+                  aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+              </div>
+              <small *ngIf="getEstatusFechaNacimiento" class="error">Fecha cumpleaños requerida.</small>
+            </div>
+            <div class="row mt-2">
+              <div class="col-12 text-right">
+                <button type="button" class="btn btn-default btn-sm" (click)="regresar()">Regresar
+                </button>
+                <button type="submit" class="btn btn-primary btn-sm">Guardar
+                </button>
+
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6 text-center align-self-center " style="padding: 0 5%;">
+        <div class="p-5 card text-white bg-danger">
+          <h5>Número de Cliente</h5>
+          <p style="margin: 5% 10%; font-size: 20px;"><strong>{{ this.numeroClienteGenerado}}</strong> </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="modal-footer card-footer">
+  <button type="button" class="btn btn-secondary btn-sm">Cerrar</button>
+
+</div>

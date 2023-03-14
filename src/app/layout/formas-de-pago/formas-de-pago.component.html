@@ -1,0 +1,171 @@
+<div class="card card-round">
+  <div class="card-header pt-4">
+    <div class="row">
+      <div class="col-md-8 col-sm-10">
+        <h4 class="text-milano">Lista de Pagos</h4>
+        <span class="datos_folio" *ngIf="this.ticketVirtual._pagoApartado">
+         {{ 'Cliente : ' + this.cliente }}
+        </span>
+      </div>
+      <div class="col-md-8 col-sm-10">
+        <span class="datos_folio" *ngIf="this.ticketVirtual._pagoApartado">
+         {{ 'Folio de Apartado : ' + this.ticketVirtual._pagoApartado.pagoApartado.folioApartado }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="row titulo_tab la">
+      <div class="col-md-7 col-sm-7 offset-1">Forma de pago!</div>
+      <div class="col-md-3 col-sm-3 borde_titulo_tabla text-center">Total</div>
+      <div class="col-md-1 col-sm-1 "></div>
+    </div>
+
+    <div class="datos_tabla" [appFocusTicketRow]="this" [selectFirstOnFocus]="true" [useTabToBrowseRow]="true">
+      <app-pago *ngFor="let pago of pagos let i = index;" [listaPagos]="pago" [formasPago]="this"
+                [index]="i" (seleccion)="eliminar($event)"
+                [currentSelection]="currentSelection"></app-pago>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row mt-4">
+
+    <div class="col-md-8 mb-3">
+
+      <div class="card card-round">
+        <div class="card-body">
+          <div class="card-group">
+            <div class="card-body">
+              <div class="mb-2 text-totalizar">
+                <span class="d-inline mr-3">Total de ventas</span>
+                <span class="pull-right d-inline bold">${{ this.ticketVirtual.ticketVirtual.totalSale | dosDecimales | number : '1.2-2' }}</span>
+              </div>
+              <div class="mb-2 text-totalizar">
+                <span class="d-inline mr-5">Impuestos</span>
+                <span class="pull-right d-inline bold">${{ this.ticketVirtual.ticketVirtual.totalTax | dosDecimales | number : '1.2-2' }}</span>
+              </div>
+              <div class="mb-2 text-totalizar" *ngIf="Cantidad">
+                <span class="d-inline mr-5">Abono</span>
+                <span class="pull-right d-inline bold">${{ this.Cantidad | dosDecimales | number : '1.2-2' }}</span>
+              </div>
+              <div class="mb-2 text-total-rojo">
+                <span class="d-inline mr-4">Pagado </span>
+                <span class="pull-right d-inline bold ml-5"> ${{ this.ticketVirtual.ticketVirtual.totalPaid | dosDecimales | number : '1.2-2' }}</span>
+              </div>
+              <div class="mb-2 text-totalizar" *ngIf="this.ticketVirtual.ticketVirtual.totalPrendas">
+                <span class="d-inline mr-1">Total de prendas </span>
+                <span class="pull-right d-inline bold">{{ this.ticketVirtual.ticketVirtual.totalPrendas }}</span>
+              </div>
+            </div>
+
+            <div class="card-body text-right">
+              <div class="text-total text-total-rojo">Por pagar</div>
+              <div class="mb-2 num-total text-total-rojo"> ${{ this.ticketVirtual.ticketVirtual.totalTicket | dosDecimales | number : '1.2-2' }}</div>
+              <div class="text-cambio-rojo">Cambio</div>
+              <div class="mb-2 num-cambio-rojo">${{ this.ticketVirtual.ticketVirtual.change | dosDecimales | number : '1.2-2' }}</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="text-white bg-milano nota_rojo p-3" appColorConfigPos>
+          &nbsp;
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <div class="card card-round text-center" style="height:260px">
+        <div class="card-body">
+          <div class="pb-3 pt-3" *ngIf="validacionApartado">
+            <div class="bt-nombre text-right pr-2" style="background-color: #6c757d;height: 0px;color: white;font-size: medium;">↵</div>
+            <button class="btn btn-primary btn-block" type="submit" [disabled]="count === 3" (click)="crearApartado()">Finalizar Apartado</button>
+          </div>
+          <div class="pb-3 pt-3" *ngIf="this.ticketVirtual.ticketVirtual.totalTicket === 0 || (!this.ticketVirtual.realizarApartado && !this.ticketVirtual._pagoApartado)" [hidden]="validacionApartado || this.ticketVirtual.ticketVirtual.totalTicket != 0">
+            <div class="bt-nombre text-right pr-2" style="background-color: #6c757d;height: 0px;color: white;font-size: medium;">↵</div>
+            <button class="btn btn-primary btn-block" type="submit" [disabled]="count === 2" (click)="finalizarVenta()">{{ this.BotonPago }}</button>
+          </div>
+          <div class="pb-3 pt-3" *ngIf="pagos.length && this.VentaRegular" [hidden]="this.ticketVirtual.realizarApartado || this.ticketVirtual.ticketVirtual.totalTicket === 0 || this.apartadoRequest.apartadoLiquidado">
+            <div class="bt-nombre text-right pr-2" style="background-color: #6c757d;height: 0px;color: white;font-size: medium;">↵</div>
+            <button class="btn btn-primary btn-block" type="submit" (click)="confirmFinalizarVenta()"> Abonar Apartado</button>
+          </div>
+          <div class="pb-3 pt-3">
+            <div class="bt-nombre text-right pr-2" style="background-color: #6c757d;height: 0px;color: white;">esc</div>
+            <button class="btn btn-secondary btn-block" type="submit" [disabled]="count === 1" [hidden]="this.pagos.length" (click)="cancelarVenta()">Regresar</button>
+          </div>
+        </div>
+        <div class="text-white bg-milano nota_rojo p-3" appColorConfigPos>
+          &nbsp;
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<ng-template #plazoTemplate>
+  <div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+    <h4 class="modal-title pull-left">Capture los Datos Solicitados </h4>
+  </div>
+  <div class="modal-body card-body">
+    <form class="form-horizontal" #creacionForm="ngForm" (keyup.enter)="creacionForm.valid ? closeModal() : '';">
+      <div class="col-md-8 offset-2">
+        <label>Plazos del apartado</label>
+        <select class="custom-select" name="selectM" [(ngModel)]="selectP" (change)="enviarPlazo($event.target.value)"
+                required appControlStatusDirectiveDirective appAutofocus>
+          <option *ngFor="let plazo of plazos; let i = index" value="{{plazo.dias}}">{{ plazo.dias }} días</option>
+        </select>
+      </div>
+      <div class="col-md-8 offset-2 mb-3">
+        <a *ngIf="!this.SelectPlazo" class="text-danger">
+          <small>El plazo del apartado es requerido.</small>
+        </a>
+      </div>
+      <div class="col-md-8 offset-2">
+        <label>Cantidad a pagar</label>
+        <input class="form-control" type="text" [(ngModel)]="Cantidad" #Can="ngModel" name="Cantidad" placeholder="0.00"
+               autocomplete="off" required step="0.01" appCashOnly appControlStatusDirectiveDirective>
+        <div class="col-2"></div>
+      </div>
+      <div class="col-md-8 offset-2">
+        <a *ngIf="!this.Cantidad" class="text-danger">
+          <small>La cantidad a pagar es requerida y la cantidad mínima a pagar  es {{ this.montoPago | dosDecimales | number : '1.2-2' }}.</small>
+        </a>
+        <a *ngIf=" this.Cantidad && !validaPago()" [hidden]="this.Cantidad >= this.ticketVirtual.ticketVirtual.totalTicket" class="text-danger">
+          <small>La cantidad mínima a pagar  es {{ this.montoPago | dosDecimales | number : '1.2-2' }}.</small>
+        </a>
+        <a *ngIf="this.Cantidad >= this.ticketVirtual.ticketVirtual.totalTicket" class="text-danger">
+          <small>La cantidad a pagar debe ser menor al total de la compra.</small>
+        </a>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer card-footer">
+    <div class="">
+      <button class="btn btn-primary"  [disabled]="!validaPago()" type="submit" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #finalizarTemplate>
+  <div class="modal-body text-center" appModalFocus>
+    <p>¿ Desea finalizar la venta sin cubrir el monto total ?</p>
+    <button type="button" class="btn btn-danger btn-quest" (click)="closeModalFinalizar()" appAutofocus>No</button>
+    <button type="button" class="btn btn-primary btn-quest" (click)="confirmFinalizarVenta()">Si</button>
+  </div>
+</ng-template>
+
+<ng-template #retiroEfectivo>
+  <div class="modal-body text-center" appModalFocus>
+    <p>{{mensajeRetiro}}</p>
+    <button type="button" class="btn btn-danger btn-quest" *ngIf="cerrar"  (click)="closeModalRetiro()" appAutofocus>No</button>
+    <button type="button" class="btn btn-primary btn-quest" (click)="retirarEfectivoConfirm()" >Si</button>
+  </div>
+</ng-template>

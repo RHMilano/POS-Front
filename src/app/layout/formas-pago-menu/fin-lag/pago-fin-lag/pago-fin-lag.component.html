@@ -1,0 +1,74 @@
+<div class="modal-header  card-header"  appModalFocus>
+  <h4 class="modal-title card-element-title">Pago con Finlag</h4>
+</div>
+<div class="modal-body card-body">
+  <div class="col-md-8 offset-2 mb-3" *ngIf="valeInfo.nombreDistribuidora">
+    <label>Nombre Distribuidora</label>
+    <input class="form-control" id="distribuidora"  [(ngModel)]="valeInfo.nombreDistribuidora"  name="distribuidora"
+           type="text" disabled >
+  </div>
+  <div class="row">
+    <div class="col-md-4 offset-2 mb-3">
+      <label>Nombre Cliente</label>
+      <input class="form-control" id="nombre"  [(ngModel)]="nombre"  name="nombre"
+             type="text" disabled>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label>Cantidad a pagar</label>
+      <input type="text" [(ngModel)]="this.recibido" name="cantidad" class="form-control" disabled>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 card border-info mb-3" *ngFor="let pago of pagos let i = index;">
+      <div class="card-header">
+        <input type="checkbox" value="{{i}}" id="{{i}}" [checked]="idPago === i"
+               (click)="setPago(i)">
+        <label>{{pago.tipoPago}}</label>
+      </div>
+      <div class="card-body">
+        <div *ngIf="pago.capital && pago.capital > 0">
+          <span class="d-inline mr-3 bold">Capital</span>
+          <span class="d-inline bold">${{pago.capital | dosDecimales | number : '.2'}}</span>
+        </div>
+        <div *ngIf="pago.total && pago.total > 0">
+            <span class="d-inline mr-3 bold">Total</span>
+            <span class="d-inline bold">${{pago.total | dosDecimales | number : '.2'}}</span>
+        </div>
+        <div *ngIf="pago.totalQuincenal && pago.totalQuincenal > 0">
+          <span class="d-inline mr-3 bold">Total Quincenal</span>
+          <span class="d-inline bold">${{pago.totalQuincenal | dosDecimales | number : '.2'}}</span>
+        </div>
+        <div *ngIf="pago.quincenas && pago.quincenas > 0">
+          <span class="d-inline mr-3 bold">Quincenas</span>
+          <span class="d-inline bold">{{pago.quincenas}}</span>
+        </div>
+        <div *ngIf="pago.puntos && pago.puntos > 0">
+          <span class="d-inline mr-3 bold">Puntos</span>
+          <span class="d-inline bold">{{pago.puntos}}</span>
+        </div>
+        <div *ngIf="pago.efectivoPuntos && pago.efectivoPuntos > 0">
+          <span class="d-inline mr-3 bold">Efectivo en Puntos</span>
+          <span class="d-inline bold">${{pago.efectivoPuntos | dosDecimales | number : '.2'}}</span>
+        </div>
+        <div *ngIf="pago.fechaPago">
+          <span class="d-inline mr-3 bold">Fecha de Pago</span>
+          <span class="d-inline bold">{{pago.fechaPago}}</span>
+        </div>
+        <div *ngIf="pago.numPago && pago.numPago > 0">
+          <span class="d-inline mr-3 bold">Número de Pagos</span>
+          <span class="d-inline bold">{{pago.numPago}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8 mb-3">
+    <a *ngIf="idPago == null" class="text-danger">
+      <small>El tipo de pago es requerido</small>
+    </a>
+  </div>
+</div>
+<div class="modal-footer card-footer">
+  <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button type="button" class="btn btn-primary"
+          (click)="addPay()" [disabled]="idPago == null">Aceptar</button>
+</div>

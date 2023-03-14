@@ -1,0 +1,9 @@
+<div>
+  <form [formGroup]="form" class="form-horizontal" (keyup.enter)="keyUpEnter()" autocomplete="off">
+    <div *ngFor="let elemento of elementos, let i = index" class="form-row">
+      <div class="col-md-8 mb-3">
+        <app-componente-dinamico [elemento]="elemento" [form]="form" [index]="i"></app-componente-dinamico>
+      </div>
+    </div>
+  </form>
+</div>

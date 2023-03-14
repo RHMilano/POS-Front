@@ -1,0 +1,59 @@
+<ng-container *ngIf="!_descuentoService.descuentoApplied && !_descuentoService.pagoAdded">
+  <div class="col-md-10 offset-1">
+    <table class="table table-hover">
+      <tbody>
+      <ng-container *ngFor="let promocion of promocionesPosiblesLinea">
+
+        <tr>
+          <th scope="row">{{promocion.descripcionCodigoPromocionAplicado}}&nbsp;
+            <ng-container *ngIf="mostrarTipoPagosAplicables">
+              {{getDescripcionFormaPago(promocion.descuentosPromocionalesFormaPago)}}
+            </ng-container>
+
+          </th>
+          <td>-${{ promocion.importeDescuento | dosDecimales | number : '1.2-2' }}</td>
+        </tr>
+
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-10 offset-1">
+    <table class="table table-hover">
+      <tbody>
+      <tr *ngFor="let promocion of promocionesPosiblesVenta">
+        <th scope="row">{{promocion.descripcionCodigoPromocionAplicado}}
+          <ng-container *ngIf="mostrarTipoPagosAplicables">
+            {{getDescripcionFormaPago(promocion.descuentosPromocionalesFormaPago)}}
+          </ng-container>
+        </th>
+        <td><b>-${{ promocion.importeDescuento | dosDecimales | number : '1.2-2' }}</b></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-10 offset-1" *ngIf="promocionesPosiblesVentaMM.length">
+    <table class="table table-hover">
+      <tbody>
+      <tr *ngFor="let promocion of promocionesPosiblesVentaMM">
+        <th scope="row">{{promocion.descripcionCodigoPromocionAplicado}}
+        <td><b>-${{ promocion.importeDescuento | dosDecimales | number : '1.2-2' }}</b></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-md-8 offset-2" *ngIf="promocionesPosiblesLinea.length || promocionesPosiblesVenta.length">
+    <table class="table table-hover">
+      <tbody>
+      <tr>
+        <th scope="row">Total si aplica Promoci&oacute;n</th>
+        <td><b>{{totalAplicandoPromociones.toString() | dosDecimales | number : '1.2-2'  }}</b></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+
+
+

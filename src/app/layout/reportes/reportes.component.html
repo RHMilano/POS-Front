@@ -1,0 +1,159 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus>
+  <h4 class="modal-title pull-left">{{titulo}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body form-group card-body">
+  <form class="form-horizontal" [formGroup]="reportesForm">
+    <div class="form-row" *ngIf="this.TipoReporte !== 'sinDetalle' && this.TipoReporte !== 'detalle' && this.TipoReporte !== 'departamento'" [hidden]="this.TipoReporte === 'sinDetalle' || this.TipoReporte === 'detalle' || this.TipoReporte === 'departamento'">
+
+      <div class="col-md-4 mb-3">
+
+       <!-- <label for="validationCustom01"></label>-->
+
+        <input type="text" id="validationCustom01" name="fechaInicial" [(ngModel)]="FechaInicio" formControlName="fechaInicial"
+               placeholder="Fecha Inicial" class="form-control" aria-label="Fecha Fin" autocomplete="off"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}">
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaInicial').hasError('required')">La fecha inicial es requerida</span>
+        </div>
+
+      </div>
+      <div class="col-md-4 mb-3">
+
+       <!-- <label for="validationCustom02">Fecha Fin</label>-->
+
+        <input type="text" id="validationCustom02" name="fechaFinal"  [(ngModel)]="FechaFin" formControlName="fechaFinal"
+               placeholder="Fecha Fin" class="form-control" aria-label="Fecha Fin" autocomplete="off"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}">
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaFinal').hasError('required')">La fecha final es requerida</span>
+        </div>
+
+      </div>
+      <div class="col-md-2">
+        <!--label style="margin-left: 15px; margin-right: 15px;"></label>-->
+        <button class="btn btn-secondary" [disabled]="!FechaInicio || !FechaFin" style="margin-left: 15px;margin-right: 10px;" (click)="reporte()" type="button">Generar reporte
+        </button>
+      </div>
+    </div>
+    <div class="form-row" *ngIf="this.TipoReporte === 'sinDetalle' || this.TipoReporte === 'detalle'" [hidden]="this.TipoReporte !== 'sinDetalle' && this.TipoReporte !== 'detalle'">
+
+      <div class="col-md-3 mb-3">
+
+        <!-- <label for="validationCustom01"></label>-->
+
+        <input type="text" name="fechaInicial" [(ngModel)]="FechaInicio" formControlName="fechaInicial"
+               placeholder="Fecha Inicial" class="form-control" aria-label="Fecha Fin" autocomplete="off"
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaInicial').hasError('required')">La fecha inicial es requerida.</span>
+        </div>
+
+      </div>
+      <div class="col-md-3 mb-3">
+
+        <!-- <label for="validationCustom02">Fecha Fin</label>-->
+
+        <input type="text"  name="fechaFinal"  [(ngModel)]="FechaFin" formControlName="fechaFinal"
+               placeholder="Fecha Fin" class="form-control" aria-label="Fecha Fin" autocomplete="off"
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaFinal').hasError('required')">La fecha final es requerida.</span>
+        </div>
+
+      </div>
+      <div class="col-md-3 mb-3" *ngIf="TipoReporte !== 'departamento'">
+        <select class="custom-select" name="selectTipo"  [(ngModel)]="tipoApartado" formControlName="tipoApartado"
+                required appControlStatusDirectiveDirective appAutofocus (change)="filterReportes()">
+          <option [ngValue]="undefined" disabled selected>Estatus</option>
+          <option  value="V">Vigente</option>
+          <option  value="L">Liquidado</option>
+          <option  value="C">Cedido</option>
+        </select>
+        <div class="invalid-feedback" style="width: 200px;">
+          <span *ngIf="reportesForm.get('tipoApartado').hasError('required')">El tipo de reporte es requerido.</span>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3" *ngIf="TipoReporte === 'departamento'">
+        <input
+          type='text'
+          style='padding:8px;margin:15px auto;width:30%;'
+          placeholder='Departamento'
+          (keyup)='updateFilter($event)'
+        />
+      </div>
+      <div class="col-md-2">
+        <!--label style="margin-left: 15px; margin-right: 15px;"></label>-->
+        <button class="btn btn-secondary" [disabled]="!FechaInicio || !FechaFin || !this.tipoApartado" style="margin-left: 15px;margin-right: 10px;" (click)="reporte()" type="button">Generar reporte
+        </button>
+      </div>
+    </div>
+    <div class="form-row" *ngIf="this.TipoReporte === 'departamento'" [hidden]="this.TipoReporte !== 'departamento'">
+
+      <div class="col-md-3 mb-3">
+
+        <!-- <label for="validationCustom01"></label>-->
+
+        <input type="text" name="fechaInicial" [(ngModel)]="FechaInicio" formControlName="fechaInicial"
+               placeholder="Fecha Inicial" class="form-control" aria-label="Fecha Fin" autocomplete="off"
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaInicial').hasError('required')">La fecha inicial es requerida.</span>
+        </div>
+
+      </div>
+      <div class="col-md-3 mb-3">
+
+        <!-- <label for="validationCustom02">Fecha Fin</label>-->
+
+        <input type="text"  name="fechaFinal"  [(ngModel)]="FechaFin" formControlName="fechaFinal"
+               placeholder="Fecha Fin" class="form-control" aria-label="Fecha Fin" autocomplete="off"
+               pattern="([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}"
+               bsDatepicker [bsConfig]="this.bsConfig" required appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="reportesForm.get('fechaFinal').hasError('required')">La fecha final es requerida.</span>
+        </div>
+
+      </div>
+      <div class="col-md-3 mb-3">
+        <input
+          type='text' class="form-control"
+          placeholder='Departamento' autocomplete="off"
+          (keyup)='updateFilter($event)'
+        />
+      </div>
+      <div class="col-md-2">
+        <!--label style="margin-left: 15px; margin-right: 15px;"></label>-->
+        <button class="btn btn-secondary" [disabled]="!FechaInicio || !FechaFin" style="margin-left: 15px;margin-right: 10px;" (click)="reporte()" type="button">Generar reporte
+        </button>
+      </div>
+    </div>
+  </form>
+  <ngx-datatable
+    class='material text-center'
+    [columns]="columns"
+    [columnMode]="'force'"
+    [headerHeight]="35"
+    [footerHeight]="35"
+    [rowHeight]="35"
+    [scrollbarH]="true"
+    [limit]="10"
+    [rows]='rows'
+    [summaryRow]="enableSummary"
+    [summaryPosition]="summaryPosition"
+    [summaryHeight]="35"
+    *ngIf="this.rows.length">
+  </ngx-datatable>
+  <ngx-datatable-footer></ngx-datatable-footer>
+</div>
+<div class="modal-footer card-footer">
+  <button type="button" class="btn btn-primary" [hidden]="!this.rows.length" (click)="closeModal()" >Aceptar
+  </button>
+</div>

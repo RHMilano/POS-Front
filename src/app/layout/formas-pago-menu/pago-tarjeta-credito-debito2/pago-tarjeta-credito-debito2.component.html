@@ -1,0 +1,96 @@
+<!-- appModalFocus -->
+<div class="modal-header card-header" >
+  <h4 class="modal-title card-element-title">Pago con Tarjeta v2 Visa/Mastercard</h4>
+</div>
+<!-- <ng-container *ngIf="!showMovimientoExtra"> -->
+<ng-container>
+  <!-- [hidden]="showMovimientoExtra" -->
+  <div class="modal-body card-body">
+    <div class="text-center" *ngIf="!this.cargando" [hidden]="this.cargando">
+      <img src="assets/images/visa.png">
+      <img src="assets/images/mastercard.png">
+    </div>
+
+    <div class="form-group col-md-8 offset-2" style="margin-bottom: 50px;margin-top: 30px;" *ngIf="this.cargando"
+      [hidden]="!this.cargando">
+      <div class="carga">
+        <div class="loading">
+          <span class="spinner"></span>
+          <div>procesando</div>
+        </div>
+      </div>
+    </div>
+
+    <h6 class="card-title text-center mb-3" *ngIf="this.cargando" [hidden]="!this.cargando">Introducir tarjeta en la
+      terminal, cuando esta lo solicite</h6>
+
+    <form class="needs-validation" (keyup.escape)="closeModal()" autocomplete="off" role="presentation">
+
+      <div [hidden]="!this.pasosPago.verPasoUno ">
+        <div class="form-group col-md-8 offset-2">
+          <label for="cc-payment" class="control-label mb-1">Cantidad a pagar</label>
+          <input  name="cc-payment" type="text" class="form-control" 
+             [(ngModel)]="recibido" (keyup.enter)="CardReader()" placeholder="0.00" appCashOnly appAutofocus 
+             required appControlStatusDirectiveDirective>
+            <a *ngIf="!recibido" class="text-danger"  [hidden]="recibido">
+              <small>La cantidad a pagar es  requerida.</small>
+            </a>
+            <a *ngIf="recibido == 0" class="text-danger"  [hidden]="!recibido">
+              <small>Ingrese una cantidad mayor a 0.</small>
+            </a>
+           
+
+        </div>
+        <div class="modal-footer card-footer">
+          <button type="button" class="btn btn-primary" (click)="CardReader()">Aceptar</button>
+        </div>
+      </div>
+
+     
+      <div [hidden]="!this.pasosPago.verPasoDos ">
+        <div class="form-group col-md-12">
+          <h4>Seleccione los meses para pagar</h4>
+        </div>
+
+        <div  class="form-group col-md-8 offset-2">
+          <label class="control-label mb-1">Seleccionar:</label>
+          <select  [(ngModel)]="mesesSeleccionados" class="form-control" name="select">
+            <option value="1" selected>Un solo pago</option>
+            <option value="3" selected>3 Meses sin intereses</option>
+            <option value="6" selected>6 Meses sin intereses</option>
+            <option value="9" selected>9 Meses sin intereses</option>
+            <option value="12" selected>12 Meses sin intereses</option>
+           
+          </select>
+        </div>
+
+        <div class="modal-footer card-footer ">
+          <button (click)="cancelPay()" type="button" [disabled]="!this.toDisable" class="btn btn-secondary "
+            data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="PagaMSI('3')">Continuar</button>
+        </div>
+
+      </div>
+
+      <div [hidden]="!this.pasosPago.verPasoTres">
+
+        <div class="form-group col-md-12">
+          <h5>¿Desea pagar con puntos?</h5>
+        </div>
+
+        <div class="modal-footer card-footer ">
+          <button (click)="cancelPay()" type="button" [disabled]="!this.toDisable" class="btn btn-secondary col-md-3"
+            data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary col-md-3" (click)="Pay(true)">Sí</button>
+          <button type="button" class="btn btn-danger col-md-3" (click)="Pay(false)">No</button>
+        </div>
+
+      </div>
+
+    </form>
+    <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance"
+      [codigoFormaPago]="tipoPago" (datosPromociones)="getPromocionesPosibles($event)">
+    </app-descuentos-informacion>
+  </div>
+
+</ng-container>

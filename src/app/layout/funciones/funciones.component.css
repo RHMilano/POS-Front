@@ -1,0 +1,20 @@
+.btn_disabled {
+  background-color: rgb(182, 192, 203);
+  cursor: no-drop;
+}
+
+.btn_disabled > a > img {
+  filter: grayscale(100%);
+}
+
+.btn_enabled {
+  cursor: pointer;
+}
+
+
+:host >>> .tooltip-inner {
+  text-align: left;
+  white-space: nowrap;
+  color: #fff;
+  max-width: 500px;
+}

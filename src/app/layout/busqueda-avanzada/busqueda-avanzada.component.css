@@ -1,0 +1,14 @@
+.ngx-pagination{
+  padding: 0!important;
+}
+
+.scrollResults {
+  height: 500px;
+  overflow-y: scroll;
+}
+
+
+.activeCustom {
+  background-color: #4caf50 !important;
+  color: white;
+}

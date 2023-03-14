@@ -1,0 +1,45 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+  <h4 class="modal-title pull-left">Cambiar Precio al Art&iacute;culo</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="_bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body form-group card-body">
+  <form class="form-horizontal" #formCambio="ngForm">
+    <div>
+      <table class="table">
+        <thead>
+        <tr>
+          <th style="width: 30%">Art&iacute;culo</th>
+          <th style="width: 20%">Precio Actual</th>
+          <th style="width: 20%">Precio Nuevo</th>
+          <th style="width: 30%">Raz&oacute;n de Cambio de Precio</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td> {{ ticketVirtual.ticketRow[ticketVirtual.currentSelection].estilo }}</td>
+          <td> {{ ticketVirtual.ticketRow[ticketVirtual.currentSelection].price | currency:'$':'symbol':'1.2-2' }}</td>
+          <td><input type="text" placeholder="0.00" class="form-control"
+                     [(ngModel)]="nuevoPrecioItem"
+                     name="nuevoPrecioItem" (keyup.enter)="onAceptarCambioPrecio()"
+                     appAutofocus appControlStatusDirectiveDirective appCashOnly required>
+          </td>
+          <td>
+            <select class="custom-select" name="selectM" [(ngModel)]="SelectRazon" (change)="enviarRazon($event.target.value)"
+                    required appControlStatusDirectiveDirective="">
+              <option *ngFor="let razon of razones; let i = index" value="{{razon.codigoRazon}}">{{razon.descripcionRazon}}</option>
+            </select>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+
+</div>
+<div class="modal-footer card-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancelarCambioPrecio()">Cancelar</button>
+  <button type="button" class="btn btn-primary" (click)="onAceptarCambioPrecio()" [disabled]="!formCambio.valid && !validaPrecioNuevo()">Aceptar
+  </button>
+</div>

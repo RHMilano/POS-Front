@@ -1,0 +1,170 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;" appModalFocus #modalFocusReference="modalFocusReference">
+  <h4 class="modal-title pull-left">{{tituloVentana}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="_bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body form-group card-body">
+  <form [formGroup]="busquedaCliente" *ngIf="!modoInformacionCliente">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <input type="text" placeholder="Nombre" class="form-control" (keyup.enter)="aceptarBusqueda()" [(ngModel)]="nombreClienteBusqueda"
+                name="nombreClienteBusqueda" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]{2,48}"
+               formControlName="nombreClienteBusqueda" autocomplete="off" appAutofocus appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-3 mb-3">
+        <input type="text" placeholder="Tel&eacute;fono" class="form-control" (keyup.enter)="aceptarBusqueda()" [(ngModel)]="telefonoClienteBusqueda" name="telefonoClienteBusqueda"
+               formControlName="telefonoClienteBusqueda" autocomplete="off"  appOnlyNumbers appControlStatusDirectiveDirective>
+      </div>
+      <div class="col-md-2 mb-3">
+        <button type="button" class="btn btn-secondary" (click)="aceptarBusqueda()" [disabled]="!busquedaCliente.valid">Buscar</button>
+      </div>
+    </div>
+    <a [hidden]="this.nombreClienteBusqueda || this.telefonoClienteBusqueda" style="margin-left: 15px;" class="text-danger">
+      <small>Ingrese al menos un criterio de b&uacute;squeda.</small>
+    </a>
+  </form>
+  <div *ngIf='clientesBusqueda.length && !modoInformacionCliente'
+       #directiveReference="focusRowReference" [appFocusTicketRow]="rowSelector" [arrowPaginate]="true" [addInputToFocus]="true">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th style="width: 200px !important;" class="">
+          C&oacute;digo Cliente
+        </th>
+        <th class="">Nombre</th>
+        <th class="">Tel&eacute;fono</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let cliente of clientesBusqueda | paginate: { itemsPerPage: itemsPerPage , currentPage: rowSelector.pageNumber } ; let i = index"
+          [class.active]="i == rowSelector.currentSelection" style="cursor: pointer;"
+          (click)="seleccionarCliente(cliente, i)">
+        <td> {{cliente.codigoCliente}}</td>
+        <td> {{cliente.nombre}} {{cliente.apellidoPaterno}} {{cliente.apellidoMaterno}}</td>
+        <td> {{cliente.telefono}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <pagination-controls *ngIf='clientesBusqueda.length && !modoInformacionCliente'
+                       name="page" (pageChange)="rowSelector.pageChange($event)"
+                       previousLabel="Anterior"
+                       nextLabel="Siguiente"
+                       style="margin-bottom: 0px;"
+                       class="text-center">
+  </pagination-controls>
+  <form [formGroup]="nuevoCliente" *ngIf="modoInformacionCliente">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" placeholder="Nombre" name="nombre" formControlName="nombre"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]{2,48}"
+               appControlStatusDirectiveDirective appAutofocus>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('nombre').hasError('required')">El Nombre es requerido</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" placeholder="Apellido Paterno" name="apellidoPaterno" formControlName="apellidoPaterno"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]{2,48}"
+               appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('apellidoPaterno').hasError('required')">El Apellido Paterno es requerido</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" placeholder="Apellido Materno" name="apellidoMaterno" formControlName="apellidoMaterno"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]{2,48}"
+               appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('apellidoMaterno').hasError('required')">El Apellido Materno es requerido</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <input type="text" name="calle" placeholder="Calle" formControlName="calle" class="form-control"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 .]{2,48}"
+               appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('calle').hasError('required')">La Calle es requerida</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" name="noExterior" placeholder="No. Exterior" formControlName="noExterior" class="form-control"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{2,48}"
+               appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('noExterior').hasError('required')">El N&uacute;mero Exterior es requerido</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" name="noInterior" placeholder="No. Interior" formControlName="noInterior" class="form-control"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{2,48}"
+               appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('noInterior').hasError('required')">El N&uacute;mero Interior es requerido</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <input type="text" name="ciudad" placeholder="Ciudad" formControlName="ciudad" class="form-control"
+               pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 .]{2,48}"
+               appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('ciudad').hasError('required')">La Ciudad es requerida</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <select class="custom-select" name="selectM" [(ngModel)]="estado" id="usuario-final-crear-estado" formControlName="estado"
+                required appControlStatusDirectiveDirective>
+          <option [ngValue]="undefined" disabled selected>Estado</option>
+          <option *ngFor="let edo of optionsEstados" value="{{edo}}">{{edo}}</option>
+        </select>
+       <!--input type="text" name="estado" placeholder="Estado" formControlName="estado" class="form-control" appControlStatusDirectiveDirective>-->
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('estado').hasError('required')">El Estado es requerido</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" name="codigoPostal" placeholder="C.P." formControlName="codigoPostal" class="form-control"
+               appOnlyNumbers appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('codigoPostal').hasError('required')">El C.P. es requerido</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" placeholder="Tel&eacute;fono" autocomplete="off" formControlName="telefono"
+               appOnlyNumbers appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('telefono').hasError('required')">El N&uacute;mero de la Tel&eacute;fono es requerido</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <input type="text" class="form-control" name="email" placeholder="Correo Electr&oacute;nico" formControlName="email" appControlStatusDirectiveDirective>
+        <div class="invalid-feedback">
+          <span *ngIf="nuevoCliente.get('email').hasError('email')">El Email es incorrecto</span>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer card-footer">
+  <div *ngIf="!modoInformacionCliente">
+    <!-- <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button> -->
+    <button type="button" class="btn btn-primary" (click)="aceptarClienteSeleccionado()" *ngIf="clienteSeleccionado">Crear Apartado</button>
+    <button type="button" class="btn btn-success" (click)="onNuevoCliente()" *ngIf="!modoNuevoCliente">Nuevo Cliente</button>
+  </div>
+  <div *ngIf="modoInformacionCliente">
+    <!--
+    <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+    -->
+    <button type="button" class="btn btn-success" (click)="guardarInfoCliente()" *ngIf="editandoCliente"
+            [disabled]="!nuevoCliente.valid">Guardar Informaci&oacute;n
+    </button>
+    <button type="button" class="btn btn-success" (click)="aceptarCliente()" *ngIf="!editandoCliente">Crear Apartado</button>
+  </div>
+</div>

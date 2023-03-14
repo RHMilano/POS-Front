@@ -1,0 +1,56 @@
+<div class="modal-header card-header" appModalFocus>
+  <h4 class="modal-title  card-element-title">Pago con Vales</h4>
+  <button type="button" (click)="cancelPay()" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="needs-validation" autocomplete="off" role="presentation">
+    <div class="form-row">
+      <p class="col-md-8 offset-2"><b>
+        Monto m&aacute;ximo de cambio {{montoMaximoCambioVales | currency: 0 :
+        "$"
+        }}</b>
+      </p>
+      <div class="col-md-8 offset-2">
+        <label >Tipo de Vale</label>
+        <select class="custom-select form-control"  required [(ngModel)]="SelectVale" name="selectC" (ngModelChange)="setSelectedVale($event)"
+                appControlStatusDirectiveDirective appAutofocus>
+          <option *ngFor="let vale of vales; let i = index"  [ngValue]="vale.codigoFormaPago">{{vale.descripcionCorta}}</option>
+        </select>
+
+      </div>
+      <div class="col-md-8 offset-2 mb-3">
+      <a *ngIf="!SelectVale" class="text-danger">
+        <small>El tipo de vale es requerido.</small>
+      </a>
+      </div>
+      <div class="col-md-8 offset-2 mb-3">
+        <label for="vales-cantidad">Cantidad a pagar</label>
+        <input type="text" [(ngModel)]="recibido" name="vales-cantidad" class="form-control"
+               id="vales-cantidad"  placeholder="0.00" appCashOnly step="0.01"
+                (keyup.enter)="addPay()"
+               required appControlStatusDirectiveDirective>
+        <a *ngIf="!recibido" class="text-danger"  [hidden]="recibido">
+          <small>La cantidad a pagar es  requerida.</small>
+        </a>
+        <a *ngIf="recibido == 0" class="text-danger"  [hidden]="!recibido">
+          <small>Ingrese una cantidad mayor a 0.</small>
+        </a>
+      </div>
+
+    </div>
+  </form>
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance"
+                              [codigoFormaPago]="tipoPago"
+                              (datosPromociones)="getPromocionesPosibles($event)"
+                              [codigoValeSeleccionado]="selectedVale"
+                              [formasDePagosDisponibles]="vales">
+
+  </app-descuentos-informacion>
+</div>
+    <div class="modal-footer card-footer">
+      <button (click)="cancelPay()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button (click)="addPay()" [disabled]="!validatePay() || !this.toDisable" class="btn btn-primary">Aceptar</button>
+    </div>
+

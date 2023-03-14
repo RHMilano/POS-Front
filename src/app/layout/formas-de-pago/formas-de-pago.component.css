@@ -1,0 +1,7 @@
+
+.datos_folio{
+    position: relative;
+    transform: translateY(-50%);
+    font-size: 13px !important;
+    cursor: pointer;
+  }
