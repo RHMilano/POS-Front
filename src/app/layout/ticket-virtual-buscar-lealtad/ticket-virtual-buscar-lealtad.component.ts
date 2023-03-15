@@ -33,6 +33,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
   registroLealtadResponse: RegistroLealtadResponse;
   consultaLealtadRequest: ConsultaLealtadRequest;
   consultaLealtadResponse: ConsultaLealtadResponse;
+  seleccion: ConsultaLealtadResponse;
   numeroClienteGenerado: string;
   loggedInfo: UserResponse;
 
@@ -43,11 +44,12 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
     private _lealtadService: LealtadService) {
     this.registroLealtadRequest = new RegistroLealtadRequest();
     this.registroLealtadResponse = new RegistroLealtadResponse();
-    this.createFormulario();
-    this. createFormularioConsulta();
+   
   }
 
   ngOnInit() {
+    this.createFormulario();
+    this. createFormularioConsulta();
   }
 
   onCancelarCambioPrecio() {
@@ -62,18 +64,24 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
     this.bolNuevoCliente = false;
   }
 
-  clienteSeleccionado(cliente: number) {
-    this.numeroCliente = cliente;
+  clienteSeleccionado(e) {
+
+    this.seleccion = ({...e});
+
+    //debugger;
+   
+    //alert(JSON.stringify(e));
+
   }
 
   createFormulario() {
     this.frm = this.fb.group({
-      sNombre: ['', Validators.required],
-      sPaterno: ['', Validators.required],
-      sMaterno: ['', Validators.required],
-      sGenero: ['', Validators.required],
-      sEmail: ['', Validators.required],
-      sTelefono: ['', Validators.required],
+      sNombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      sPaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      sMaterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      sGenero: ['F', Validators.required],
+      sEmail: ['',[Validators.required, Validators.pattern(this.regex.CORREO)]],
+      sTelefono: ['', [Validators.required, Validators.pattern(this.regex.TELEFONO)]],
       sFechaNacimiento: ['', Validators.required],
       iCodigoTiendaRegistra: [0, Validators.required],
       iCodigoCajaRegistra: [0, Validators.required],
@@ -87,21 +95,25 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
   createFormularioConsulta() {
     this.frmConsulta = this.fb.group({
-      iCodigoCliente: [0], // Siempre 0
-      iCodigoClienteSistemaCredito: [0], // Siempre 0
-      iCodigoEmpleado: [0], // Siempre 0
-      iCodigoClienteWeb: [0], // Siempre 0
+      iCodigoCliente: [], // Siempre 0
+      iCodigoClienteSistemaCredito: [], // Siempre 0
+      iCodigoEmpleado: [], // Siempre 0
+      iCodigoClienteWeb: [], // Siempre 0
       sTelefono: [''],
       sPaterno: [''],
       sMaterno: [''],
       sNombre: [''],
-      sFechaNacimiento: [''],
-      iCodigoTiendaRegistro: [0],
+      sFechaNacimiento: [],
+      iCodigoTiendaRegistro: [],
       sEmail: [''],
-      iCodigoTienda: [0],
-      iCodigoCaja: [0],
+      iCodigoTienda: [],
+      iCodigoCaja: [],
+      bTiendaCaja: [],
     });
   }
+
+  get f() { return this.frm.controls; }
+
 
   //#region Getter Nombre
   get getEstatusNombre() {
@@ -109,7 +121,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
   }
 
   get getNombre() {
-    return this.frm.get('sNombre');
+    return this.frm.controls['sNombre'];
   }
   //#endregion
 
@@ -162,6 +174,9 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
   SaveForm() {
 
     this.registroLealtadRequest = ({ ...this.frm.value });
+
+
+
     this.loggedInfo = JSON.parse(localStorage.getItem('accessInfo'));
     //console.log(JSON.stringify(this.loggedInfo ));
 
@@ -188,30 +203,33 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
   ConsultaForm() {
 
-    this.consultaLealtadRequest = ({ ...this.frmConsulta.value });
-    this.loggedInfo = JSON.parse(localStorage.getItem('accessInfo'));
-    //console.log(JSON.stringify(this.loggedInfo ));
+    this.seleccion = null;
 
-    this.consultaLealtadRequest.iCodigoCaja = this.loggedInfo.numeroCaja;
-    //this.consultaLealtadRequest.iCodigoEmpleado = 506856;//this.loggedInfo.numberEmployee;
-    this.consultaLealtadRequest.iCodigoTienda = parseInt(this.loggedInfo.nombre.substring(7, 12));
+    this.consultaLealtadRequest = new ConsultaLealtadRequest(this.frmConsulta.value );
+    //this.consultaLealtadRequest = ({ ...this.frmConsulta.value });
+    this.loggedInfo = JSON.parse(localStorage.getItem('accessInfo'));
+   
+    if ( this.consultaLealtadRequest.bTiendaCaja) {
+      this.consultaLealtadRequest.iCodigoCaja = this.loggedInfo.numeroCaja;
+      //this.consultaLealtadRequest.iCodigoEmpleado = 506856;//this.loggedInfo.numberEmployee;
+      this.consultaLealtadRequest.iCodigoTienda = parseInt(this.loggedInfo.nombre.substring(7, 12));
+    }else{
+      this.consultaLealtadRequest.iCodigoCaja = 0;
+      this.consultaLealtadRequest.iCodigoTienda = 0;
+    }
 
     this._lealtadService.ConsultaClienteLealtad(this.consultaLealtadRequest).subscribe(
       resp => {
 
         //console.log(JSON.stringify(resp));
         this.consultaLealtadResponse = ({ ...resp });
-        console.log(JSON.stringify( this.consultaLealtadResponse.InfoClientesCRM));
-        // this.numeroClienteGenerado = this.registroLealtadResponse.iCodigoCliente.toString();
-        // alert(JSON.stringify(this.registroLealtadResponse));
 
-        // if (this.registroLealtadResponse.bError) {
-        //   this._alertService.show({ tipo: 'error', titulo: 'POS Milano', mensaje: this.registroLealtadResponse.sMensaje });
-        //   return;
-        // }
+        if (this.consultaLealtadResponse.sMensajeError && this.consultaLealtadResponse.sMensajeError != '' ) {
+          this._alertService.show({ tipo: 'error', titulo: 'POS Milano', mensaje: this.consultaLealtadResponse.sMensajeError });
+          return;
+        }
 
-        // this._alertService.show({ tipo: 'success', titulo: 'POS Milano', mensaje: this.registroLealtadResponse.sMensaje });
-
+        //console.log(JSON.stringify( this.consultaLealtadResponse.InfoClientesCRM));
       }
     );
   }

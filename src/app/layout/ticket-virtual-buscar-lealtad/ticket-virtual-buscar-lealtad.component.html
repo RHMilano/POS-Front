@@ -77,20 +77,29 @@
             </div>
 
             <div class="row mt-2">
+            
               <div class="col-12 text-right">
-                <button type="button" class="btn btn-success btn-sm" (click)="registrarCliente()">Registrar nuevo
-                </button>
+
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" formControlName="bTiendaCaja" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1">Buscar en tienda</label>
+                </div>
+               
                 <button type="submit" class="btn btn-primary btn-sm">Buscar
                 </button>
 
               </div>
+            
 
             </div>
           </form>
         </div>
       </div>
       <div class="col-md-8 mt-3">
-        <h5 class="card-title text-right">Cliente: {{numeroCliente}}</h5>
+        <div  *ngIf="this.seleccion" class="alert alert-info" role="alert">
+          Cliente: #{{ this.seleccion.iiCodigoCliente}} {{ this.seleccion.ssNombre}} {{ this.seleccion.ssPaterno}} {{ this.seleccion.ssMaterno}}, teléfono:{{ this.seleccion.ssTelefono}} 
+        </div>
+        <h6 *ngIf="this.consultaLealtadResponse">Clientes encontrados: {{ this.consultaLealtadResponse.iCantidadClientes}}</h6>
         <div class="tableFixHead table-responsive">
           <table class="table table-hover" style="font-size: 0.8rem;">
             <thead>
@@ -102,14 +111,16 @@
               </tr>
             </thead>
             <tbody *ngIf="this.consultaLealtadResponse">
-              <tr *ngFor="let t of this.consultaLealtadResponse.InfoClientesCRM">
+              <tr *ngFor="let t of this.consultaLealtadResponse.InfoClientesCRM" (click)="clienteSeleccionado(t);">
                 <td>{{t.iiCodigoCliente}}</td>
                 <td>{{t.ssNombre}} {{t.ssPaterno}} {{t.ssMaterno}}</td>
                 <td>{{t.ssTelefono}}</td>
                 <td>{{t.ssEmail}}</td>
             </tbody>
           </table>
+        
         </div>
+       
       </div>
     </div>
   </div>
@@ -130,7 +141,11 @@
                 </div>
                 <input type="text" class="form-control" formControlName="sNombre" placeholder="Nombre">
               </div>
-              <small *ngIf="getEstatusNombre" class="error">Nombre requerido.</small>
+             <div  *ngIf="f.sNombre.errors && f.sNombre.touched"> 
+              <small  *ngIf="f.sNombre.errors?.required" class="error">Nombre requerido.</small>
+              <small  *ngIf="f.sNombre.errors?.minlength" class="error">Mínimo tres caractéres.</small>
+              <small  *ngIf="f.sNombre.errors?.maxlength" class="error">Máximo 50 caractéres.</small>
+             </div>
             </div>
             <!-- Apellido Paterno -->
             <div class="row mt-2">
@@ -142,7 +157,11 @@
                 </div>
                 <input type="text" class="form-control" formControlName="sPaterno" placeholder="Apellido Paterno">
               </div>
-              <small *ngIf="getEstatusPaterno" class="error">Apellido paterno requerido.</small>
+              <div  *ngIf="f.sPaterno.errors && f.sPaterno.touched"> 
+                <small  *ngIf="f.sPaterno.errors?.required" class="error">Apellido paterno requerido.</small>
+                <small  *ngIf="f.sPaterno.errors?.minlength" class="error">Mínimo tres caractéres.</small>
+                <small  *ngIf="f.sPaterno.errors?.maxlength" class="error">Máximo 50 caractéres.</small>
+              </div>
             </div>
             <!-- Apellido Materno -->
             <div class="row mt-2">
@@ -154,7 +173,11 @@
                 </div>
                 <input type="text" class="form-control" formControlName="sMaterno" placeholder="Apellido Materno">
               </div>
-              <small *ngIf="getEstatusMaterno" class="error">Apellido materno requerido.</small>
+              <div  *ngIf="f.sMaterno.errors && f.sMaterno.touched"> 
+                <small  *ngIf="f.sMaterno.errors?.required" class="error">Apellido materno requerido.</small>
+                <small  *ngIf="f.sMaterno.errors?.minlength" class="error">Mínimo tres caractéres.</small>
+                <small  *ngIf="f.sMaterno.errors?.maxlength" class="error">Máximo 50 caractéres.</small>
+              </div>
             </div>
             <!-- Genero -->
             <div class="row mt-2">
@@ -164,9 +187,8 @@
                       class="img-fluid" alt="Responsive image" width="16px"></span>
                 </div>
                 <select class="custom-select" formControlName="sGenero">
-                  <option selected>Género</option>
-                  <option value="M">Hombre</option>
-                  <option value="F">Mujer</option>
+                  <option value="M" >Hombre</option>
+                  <option value="F" selected>Mujer</option>
                 </select>
               </div>
               <small *ngIf="getEstatusGenero" class="error">Seleccione un género.</small>
@@ -181,7 +203,10 @@
                 <input type="text" class="form-control" formControlName="sTelefono" aria-label="Small"
                   aria-describedby="inputGroup-sizing-sm" placeholder="Teléfono">
               </div>
-              <small *ngIf="getEstatusTelefono" class="error">Teléfono requerido.</small>
+              <div  *ngIf="f.sTelefono.errors && f.sTelefono.touched"> 
+                <small  *ngIf="f.sTelefono.errors?.required" class="error">Teléfono requerido.</small>
+                <small  *ngIf="f.sTelefono.errors?.pattern" class="error">Deben ser diez números.</small>
+              </div>
             </div>
             <!-- Correo electronico -->
             <div class="row mt-2">
@@ -193,7 +218,10 @@
                 <input type="text" class="form-control" formControlName="sEmail" aria-label="Small"
                   aria-describedby="inputGroup-sizing-sm" placeholder="Correo electrónico">
               </div>
-              <small *ngIf="getEstatusCorreo" class="error">Correo requerido.</small>
+              <div  *ngIf="f.sEmail.errors && f.sEmail.touched"> 
+                <small  *ngIf="f.sEmail.errors?.required" class="error">Correo requerido.</small>
+                <small  *ngIf="f.sEmail.errors?.pattern" class="error">Formato incorrecto.</small>
+              </div>
             </div>
             <!-- Fecha de nacimiento -->
             <div class="row mt-2">
@@ -209,6 +237,7 @@
               <small *ngIf="getEstatusFechaNacimiento" class="error">Fecha cumpleaños requerida.</small>
             </div>
             <div class="row mt-2">
+
               <div class="col-12 text-right">
                 <button type="button" class="btn btn-default btn-sm" (click)="regresar()">Regresar
                 </button>
@@ -233,6 +262,11 @@
 
 </div>
 <div class="modal-footer card-footer">
-  <button type="button" class="btn btn-secondary btn-sm">Cerrar</button>
+  <button  *ngIf="this.seleccion" (click)="_bsModalRef.hide()" type="button" class="btn btn-primary btn-sm">Aplicar selección
+  </button>
+
+  <button type="button" class="btn btn-success btn-sm" (click)="registrarCliente()">Registrar nuevo
+  </button>
+  <button type="button" class="btn btn-secondary btn-sm" (click)="_bsModalRef.hide()">Cerrar</button>
 
 </div>
