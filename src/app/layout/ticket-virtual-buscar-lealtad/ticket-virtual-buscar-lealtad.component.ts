@@ -124,7 +124,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
       iCodigoClienteSistemaCredito: [], // Siempre 0
       iCodigoEmpleado: [], // Siempre 0
       iCodigoClienteWeb: [], // Siempre 0
-      sTelefono: [''],
+      sTelefono: ['', [Validators.pattern(this.regex.TELEFONO)]],
       sPaterno: [''],
       sMaterno: [''],
       sNombre: [''],

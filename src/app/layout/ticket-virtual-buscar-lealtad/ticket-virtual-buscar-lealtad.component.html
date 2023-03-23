@@ -60,7 +60,7 @@
                   <span class="input-group-text" id="inputGroup-sizing-sm"><img src="../../../assets/images/llamada.png"
                       class="img-fluid" alt="Responsive image" width="16px"></span>
                 </div>
-                <input type="text" class="form-control" formControlName="sTelefono" aria-label="Small" aria-describedby="inputGroup-sizing-sm"
+                <input type="number" class="form-control" formControlName="sTelefono" aria-label="Small" aria-describedby="inputGroup-sizing-sm"
                   placeholder="Teléfono">
               </div>
             </div>
@@ -126,7 +126,7 @@
             </thead>
             <tbody *ngIf="this.consultaLealtadResponse">
               <tr *ngFor="let t of this.consultaLealtadResponse.InfoClientesCRM" (click)="clienteSeleccionado(t);">
-                <td>{{t.iiCodigoCliente}}</td>
+                <td class="codecl">{{t.iiCodigoCliente}}</td>
                 <td>{{t.ssNombre}} {{t.ssPaterno}} {{t.ssMaterno}}</td>
                 <td>{{t.ssTelefono}}</td>
                 <td>{{t.ssEmail}}</td>
@@ -214,7 +214,7 @@
                   <span class="input-group-text" id="inputGroup-sizing-sm"><img src="../../../assets/images/llamada.png"
                       class="img-fluid" alt="Responsive image" width="16px"></span>
                 </div>
-                <input type="text" class="form-control" formControlName="sTelefono" aria-label="Small"
+                <input type="number" class="form-control" formControlName="sTelefono" aria-label="Small"
                   aria-describedby="inputGroup-sizing-sm" placeholder="Teléfono">
               </div>
               <div  *ngIf="f.sTelefono.errors && f.sTelefono.touched"> 
