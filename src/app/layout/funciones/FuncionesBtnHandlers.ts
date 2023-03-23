@@ -50,12 +50,16 @@ export const FuncionesBtnHandler = {
   // },
   busquedaLealtad(conf) {
     const initialState = {ticketVirtualInstance: this.ticketVirtualInstance};
-    const options: ModalOptions = {
+    // const options: ModalOptions = {
+    //   class: 'modal-lg',
+    //   backdrop: 'static',
+    //   initialState
+    // };
+    this.modalRef = this.modalService.show(TicketVirtualBuscarLealtadComponent, {
       class: 'modal-lg',
       backdrop: 'static',
       initialState
-    };
-    this.modalRef = this.modalService.show(TicketVirtualBuscarLealtadComponent, options);
+    });
   },
   showChilds(conf) {
     this.showChild(conf);

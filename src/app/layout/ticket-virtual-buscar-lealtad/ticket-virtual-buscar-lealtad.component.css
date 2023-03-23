@@ -17,3 +17,9 @@ tr {
     padding-top: 1px;
     margin-top: 1px;
 }
+
+.card-footer2{
+    padding: 1rem;
+    border-top: 1px solid #e9ecef;
+    display: revert;
+}

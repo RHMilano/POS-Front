@@ -77,27 +77,41 @@
             </div>
 
             <div class="row mt-2">
-            
               <div class="col-12 text-right">
-
                 <div class="form-check">
                   <input type="checkbox" class="form-check-input" formControlName="bTiendaCaja" id="exampleCheck1">
                   <label class="form-check-label" for="exampleCheck1">Buscar en tienda</label>
                 </div>
-               
+              </div>
+            
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-12 text-right ">
+
+              
+                <button type="button" class="btn btn-default btn-sm" (click)="limpiar('busqueda')">Limpiar
+                </button>
                 <button type="submit" class="btn btn-primary btn-sm">Buscar
                 </button>
 
               </div>
-            
-
             </div>
           </form>
         </div>
       </div>
       <div class="col-md-8 mt-3">
         <div  *ngIf="this.seleccion" class="alert alert-info" role="alert">
-          Cliente: #{{ this.seleccion.iiCodigoCliente}} {{ this.seleccion.ssNombre}} {{ this.seleccion.ssPaterno}} {{ this.seleccion.ssMaterno}}, teléfono:{{ this.seleccion.ssTelefono}} 
+          <div class="row">
+            <div class="col-12">
+              Cliente: #{{ this.seleccion.iiCodigoCliente}} - {{ this.seleccion.ssNombre}} {{ this.seleccion.ssPaterno}} {{ this.seleccion.ssMaterno}}
+            </div>
+            <div class="col-12 text-right mt-3">
+            <button  *ngIf="this.seleccion && !showButtons && this.consultaLealtadResponse.InfoClientesCRM.length > 0"  type="button"  (click)="_bsModalRef.hide()" class="btn btn-primary btn-sm">Aplicar promoción lealtad
+            </button>
+          </div>
+          </div>
+         
         </div>
         <h6 *ngIf="this.consultaLealtadResponse">Clientes encontrados: {{ this.consultaLealtadResponse.iCantidadClientes}}</h6>
         <div class="tableFixHead table-responsive">
@@ -238,9 +252,11 @@
             </div>
             <div class="row mt-2">
 
-              <div class="col-12 text-right">
-                <button type="button" class="btn btn-default btn-sm" (click)="regresar()">Regresar
+              <div class="col-12 text-right mt-3">
+                <button type="button" class="btn btn-default btn-sm" (click)="limpiar('registro')">Limpiar
                 </button>
+                <!-- <button type="button" class="btn btn-default btn-sm" (click)="regresar()">Regresar
+                </button> -->
                 <button type="submit" class="btn btn-primary btn-sm">Guardar
                 </button>
 
@@ -261,12 +277,24 @@
   </div>
 
 </div>
-<div class="modal-footer card-footer">
-  <button  *ngIf="this.seleccion" (click)="_bsModalRef.hide()" type="button" class="btn btn-primary btn-sm">Aplicar selección
-  </button>
+<div class="modal-footer card-footer2">
 
-  <button type="button" class="btn btn-success btn-sm" (click)="registrarCliente()">Registrar nuevo
-  </button>
-  <button type="button" class="btn btn-secondary btn-sm" (click)="_bsModalRef.hide()">Cerrar</button>
+  <div class="row">
+    <div class="col-8">
+     
+      <button *ngIf="showButtons" type="button" class="btn btn-primary btn-sm" (click)="regresar()">Búsqueda
+      </button>
+      <button *ngIf="!showButtons" type="button" class="btn btn-success btn-sm" (click)="registrarCliente()">Registrar nuevo
+      </button>
+    </div>
+    <div class="col-4 text-right">
+      <button type="button" class="btn btn-secondary btn-sm" (click)="_bsModalRef.hide()">Cerrar</button>
+    </div>
+
+  </div>
+ 
+
+  
+
 
 </div>

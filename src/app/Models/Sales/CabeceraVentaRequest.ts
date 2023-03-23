@@ -8,6 +8,15 @@ export class CabeceraVentaRequest implements CabeceraVentaRequestModel {
   codigoMayorista: number;
   codigoEmpleadoVendedor: number;
   codigoCliente: number;
+
+  // RAH: Propiedades para la integracion de lealtad
+  codigoClienteLealtad: number;
+  codigoClienteSistemaCredito: number;
+  nivelLealtad:string;
+  primeraCompraLealtad: boolean;
+  fechaLealtad: string;
+  //--
+
   numeroNominaVentaEmpleado: number;
   codigoTipoCabeceraVenta: TipoCabeceraTotalizar;
   importeVentaDescuentos: number;
@@ -31,6 +40,15 @@ export class CabeceraVentaRequest implements CabeceraVentaRequestModel {
       folioOperacion = '',
       codigoEmpleadoVendedor = 0,
       codigoMayorista = 0,
+      
+      //  RAH: Propiedades para la integracion de lealtad
+      codigoClienteLealtad = 0,
+      codigoClienteSistemaCredito = 0,
+      nivelLealtad = '',
+      primeraCompraLealtad = false,
+      fechaLealtad = "",
+      //--
+      
       codigoTipoCabeceraVenta = TipoCabeceraTotalizar.ventaRegular,
       importeVentaBruto = 0,
       importeVentaDescuentos = 0,
@@ -54,6 +72,15 @@ export class CabeceraVentaRequest implements CabeceraVentaRequestModel {
     this.folioOperacion = folioOperacion;
     this.codigoEmpleadoVendedor = codigoEmpleadoVendedor;
     this.codigoTipoCabeceraVenta = codigoTipoCabeceraVenta;
+
+    //  RAH: Propiedades para la integracion de lealtad
+    this.codigoClienteLealtad = codigoClienteLealtad,
+    this.codigoClienteSistemaCredito = codigoClienteSistemaCredito,
+    this.nivelLealtad = nivelLealtad,
+    this.primeraCompraLealtad = primeraCompraLealtad,
+    this.fechaLealtad = fechaLealtad
+    //--
+
     this.importeVentaBruto = importeVentaBruto;
     this.importeVentaDescuentos = importeVentaDescuentos;
     this.importeDevolucionBruto = importeDevolucionBruto;

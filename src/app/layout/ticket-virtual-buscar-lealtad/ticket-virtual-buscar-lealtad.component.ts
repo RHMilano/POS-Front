@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap';
+import { TicketVirtualComponentInterface } from '../../Models/FrontEnd/TicketVirtualComponentInterface';
 import { ConsultaLealtadRequest } from '../../Models/Lealtad/consulta_lealtad_request';
 import { ConsultaLealtadResponse } from '../../Models/Lealtad/consulta_lealtad_response';
 import { RegistroLealtadRequest } from '../../Models/Lealtad/registro_lealtad_request';
@@ -18,8 +19,9 @@ import { TicketVirtual } from '../ticket-virtual/TicketVirtual';
   providers: [LealtadService]
 })
 export class TicketVirtualBuscarLealtadComponent implements OnInit {
-  //@Input() ticketVirtualInstance: TicketVirtualComponentInterface;
-  ticketVirtual: TicketVirtual;
+
+  @Input('ticketVirtualInstance') ticketVirtualInstance: TicketVirtualComponentInterface;
+  
   nuevoPrecioItem: number;
   numeroCliente: number;
   // razones: Array<ReasonsCodesTransactionResponse>;
@@ -36,6 +38,9 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
   seleccion: ConsultaLealtadResponse;
   numeroClienteGenerado: string;
   loggedInfo: UserResponse;
+  showButtons:boolean = false;
+  fecha = new Date();
+ 
 
   constructor(
     public _bsModalRef: BsModalRef,
@@ -58,19 +63,39 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
   registrarCliente() {
     this.bolNuevoCliente = true;
+    this.showButtons = true;
   }
 
   regresar() {
     this.bolNuevoCliente = false;
+    this.showButtons = false;
   }
 
   clienteSeleccionado(e) {
+    
+    const añoActual = this.fecha.getFullYear(); 
+    let mesActual:string = (this.fecha.getMonth() + 1).toString(); 
+    let diaActual:string = this.fecha.getDate().toString(); 
+
+    if (mesActual.toString().length == 1) {
+      mesActual =`0${mesActual}`;
+    }
+
+    if (diaActual.toString().length == 1) {
+      diaActual =`0${diaActual}`;
+    }
+
+    const fechaLealtad =`${añoActual}${mesActual}${diaActual}`;
 
     this.seleccion = ({...e});
 
-    //debugger;
-   
-    //alert(JSON.stringify(e));
+    this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.codigoClienteLealtad = e.iiCodigoCliente;
+    this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.codigoClienteSistemaCredito = e.iiCodigoClienteSistemaCredito;
+    this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.nivelLealtad = e.ssNivel;
+    this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.primeraCompraLealtad = e.bbPrimeraCompra;
+    this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.fechaLealtad = fechaLealtad;
+
+    console.log(this.ticketVirtualInstance);
 
   }
 
@@ -175,8 +200,6 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
     this.registroLealtadRequest = ({ ...this.frm.value });
 
-
-
     this.loggedInfo = JSON.parse(localStorage.getItem('accessInfo'));
     //console.log(JSON.stringify(this.loggedInfo ));
 
@@ -188,7 +211,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
       resp => {
         this.registroLealtadResponse = ({ ...resp });
         this.numeroClienteGenerado = this.registroLealtadResponse.iCodigoCliente.toString();
-        alert(JSON.stringify(this.registroLealtadResponse));
+        //alert(JSON.stringify(this.registroLealtadResponse));
 
         if (this.registroLealtadResponse.bError) {
           this._alertService.show({ tipo: 'error', titulo: 'POS Milano', mensaje: this.registroLealtadResponse.sMensaje });
@@ -197,6 +220,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
         this._alertService.show({ tipo: 'success', titulo: 'POS Milano', mensaje: this.registroLealtadResponse.sMensaje });
 
+        this.limpiar('registro');
       }
     );
   }
@@ -232,5 +256,16 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
         //console.log(JSON.stringify( this.consultaLealtadResponse.InfoClientesCRM));
       }
     );
+  }
+
+  limpiar(formulario: string){
+    if (formulario == "busqueda") {
+      this.frmConsulta.reset();
+      this.consultaLealtadResponse.InfoClientesCRM = [];
+    }else{
+      this.frm.reset();
+      this.frm.controls['sGenero'].setValue('F');
+    }
+
   }
 }

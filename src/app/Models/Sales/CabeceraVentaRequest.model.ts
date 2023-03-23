@@ -5,6 +5,15 @@ export interface CabeceraVentaRequestModel {
   codigoMayorista: number;
   codigoEmpleadoVendedor: number;
   codigoCliente: number;
+
+  // RAH: Propiedades para la integracion de lealtad
+  codigoClienteLealtad: number, 
+  codigoClienteSistemaCredito: number;
+  nivelLealtad:string;
+  primeraCompraLealtad: boolean;
+  fechaLealtad: string;
+  // --
+  
   numeroNominaVentaEmpleado: number;
   codigoTipoCabeceraVenta: TipoCabeceraTotalizar;
   importeVentaDescuentos: number;
