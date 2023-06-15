@@ -8,7 +8,7 @@ export class ConsultaLealtadResponse {
     InfoClientesCRM : InfoClientesCRM[];
 
     constructor() {
-        this.bCantidadLimitada = true;
+        this.bCantidadLimitada = false;
         this.iCantidadClientes = 0;
         this.sMensajeError = '';
     }

@@ -10,6 +10,7 @@
       <div class="col-md-4">
         <div class="card-body">
           <h5 class="card-title">Búsqueda del cliente</h5>
+         
           <form class="form-horizontal" [formGroup]="frmConsulta" (ngSubmit)="ConsultaForm()">
             <div class="row mt-2">
               <!-- Numero de cliente -->
@@ -126,6 +127,7 @@
          
         </div>
         <h6 *ngIf="this.consultaLealtadResponse">Clientes encontrados: {{ this.consultaLealtadResponse.iCantidadClientes}}</h6>
+        <span *ngIf="consultaLealtadResponse.bCantidadLimitada">No se están mostrando todos los resultados, ingrese más filtros a su búsqueda para resultados más exactos.</span>
         <div class="tableFixHead table-responsive">
           <table class="table table-hover" style="font-size: 0.8rem;">
             <thead>

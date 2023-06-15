@@ -41,6 +41,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
   loggedInfo: UserResponse;
   showButtons:boolean = false;
   fecha = new Date();
+  
  
 
   constructor(
@@ -50,6 +51,10 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
     private _lealtadService: LealtadService) {
     this.registroLealtadRequest = new RegistroLealtadRequest();
     this.registroLealtadResponse = new RegistroLealtadResponse();
+    this.consultaLealtadResponse = new ConsultaLealtadResponse();
+    this.consultaLealtadResponse.bCantidadLimitada = false;
+    this.consultaLealtadResponse.iCantidadClientes = 0;
+    
    
   }
 
@@ -252,6 +257,8 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
         if (this.consultaLealtadResponse.sMensajeError && this.consultaLealtadResponse.sMensajeError != '' ) {
           this._alertService.show({ tipo: 'error', titulo: 'POS Milano', mensaje: this.consultaLealtadResponse.sMensajeError });
           return;
+
+     
         }
 
         //console.log(JSON.stringify( this.consultaLealtadResponse.InfoClientesCRM));
