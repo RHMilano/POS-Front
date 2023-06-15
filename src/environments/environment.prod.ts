@@ -12,7 +12,7 @@ export const environment = {
   urlServices: '/PosServiciosMIlano',
   urlUpdateVersion: '/PosActualizadorMilano',
   //urlBBVAv2Client: '/ClientBBVAv2', // OCG: Ciente de BBVA v2
-  posversion: 'v1.4.0',
+  posversion: 'v1.4.2',
 
   // urlSecurity: 'http://localhost:30972', // OCG: Proyecto Project.ServicesSecurityWCF
   // urlServices: 'http://localhost:30980', // OCG: Proyecto Project.Services
@@ -156,5 +156,6 @@ export const environment = {
 
   postLealtad: '/Finlag/FinlagService.svc/registrolealtad',
   postConsultaLealtad: '/Finlag/FinlagService.svc/consultalealtad',
+  postRedencionPuntosLealtad: '/Sales/SalesService.svc/redencionPuntosLealtad'
 
 }

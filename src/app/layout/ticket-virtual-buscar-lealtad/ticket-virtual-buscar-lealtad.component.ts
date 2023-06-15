@@ -18,11 +18,12 @@ import { TicketVirtual } from '../ticket-virtual/TicketVirtual';
   styleUrls: ['./ticket-virtual-buscar-lealtad.component.css'],
   providers: [LealtadService]
 })
+
 export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
   @Input('ticketVirtualInstance') ticketVirtualInstance: TicketVirtualComponentInterface;
   
-  nuevoPrecioItem: number;
+  nuevoPrecioItem: number; 
   numeroCliente: number;
   // razones: Array<ReasonsCodesTransactionResponse>;
   SelectRazon;
@@ -72,7 +73,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
   }
 
   clienteSeleccionado(e) {
-    
+
     const añoActual = this.fecha.getFullYear(); 
     let mesActual:string = (this.fecha.getMonth() + 1).toString(); 
     let diaActual:string = this.fecha.getDate().toString(); 
@@ -128,7 +129,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
       sPaterno: [''],
       sMaterno: [''],
       sNombre: [''],
-      sFechaNacimiento: [],
+      sFechaNacimiento: [''],
       iCodigoTiendaRegistro: [],
       sEmail: [''],
       iCodigoTienda: [],
@@ -204,7 +205,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
     //console.log(JSON.stringify(this.loggedInfo ));
 
     this.registroLealtadRequest.iCodigoCajaRegistra = this.loggedInfo.numeroCaja;
-    this.registroLealtadRequest.iCodigoEmpleadoRegistra = 506856;//this.loggedInfo.numberEmployee;
+    this.registroLealtadRequest.iCodigoEmpleadoRegistra = this.loggedInfo.numberEmployee;
     this.registroLealtadRequest.iCodigoTiendaRegistra = parseInt(this.loggedInfo.nombre.substring(7, 12));
 
     this._lealtadService.RegistroClienteLealtad(this.registroLealtadRequest).subscribe(
@@ -262,6 +263,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
     if (formulario == "busqueda") {
       this.frmConsulta.reset();
       this.consultaLealtadResponse.InfoClientesCRM = [];
+      this.seleccion = null;
     }else{
       this.frm.reset();
       this.frm.controls['sGenero'].setValue('F');

@@ -11,7 +11,7 @@ export const environment = {
   urlSecurity: 'http://localhost:30980', // OCG: Proyecto Project.ServicesSecurityWCF
   urlServices: 'http://localhost:30980', // OCG: Proyecto Project.Services
   urlUpdateVersion: 'http://localhost:63270', // OCG: Proyecto Project.POSUpdaterServices
-  posversion: 'v1.4.0',
+  posversion: 'v1.4.2',
 
   loginPath: '/Login/LoginService.svc/login',
   logoutPath: '/Login/LogoutService.svc/logout',
@@ -158,6 +158,7 @@ export const environment = {
 
   postLealtad: '/Finlag/FinlagService.svc/registrolealtad',
   postConsultaLealtad: '/Finlag/FinlagService.svc/consultalealtad',
+  postRedencionPuntosLealtad: '/Sales/SalesService.svc/redencionPuntosLealtad'
 };
 
 

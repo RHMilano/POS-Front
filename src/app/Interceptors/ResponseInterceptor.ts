@@ -23,8 +23,10 @@ export class ResponseInterceptor implements HttpInterceptor {
       if (body && body.avoidMsg) {
         return resp;
       }
+      //debugger;
       // servicio ejecutado correctamente, pero hubo error interno... alerta para todos los servicios en general
       if (response.status === 200 && !response.body.result.status) {
+       
         let msgerror = response.body.result.error == '' ? response.body.result.codeDescription : response.body.result.error;
         this._msg.setMsg({message: `${response.body.result.codeNumber} ${msgerror}`, tipo: 'error'});
       }

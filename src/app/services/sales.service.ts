@@ -84,6 +84,8 @@ import { PagoWebxComponent } from '../layout/pago-webx/pago-webx.component';
 import { PagoWebxResponse } from '../Models/Sales/PagoWebx';
 import { ConfiguracionMSIResponse } from '../Models/BBVAv2/ConfiguracionMsiResponse';
 import { CardData } from '../Models/BBVAv2/CardData';
+import { RedencionPuntosLealtadComponent } from '../layout/formas-pago-menu/redencion-puntos-lealtad/redencion-puntos-lealtad.component';
+import { RedencionPuntosLealtadResponse, RendencionPuntosLealtadRequest } from '../Models/Pagos/RedencionPuntosLealtad';
 
 
 @Injectable()
@@ -526,6 +528,12 @@ export class SalesService {
   procesarMovimientoTarjetaBancariaCancelar(request: MovimientoTarjetaRequest) {
     const endpoint = `${env.urlServices}${env.procesarMovimientoTarjetaBancariaCancelar}`;
     return this._http.post<ResponseBusiness<MovimientoTarjetaResponse>>(
+      endpoint, JSON.stringify(request)).map(res => res.data);
+  }
+
+  procesarRedencionPuntosLealtad(request: RendencionPuntosLealtadRequest) {
+    const endpoint = `${env.urlServices}${env.postRedencionPuntosLealtad}`;
+    return this._http.post<ResponseBusiness<RedencionPuntosLealtadResponse>>(
       endpoint, JSON.stringify(request)).map(res => res.data);
   }
 

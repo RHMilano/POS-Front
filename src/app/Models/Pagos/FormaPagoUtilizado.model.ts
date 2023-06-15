@@ -4,6 +4,7 @@ import { DescuentoPromocionalAplicado } from '../Sales/DescuentoPromocionalAplic
 
 
 export interface FormaPagoUtilizadoModel {
+  autorizacion: string // Se agrega para la redencion de puntos de lealtad
   importeMonedaNacional: number;
   importeCambioMonedaNacional: number;
   importeCambioExcedenteMonedaNacional: number;

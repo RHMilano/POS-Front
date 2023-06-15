@@ -93,6 +93,7 @@ import {PinPadMovilComponent} from './layout/formas-pago-menu/pin-pad-movil/pin-
 import  {PagoTransferenciaComponent} from './layout/formas-pago-menu/pago-transferencia/pago-transferencia.component'
 import { PagoWebxComponent } from './layout/pago-webx/pago-webx.component';
 import { TicketVirtualBuscarLealtadComponent } from './layout/ticket-virtual-buscar-lealtad/ticket-virtual-buscar-lealtad.component';
+import { RedencionPuntosLealtadComponent } from './layout/formas-pago-menu/redencion-puntos-lealtad/redencion-puntos-lealtad.component';
 
 /*
 import { ComponentOneComponent } from './pruebas/component-one/component-one.component';
@@ -172,7 +173,9 @@ defineLocale('es', esLocale);
     PinPadMovilComponent,
     PagoTransferenciaComponent,
     PagoWebxComponent,
-    TicketVirtualBuscarLealtadComponent
+    TicketVirtualBuscarLealtadComponent,
+    RedencionPuntosLealtadComponent
+   
   ],
   imports: [
     BrowserModule,
@@ -255,7 +258,8 @@ defineLocale('es', esLocale);
     PinPadMovilComponent,
     PagoTransferenciaComponent,
     PagoWebxComponent,
-    TicketVirtualBuscarLealtadComponent
+    TicketVirtualBuscarLealtadComponent,
+    RedencionPuntosLealtadComponent
   ],
   providers: [AlertService
     , AuthService

@@ -25,7 +25,8 @@ import {
   BtnTarjetaRegalo,
   BtnVales,
   BtnPinPadMovil,
-  BtnTransferenciaBancaria
+  BtnTransferenciaBancaria,
+  BtnPagoLealtad
 } from './FormasPagoBtnConfig';
 import {PagosMasterService} from '../../services/pagos-master.service';
 import {FormasPagoMenuComponentInterface} from '../../Models/FrontEnd/FormasPagoMenuComponentInterface';
@@ -76,7 +77,8 @@ export class FormasPagoMenuComponent implements OnInit, OnDestroy {
     BtnRedencionCupones,
     BtnFiLag,
     BtnPinPadMovil,
-    BtnTransferenciaBancaria //? OCG Transferencia bancaria 
+    BtnTransferenciaBancaria,
+    BtnPagoLealtad //? OCG Transferencia bancaria 
   ];
 
 
@@ -146,7 +148,7 @@ export class FormasPagoMenuComponent implements OnInit, OnDestroy {
 
       try {
         btn.tipoPago.split(',').forEach(identificadorFormaPago => {
-debugger
+
           if (btn.name === PagosOps.monedaExtranjera) {
             btn.enabled = totalizarInfo.informacionAsociadaFormasPagoMonedaExtranjera.find(formaPago => formaPago.identificadorFormaPago === identificadorFormaPago) ? true : false;
           } else {

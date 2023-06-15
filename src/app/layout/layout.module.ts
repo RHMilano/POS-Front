@@ -19,6 +19,7 @@ import { TicketVirtualDevolucionComponent } from './ticket-virtual-devolucion/ti
 import { CarrouselComponent } from './carrousel/carrousel.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ArticuloDevolucionComponent } from './ticket-virtual/articulo-devolucion/articulo-devolucion.component';
+//import { RedencionPuntosLealtadComponent } from './formas-pago-menu/redencion-puntos-lealtad/redencion-puntos-lealtad.component';
 //import { TicketVirtualBuscarLealtadComponent } from './ticket-virtual-buscar-lealtad/ticket-virtual-buscar-lealtad.component';
 
 //import { PagoWebxComponent } from './pago-webx/pago-webx.component';
@@ -51,6 +52,7 @@ import { ArticuloDevolucionComponent } from './ticket-virtual/articulo-devolucio
     TicketVirtualDevolucionComponent,
     CarrouselComponent,
     ArticuloDevolucionComponent,
+    //RedencionPuntosLealtadComponent,
     //TicketVirtualBuscarLealtadComponent,
 
     //PagoWebxComponent

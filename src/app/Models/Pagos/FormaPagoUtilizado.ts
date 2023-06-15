@@ -5,6 +5,7 @@ import {DescuentoPromocionalAplicado} from '../Sales/DescuentoPromocionalAplicad
 
 
 export class FormaPagoUtilizado implements FormaPagoUtilizadoModel {
+  autorizacion: string;
   importeMonedaNacional: number;
   importeCambioMonedaNacional: number;
   importeCambioExcedenteMonedaNacional: number;
@@ -22,6 +23,7 @@ export class FormaPagoUtilizado implements FormaPagoUtilizadoModel {
 
   constructor(request: FormaPagoUtilizadoModel = {} as FormaPagoUtilizadoModel) {
     const {
+      autorizacion = "",
       importeMonedaNacional = 0,
       importeCambioMonedaNacional = 0,
       importeCambioExcedenteMonedaNacional = 0,
@@ -37,6 +39,7 @@ export class FormaPagoUtilizado implements FormaPagoUtilizadoModel {
       descuentosPromocionalesPorLineaAplicados = { descuentoPromocionesAplicados: [] }
     } = request;
 
+    this.autorizacion = autorizacion;
     this.importeMonedaNacional = importeCambioMonedaNacional;
     this.importeCambioMonedaNacional = importeCambioMonedaNacional;
     this.importeCambioExcedenteMonedaNacional = importeCambioExcedenteMonedaNacional;

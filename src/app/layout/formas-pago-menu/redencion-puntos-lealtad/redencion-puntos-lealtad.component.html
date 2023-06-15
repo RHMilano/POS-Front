@@ -1,0 +1,56 @@
+<div class="modal-header card-header" style="height: 60px; padding-top: 10px;">
+  <h4 class="modal-title pull-left">Redención de Puntos de Lealtad</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="_bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body card-body">
+  <form class="form-horizontal" [formGroup]="frmPuntosLealtad" (ngSubmit)="aplicarRedencionPuntosLealtad()">
+    <div class="row mt-2">
+      <h4>Ingrese el código generado desde la app de Milano Crédito</h4>
+      <div class="input-group input-group-sm col-10">
+
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="">
+            <img src="../../../assets/images/moneda_64x64.png" class="img-fluid" alt="Responsive image" width="16px">
+          </span>
+        </div>
+        <input type="text" class="form-control" formControlName="monto" placeholder="Monto">
+       
+      </div>
+      <span class="text-danger"
+      *ngIf="frmPuntosLealtad.get('monto').invalid && frmPuntosLealtad.get('monto').touched">
+      Monto a pagar con puntos requerido.
+    </span>
+      <div class="input-group input-group-sm col-10 mt-4 ">
+
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="">
+            <img src="../../../assets/images/codBar2_64x64.png" class="img-fluid" alt="Responsive image" width="16px">
+          </span>
+        </div>
+        <input type="text" class="form-control" formControlName="codigoLealtad" placeholder="Código">
+      </div>
+      <span class="text-danger"
+        *ngIf="frmPuntosLealtad.get('codigoLealtad').invalid && frmPuntosLealtad.get('codigoLealtad').touched">
+        Codigo de aplicación de crédito requerido.
+      </span>
+    </div>
+  </form>
+  
+  <app-descuentos-informacion [ticketVirtualInstance]="formasPagoMenu.ticketVirtualInstance"
+      [codigoFormaPago]="tipoPago" (datosPromociones)="getPromocionesPosibles($event)">
+    </app-descuentos-informacion>
+</div>
+<div class="modal-footer card-footer2">
+
+  <div class="row">
+    <div class="col-8">
+      <button type="submit" class="btn btn-success btn-sm" (click)="aplicarRedencionPuntosLealtad()">Usar puntos
+      </button>
+    </div>
+    <div class="col-4 ">
+      <button type="button" class="btn btn-secondary btn-sm" (click)="_bsModalRef.hide()">Cerrar</button>
+    </div>
+
+  </div>

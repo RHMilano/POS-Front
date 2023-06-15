@@ -142,7 +142,8 @@ export enum PagosOps {
   finLag = 'Finlag',
   cupones = 'Redencion de Cupones',
   pinpadMov = 'Pin Pad Móvil',
-  transferencia = 'Transferencia Bancaria' //? OCG integracion de nueva forma de pago
+  transferencia = 'Transferencia Bancaria', //? OCG integracion de nueva forma de pago
+  pagoLealtad = 'Puntos Lealtad' //? OCG integracion de nueva forma de pago
 }
 
 export enum CambioPagos {
@@ -192,7 +193,8 @@ export enum TipoPago {
   finLag = 'FL',
   cupones = 'CP',
   pinpadMov = 'TC',
-  transferencia = 'TR'
+  transferencia = 'TR',
+  pagoLealtad = 'PL'
 }
 
 export enum TipoPagoFinLag {
@@ -218,7 +220,8 @@ export enum TipoPagoAccesoBoton {
   finLag = 'FL',
   cupones = 'CP',
   pinpadMov = 'DE',
-  transferencia = 'TR'
+  transferencia = 'TR',
+  pagoLealtad = 'PL'
 }
 
 export enum TipoCabeceraTotalizar {
@@ -232,7 +235,7 @@ export enum TipoCabeceraTotalizar {
   devolucionEmpleado = '14',
   devolucionMayoristas = '22',
   tarjetaMM = '46',
-  pagoWeb = '48' // OCG: Agregar el tipo Pago Web
+  pagoWeb = '48', // OCG: Agregar el tipo Pago Web
 }
 
 export enum TipoDetalleVenta {

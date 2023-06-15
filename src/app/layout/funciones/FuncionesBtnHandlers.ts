@@ -37,30 +37,16 @@ export const FuncionesBtnHandler = {
     this._router.navigate(['/POS/MAYORISTA']).then(
     );
   },
-  // busquedaLealtad(conf) {
-  //   this._router.navigate(['/POS/LEALTAD']).then(
-  //   );
-  // },
-  // busquedaLealtad(conf) {
-  //   if (!this.modalRef) {
-  //     // OCG: Si no se pasa la instancia, no se recibe en el modal
-  //     const initialState = {ticketVirtualInstance: this.ticketVirtualInstance};
-  //     this.modalRef = this.modalService.show(TicketVirtualBuscarLealtadComponent, {backdrop: 'static',initialState});
-  //   }
-  // },
+
   busquedaLealtad(conf) {
     const initialState = {ticketVirtualInstance: this.ticketVirtualInstance};
-    // const options: ModalOptions = {
-    //   class: 'modal-lg',
-    //   backdrop: 'static',
-    //   initialState
-    // };
     this.modalRef = this.modalService.show(TicketVirtualBuscarLealtadComponent, {
       class: 'modal-lg',
       backdrop: 'static',
       initialState
     });
   },
+  
   showChilds(conf) {
     this.showChild(conf);
   },

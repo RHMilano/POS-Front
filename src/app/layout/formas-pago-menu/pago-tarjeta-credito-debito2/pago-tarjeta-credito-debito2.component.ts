@@ -69,7 +69,7 @@ export class PagoTarjetaCreditoDebito2Component implements OnInit {
   cardResponse: CardDataResponse;
   pasosPago: PasosPago;
   cardMSIConfig: CardMSIConfig;
-  mesesSeleccionados:string = "1";
+  mesesSeleccionados: string = "1";
 
   //#endregion
   constructor(private modalService: BsModalService, private alertService: AlertService, private _salesService: SalesService,
@@ -122,41 +122,41 @@ export class PagoTarjetaCreditoDebito2Component implements OnInit {
   // 
   CardReader() {
 
- 
-      if (Number(this.recibido) === 0 || Number(this.recibido) <= 0){
-        this.alertService.show({ tipo: 'info', titulo: 'Milano', mensaje: 'Favor de capturar monto' });
-        return;
-      }
-  
-      if (Number(this.recibido) > this.totalToPay) {
-        this.alertService.show({ tipo: 'info', titulo: 'Milano', mensaje: 'Monto mayor al total a pagar' });
-      return;
-      }
 
-    debugger
+    if (Number(this.recibido) === 0 || Number(this.recibido) <= 0) {
+      this.alertService.show({ tipo: 'info', titulo: 'Milano', mensaje: 'Favor de capturar monto' });
+      return;
+    }
+
+    if (Number(this.recibido) > this.totalToPay) {
+      this.alertService.show({ tipo: 'info', titulo: 'Milano', mensaje: 'Monto mayor al total a pagar' });
+      return;
+    }
+
+    //debugger
     this.validatePay();
 
     this.saleRequest.transactionAmount = this.recibido.toString();
     this.saleRequest.amex = false;
     this.saleRequest.dollars = false;
-    this.saleRequest.payPoints = false; 
-    this.saleRequest.promo = this.mesesSeleccionados; 
+    this.saleRequest.payPoints = false;
+    this.saleRequest.promo = this.mesesSeleccionados;
 
-//#region Se define el origen de pago, sin cambios
-switch (this.formasPagoMenu.origenPago) {
-  case OrigenPago.normal:
-    this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarInfo.folioOperacion;
-    break;
-  case OrigenPago.apartado:
-    this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarApartado.folioOperacion;
-    break;
-}
-//#endregion
-
-    
+    //#region Se define el origen de pago, sin cambios
+    switch (this.formasPagoMenu.origenPago) {
+      case OrigenPago.normal:
+        this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarInfo.folioOperacion;
+        break;
+      case OrigenPago.apartado:
+        this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarApartado.folioOperacion;
+        break;
+    }
+    //#endregion
 
 
-    
+
+
+
 
 
     this.cargando = true;
@@ -164,7 +164,7 @@ switch (this.formasPagoMenu.origenPago) {
     // Identificar los datos de la tarjeta
     this._bbvav2.ServiceReadCard(this.saleRequest).subscribe(resp => {
       this.cardMSIConfig = { ...resp }
-      
+
       //console.log(`this.cardMSIConfig: ${JSON.stringify(this.cardMSIConfig)}`)
     }, (error) => {
       this.cancelPay();
@@ -173,22 +173,22 @@ switch (this.formasPagoMenu.origenPago) {
 
     }, () => {
 
-      debugger;
+      //debugger;
       if (this.cardMSIConfig.card.producto == "c") {
         //Verificar si los meses sin intereses estan activos
-          this.pasosPago.verPasoUno = false;
+        this.pasosPago.verPasoUno = false;
 
-          if (this.recibido >= this.cardMSIConfig.configMSI.montoMinimoVisa
-             && this.cardMSIConfig.configMSI.mesesSinInteresesVisa > 1
-            && this.cardMSIConfig.card.producto == "c"
-          ) {
-            this.pasosPago.verPasoDos = true;
-          } else {
-            this.pasosPago.verPasoDos = false;
-             this.PagaMSI("1");
-          }
+        if (this.recibido >= this.cardMSIConfig.configMSI.montoMinimoVisa
+          && this.cardMSIConfig.configMSI.mesesSinInteresesVisa > 1
+          && this.cardMSIConfig.card.producto == "c"
+        ) {
+          this.pasosPago.verPasoDos = true;
+        } else {
+          this.pasosPago.verPasoDos = false;
+          this.PagaMSI("1");
+        }
 
-      }else{
+      } else {
         this.pasosPago.verPasoDos = false;
         this.pasosPago.verPasoTres = false;
         this.Pay(false);
@@ -201,23 +201,21 @@ switch (this.formasPagoMenu.origenPago) {
     // Opción 3: Meses sin intereses
     if (opcion == "3") {
       this.saleRequest.promo = this.mesesSeleccionados;
-    }else{
+    } else {
       this.saleRequest.promo = opcion;
     }
- 
+
     this.pasosPago.verPasoDos = false;
- //debugger; Solo para tarjetas de crédito emisor bbva (12) y que no seleccionen meses se permite pagar con puntos.
-    if (this.cardMSIConfig.card.producto == "c" && this.cardMSIConfig.card.emisor == "12" && this.mesesSeleccionados == "1") 
-    {
+    //debugger; Solo para tarjetas de crédito emisor bbva (12) y que no seleccionen meses se permite pagar con puntos.
+    if (this.cardMSIConfig.card.producto == "c" && this.cardMSIConfig.card.emisor == "12" && this.mesesSeleccionados == "1") {
       this.pasosPago.verPasoTres = true;
     }
-    else
-    {
+    else {
       this.Pay(false);
     }
   }
 
-  Pay(puntos:boolean) {
+  Pay(puntos: boolean) {
     //debugger;
     this.pasosPago.verPasoDos = false;
     this.pasosPago.verPasoTres = false;
@@ -225,22 +223,22 @@ switch (this.formasPagoMenu.origenPago) {
     this.saleRequest.transactionAmount = this.recibido.toString();
     //this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarInfo.folioOperacion;
 
-//     //#region Se define el origen de pago, sin cambios
-// switch (this.formasPagoMenu.origenPago) {
-//   case OrigenPago.normal:
-//     this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarInfo.folioOperacion;
-//     break;
-//   case OrigenPago.apartado:
-//     this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarApartado.folioOperacion;
-//     break;
-// }
-// //#endregion
-    
+    //     //#region Se define el origen de pago, sin cambios
+    // switch (this.formasPagoMenu.origenPago) {
+    //   case OrigenPago.normal:
+    //     this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarInfo.folioOperacion;
+    //     break;
+    //   case OrigenPago.apartado:
+    //     this.saleRequest.merchanReference = this.formasPagoMenu.currentTotalizarInfo.totalizarApartado.folioOperacion;
+    //     break;
+    // }
+    // //#endregion
+
     //console.log(`Pagar con puntos: ${this.saleRequest.payPoints}`);
     //console.log(`Ticket Vistual: ${this.formasPagoMenu.currentTotalizarInfo.totalizarInfo.folioOperacion}`);
     //console.log(`this.saleRequest: ${JSON.stringify(this.saleRequest)}`);
- 
- 
+
+
     this._bbvav2.ServiceCompleteSale(this.saleRequest).subscribe(resp => {
       this.saleResponse = { ...resp }
       //console.log(JSON.stringify(this.saleResponse))
@@ -249,18 +247,17 @@ switch (this.formasPagoMenu.origenPago) {
       this.cancelPay();
       this.closeModal();
       return;
-      
+
     }, () => {
 
       // Validar la respuesta regresada por la pipad, esta debe de ser autorizada
       // se regresa un número de autorización
       //debugger;
       // &&
-      if (this.saleResponse.numeroAutorizacion && this.saleResponse.numeroAutorizacion != "" && this.saleResponse.codigoRespuesta == "00" && this.saleResponse.numeroAutorizacion.substring(this.saleResponse.numeroAutorizacion.length - 6) != "000000" && this.saleResponse.leyenda.toUpperCase().includes("APROBADA")) 
-      {
-        this.addPay();       
+      if (this.saleResponse.numeroAutorizacion && this.saleResponse.numeroAutorizacion != "" && this.saleResponse.codigoRespuesta == "00" && this.saleResponse.numeroAutorizacion.substring(this.saleResponse.numeroAutorizacion.length - 6) != "000000" && this.saleResponse.leyenda.toUpperCase().includes("APROBADA")) {
+        this.addPay();
       }
-      else{
+      else {
         this.alertService.show({ tipo: 'error', titulo: 'Milano', mensaje: this.saleResponse.leyenda });
         this.cancelPay();
         this.closeModal();
@@ -274,7 +271,7 @@ switch (this.formasPagoMenu.origenPago) {
   addPay() {
     debugger;
     this.toDisable = false;
-    
+
     if (!this.recibido) {
       this.alertService.show({ tipo: 'info', titulo: 'Milano', mensaje: 'Favor de capturar monto' });
       this.toDisable = true;
@@ -309,7 +306,7 @@ switch (this.formasPagoMenu.origenPago) {
         this.movimientoTarjeta.descuentosPromocionalesPorVentaAplicados = { descuentoPromocionesAplicados: [] };
         this.movimientoTarjeta.descuentosPromocionalesPorLineaAplicados = { descuentoPromocionesAplicados: [] };
 
-        if (!this._pagosMaster.pagoAdded && this.totalAplicandoPromociones && (this.totalAplicandoPromociones == recibido) ) {
+        if (!this._pagosMaster.pagoAdded && this.totalAplicandoPromociones && (this.totalAplicandoPromociones == recibido)) {
 
           this.formasPagoMenu.ticketVirtualInstance.ticketVirtual.ticketDescuentos.applyDescuentosPosiblesLinea(this.promocionesPosiblesLinea);
           this.formasPagoMenu.ticketVirtualInstance.ticketVirtual.ticketDescuentos.applyDescuentosPosiblesVenta(this.promocionesPosiblesVenta);
@@ -342,7 +339,7 @@ switch (this.formasPagoMenu.origenPago) {
 
           //console.log(` this.movimientoTarjeta = ${JSON.stringify( this.movimientoTarjeta)}`);
           //#endregion
-        
+
           this._salesService.procesarMovimientoPagoTarjetaVisaMaster(this.movimientoTarjeta).subscribe(resp => {
             this.cargando = false;
             if (resp.codeNumber === 0) {
@@ -356,7 +353,7 @@ switch (this.formasPagoMenu.origenPago) {
               pago.descuentosPromocionalesPorLineaAplicados = { descuentoPromocionesAplicados: [] };
 
               //debugger;
-              
+
               this.totalAplicandoPromociones = Number(recibido);
 
               if (!this._pagosMaster.pagoAdded && (this.totalAplicandoPromociones == pago.importeMonedaNacional)) {
@@ -384,7 +381,7 @@ switch (this.formasPagoMenu.origenPago) {
               }
 
               );
-              
+
               // if (resp.sePuedePagarConPuntos) {
               //   this.tarjetaCredito = true;
               //   this.mensajeTarjeta = '¿ Desea pagar con puntos Bancomer? ';
@@ -422,7 +419,7 @@ switch (this.formasPagoMenu.origenPago) {
 
 
 
-            
+
 
           }, (err: HttpErrorResponse) => {
             this.cargando = false;
@@ -507,14 +504,14 @@ switch (this.formasPagoMenu.origenPago) {
       this.closeModalCash();
     }
   }
-  
-cancelarMovimientoTarjeta() {
+
+  cancelarMovimientoTarjeta() {
 
     this.toDisabled = false;
     this.cargando = true;
     this.cashBack = false;
-  
-  this._salesService.procesarMovimientoTarjetaBancariaCancelar(this.movimientoTarjeta).subscribe(resp => {
+
+    this._salesService.procesarMovimientoTarjetaBancariaCancelar(this.movimientoTarjeta).subscribe(resp => {
       this.cargando = false;
       if (resp.codeNumber === 102) {
         this.alertService.show({ tipo: 'success', titulo: 'Milano', mensaje: 'Se Canceló Movimiento Exitosamente' });

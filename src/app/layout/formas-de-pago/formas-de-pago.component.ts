@@ -1038,6 +1038,7 @@ export class FormasDePagoComponent implements OnInit, OnDestroy, AfterViewInit, 
     { boton: PagosOps.americanExpress, action: tipoAction, dontHidde: hideFocus },
     { boton: PagosOps.tarjetaVisa, action: tipoAction, dontHidde: hideFocus },
     { boton: PagosOps.tarjetaCreditoDebit2, action: tipoAction, dontHidde: hideFocus }, //OCG
+    { boton: PagosOps.pagoLealtad, action: tipoAction, dontHidde: hideFocus }, // Pago lealtad
     { boton: PagosOps.finLag, action: tipoAction, dontHidde: hideFocus },
     { boton: PagosOps.cupones, action: tipoAction, dontHidde: hideFocus }]);
   }

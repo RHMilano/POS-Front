@@ -49,6 +49,7 @@ export class PagoEfectivoComponent implements OnInit {
   }
 
   addPay() {
+    
     this.toDisable = false;
     if (!this.recibido) {
       this.alertService.show({tipo: 'info', titulo: 'Milano', mensaje: 'Favor de capturar monto'});
@@ -60,7 +61,7 @@ export class PagoEfectivoComponent implements OnInit {
         this.toDisable = true;
         return;
       } else {
-
+   
 
         const pago = new FormaPagoUtilizado();
         pago.importeMonedaNacional = Number(this.recibido);
@@ -85,7 +86,6 @@ export class PagoEfectivoComponent implements OnInit {
             })
           };
         }
-
 
         const pagoDisplay = new PagosToDisplay({
           nombre: PagosOps.efectivo,

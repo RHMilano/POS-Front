@@ -15,6 +15,8 @@ import {FinLagComponent} from './fin-lag/fin-lag.component';
 import { RedencionDeCuponesComponent } from './redencion-de-cupones/redencion-de-cupones.component';
 import {PinPadMovilComponent} from './pin-pad-movil/pin-pad-movil.component';
 import {PagoTransferenciaComponent} from './pago-transferencia/pago-transferencia.component';
+import { RedencionPuntosLealtadComponent } from './redencion-puntos-lealtad/redencion-puntos-lealtad.component';
+
 
 
 export const BtnEfectivo = {
@@ -116,6 +118,35 @@ export const BtnCreditoDebito2 = {
   }
 };
 
+// RHA: 11/06/2023
+// Configuración para llamar al componente para la redención de puntos de lealtad
+export const BtnPagoLealtad = {
+  name: PagosOps.pagoLealtad,
+  tipoPago: TipoPagoAccesoBoton.pagoLealtad,
+  tecla: 'F15',
+  imagen: 'assets/images/botones_formas_pago/lealtad.png',
+  clase: 'bg-purple',
+  enabled: true,
+  visible: true,
+  default: {
+    enabled: true,
+    visible: true
+  },
+  handler: function (conf) {
+    const options: ModalOptions = {
+      class: 'modal-md',
+      backdrop: 'static',
+      keyboard: false,
+      initialState: {
+        formasPagoMenu: this,
+        ticketVirtualInstance: this.ticketVirtualInstance
+      }
+    };
+    this.modalRef = this.modalService.show(RedencionPuntosLealtadComponent, options);
+  }
+};
+
+
 export const BtnAmericanExpress = {
   name: PagosOps.americanExpress,
   tipoPago: TipoPagoAccesoBoton.americanExpress,
@@ -142,7 +173,6 @@ export const BtnAmericanExpress = {
   }
 };
 
-
 export const BtnTransferenciaBancaria = {
   name: PagosOps.transferencia,
   tipoPago: TipoPagoAccesoBoton.transferencia,
@@ -167,7 +197,6 @@ export const BtnTransferenciaBancaria = {
     this.modalRef = this.modalService.show(PagoTransferenciaComponent, options);
   }
 }
-
 
 export const BtnPinPadMovil = {
   name: PagosOps.pinpadMov,
