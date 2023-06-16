@@ -76,6 +76,8 @@ export class RedencionPuntosLealtadComponent implements OnInit {
     request.iCodigoCaja = this.ticketVirtualInstance.loggedInfo.numeroCaja;
     request.iCodigoEmpleado = this.ticketVirtualInstance.loggedInfo.numberEmployee;
     request.iCodigoTienda = Number(this.ticketVirtualInstance.loggedInfo.numeroTienda.split(' ')[1]);
+    //this.consultaLealtadRequest.iCodigoTienda = parseInt(this.loggedInfo.nombre.substring(7, 12));
+    
     // Se pasa la transaccion en cero, por que es en el backend donde se recupera por el folio
     // de promocion 
     request.iTransaccion = 0;

@@ -139,7 +139,6 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
       sEmail: [''],
       iCodigoTienda: [],
       iCodigoCaja: [],
-      bTiendaCaja: [],
     });
   }
 
@@ -238,15 +237,10 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
     this.consultaLealtadRequest = new ConsultaLealtadRequest(this.frmConsulta.value );
     //this.consultaLealtadRequest = ({ ...this.frmConsulta.value });
     this.loggedInfo = JSON.parse(localStorage.getItem('accessInfo'));
-   
-    if ( this.consultaLealtadRequest.bTiendaCaja) {
-      this.consultaLealtadRequest.iCodigoCaja = this.loggedInfo.numeroCaja;
-      //this.consultaLealtadRequest.iCodigoEmpleado = 506856;//this.loggedInfo.numberEmployee;
-      this.consultaLealtadRequest.iCodigoTienda = parseInt(this.loggedInfo.nombre.substring(7, 12));
-    }else{
-      this.consultaLealtadRequest.iCodigoCaja = 0;
-      this.consultaLealtadRequest.iCodigoTienda = 0;
-    }
+
+    this.consultaLealtadRequest.iCodigoCaja = this.loggedInfo.numeroCaja;
+    this.consultaLealtadRequest.iCodigoTienda = parseInt(this.loggedInfo.nombre.substring(7, 12));
+    this.consultaLealtadRequest.iCodigoEmpleado = this.loggedInfo.numberEmployee;
 
     this._lealtadService.ConsultaClienteLealtad(this.consultaLealtadRequest).subscribe(
       resp => {

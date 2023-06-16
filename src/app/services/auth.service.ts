@@ -45,6 +45,7 @@ export class AuthService {
             this.isAuth.next(true);
             localStorage.setItem('accesstoken', res.data.accesstoken);
             localStorage.setItem('accessInfo', JSON.stringify(res.data));
+            localStorage.setItem('tienda', JSON.stringify(res.data.numeroTienda));
             resolve(true);
           } else {
             this.isAuth.next(false);

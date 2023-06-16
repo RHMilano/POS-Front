@@ -16,12 +16,33 @@ export class ConsultaLealtadRequest {
     bTiendaCaja: boolean;
 
     constructor(data) {
+        var fechaLealtad = '';
 
+        if (data.sFechaNacimiento != null && data.sFechaNacimiento != '' ) {
+
+            let f = new Date(data.sFechaNacimiento);
+
+            const añoActual = f.getFullYear(); 
+            let mesActual:string = (f.getMonth() + 1).toString(); 
+            let diaActual:string = f.getDate().toString(); 
+        
+            if (mesActual.toString().length == 1) {
+              mesActual =`0${mesActual}`;
+            }
+        
+            if (diaActual.toString().length == 1) {
+              diaActual =`0${diaActual}`;
+            }
+        
+             fechaLealtad =`${añoActual}${mesActual}${diaActual}`;
+        }
+
+     
         this.iCodigoCliente = data.iCodigoCliente == null? 0 : data.iCodigoCliente ;
         this.iCodigoClienteSistemaCredito = data.iCodigoClienteSistemaCredito == null? 0 : data.iCodigoClienteSistemaCredito ;
         this.iCodigoEmpleado = data.iCodigoEmpleado == null? 0 : data.iCodigoEmpleado ;
         this.iCodigoClienteWeb = data.iCodigoClienteWeb == null? 0 : data.iCodigoClienteWeb ;
-        this.iCodigoTiendaRegistro = data.iCodigoTiendaRegistro == null? 0 : data.iCodigoTiendaRegistro ;
+        this.iCodigoTiendaRegistro = data.iCodigoTiendaRegistro ? 1 :0 ;
         this.iCodigoTienda = data.iCodigoTienda == null? 0 : data.iCodigoTienda ;
         this.iCodigoCaja = data.iCodigoCaja == null? 0 : data.iCodigoCaja ;
         this.sEmail = data.sEmail == null ? '' :  data.sEmail
@@ -29,21 +50,8 @@ export class ConsultaLealtadRequest {
         this.sPaterno = data.sPaterno == null ? '' :  data.sPaterno
         this.sMaterno = data.sMaterno == null ? '' :  data.sMaterno
         this.sTelefono = data.sTelefono == null ? '' :  data.sTelefono
-        this.sFechaNacimiento = data.sFechaNacimiento == null ? '' :  data.sFechaNacimiento
+        this.sFechaNacimiento = fechaLealtad
         this.bTiendaCaja = data.bTiendaCaja == null ? false :  data.bTiendaCaja
-
-        // this.iCodigoClienteSistemaCredito = 0;
-        // this.iCodigoEmpleado = 0;
-        // this.iCodigoClienteWeb = 0;
-        // this.sTelefono = '';
-        // this.sPaterno = '';
-        // this.sMaterno = '';
-        // this.sNombre = '';
-        // this.sFechaNacimiento = '';
-        // this.iCodigoTiendaRegistro = 0;
-        // this.sEmail = '';
-        // this.iCodigoTienda = 0;
-        // this.iCodigoCaja = 0;
 
     }
 }
