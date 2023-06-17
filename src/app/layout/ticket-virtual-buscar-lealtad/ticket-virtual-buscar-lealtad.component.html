@@ -120,7 +120,7 @@
               Cliente: #{{ this.seleccion.iiCodigoCliente}} - {{ this.seleccion.ssNombre}} {{ this.seleccion.ssPaterno}} {{ this.seleccion.ssMaterno}}
             </div>
             <div class="col-12 text-right mt-3">
-            <button  *ngIf="this.seleccion && !showButtons && this.consultaLealtadResponse.InfoClientesCRM.length > 0"  type="button"  (click)="_bsModalRef.hide()" class="btn btn-primary btn-sm">Aplicar promoción lealtad
+            <button  *ngIf="this.seleccion && !showButtons && this.consultaLealtadResponse.InfoClientesCRM.length > 0 && !errConsultaCliente "  type="button"  (click)="_bsModalRef.hide()" class="btn btn-primary btn-sm">Aplicar promoción lealtad
             </button>
           </div>
           </div>

@@ -41,6 +41,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
   loggedInfo: UserResponse;
   showButtons:boolean = false;
   fecha = new Date();
+  errConsultaCliente: boolean = false;
   
  
 
@@ -240,7 +241,7 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
     this.consultaLealtadRequest.iCodigoCaja = this.loggedInfo.numeroCaja;
     this.consultaLealtadRequest.iCodigoTienda = parseInt(this.loggedInfo.nombre.substring(7, 12));
-    this.consultaLealtadRequest.iCodigoEmpleado = this.loggedInfo.numberEmployee;
+    this.consultaLealtadRequest.iCodigoEmpleado = 0; //this.loggedInfo.numberEmployee;
 
     this._lealtadService.ConsultaClienteLealtad(this.consultaLealtadRequest).subscribe(
       resp => {
@@ -250,8 +251,9 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
 
         if (this.consultaLealtadResponse.sMensajeError && this.consultaLealtadResponse.sMensajeError != '' ) {
           this._alertService.show({ tipo: 'error', titulo: 'POS Milano', mensaje: this.consultaLealtadResponse.sMensajeError });
+          
+          this.errConsultaCliente = true;
           return;
-
      
         }
 

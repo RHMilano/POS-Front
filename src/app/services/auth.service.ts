@@ -30,22 +30,13 @@ export class AuthService {
       this._http.post(endpoint, JSON.stringify(loginRequest)).subscribe(
         (res: ResponseBusiness<UserResponse>) => {
 
-          /*console.log(`res.data.accesstoken: ${res.data.accesstoken}`);
-          console.log(`res.data.codeEstatus: ${res.data.codeEstatus}`);
-          console.log(`res.data.estatus: ${res.data.estatus}`);
-          console.log(`res.data.nombre: ${res.data.nombre}`);
-          console.log(`res.data.numberAttempts: ${res.data.numberAttempts}`);
-          console.log(`res.data.numberEmployee: ${res.data.numberEmployee}`);
-          console.log(`res.data.numeroCaja: ${res.data.numeroCaja}`);
-          console.log(`res.data.numeroTienda: ${res.data.numeroTienda}`);*/
-
           this.loggedInfo.next(res.data);
 
           if (res.data.codeEstatus === 100) { // Loggin Exitoso
             this.isAuth.next(true);
             localStorage.setItem('accesstoken', res.data.accesstoken);
             localStorage.setItem('accessInfo', JSON.stringify(res.data));
-            localStorage.setItem('tienda', JSON.stringify(res.data.numeroTienda));
+
             resolve(true);
           } else {
             this.isAuth.next(false);
