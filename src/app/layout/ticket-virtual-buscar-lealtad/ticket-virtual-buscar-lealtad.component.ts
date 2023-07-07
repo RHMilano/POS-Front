@@ -100,7 +100,11 @@ export class TicketVirtualBuscarLealtadComponent implements OnInit {
     this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.codigoClienteSistemaCredito = e.iiCodigoClienteSistemaCredito;
     this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.nivelLealtad = e.ssNivel;
     this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.primeraCompraLealtad = e.bbPrimeraCompra;
+    
     this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.fechaLealtad = fechaLealtad;
+
+    //this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.nombreMembresia = `${e.iiCodigoCliente}`
+    this.ticketVirtualInstance.ticketVirtual.cabeceraVenta.nombreMembresia = `${e.iiCodigoCliente}_${e.ssNombre} ${e.ssPaterno} ${e.ssMaterno}`
 
     console.log(this.ticketVirtualInstance);
 

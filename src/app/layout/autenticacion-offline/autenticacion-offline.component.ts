@@ -22,7 +22,7 @@ export class AutenticacionOfflineComponent implements OnInit {
   constructor(public modalRef: BsModalRef, private _iniciofinService: InicioFinDiaService, private _alertService: AlertService) { }
 
   ngOnInit() {
-  }
+    }
 
   closeModal() {
     this.modalRef.hide();
